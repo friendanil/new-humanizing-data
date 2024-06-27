@@ -6,7 +6,8 @@ export default `
 
     <div class="h-screen p-10">
       <h2 class="text-2xl mb-4">Sign Up</h2>
-      <p>Don't have an account? <a href="/login" id="signup-link">Sign in</a></p>
+      <!-- <p>Don't have an account? <a href="/login" id="signin-link">Sign in</a></p> -->
+      <p>Don't have an account? <span id="signin-link">Sign in</span></p>
       
 
       <!--  uses radio buttons -->

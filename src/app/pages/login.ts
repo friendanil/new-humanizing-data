@@ -6,7 +6,9 @@ export default `
 
     <div class="h-screen p-10">
       <h2 class="text-2xl mb-4">Sign In</h2>
-      <p>Don't have an account? <a href="/signup" id="signup-link">Sign up</a></p>
+      <!-- <p>Don't have an account? <a href="/signup" id="signup-link">Sign up</a></p> -->
+      <p>Don't have an account? <span id="signup-link">Sign up</span></p>
+      <!-- <a href="/signup" onclick="alert('Hello'); ">A Tag</a> -->
       <form method="post" action="/" class="mt-8">
         <label for="email" class="block w-full">Email Address</label>
         <input type="text" name="email" id="email" class="h-10 border mt-1 rounded px-4 w-full md:w-1/2 bg-gray-50" value="" placeholder="email@domain.com" />

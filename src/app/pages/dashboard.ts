@@ -1,3 +1,3 @@
 export default `
-  <h1>Dahshboard<h1>
+  <h1>Dahshboard</h1>
 `
