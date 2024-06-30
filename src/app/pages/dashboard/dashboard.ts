@@ -1,4 +1,4 @@
-import topNavigation from "../modules/top-nav/top-navigation";
+import topNavigation from "../../modules/top-nav/top-navigation";
 
 export default `
   ${topNavigation}

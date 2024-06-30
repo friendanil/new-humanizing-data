@@ -1,4 +1,4 @@
-import { updateContent } from "../route/renderRoute.service";
+import { updateContent } from "../../routes/renderRoute.service";
 
 const signin = async () => {
   const raw = JSON.stringify({
@@ -54,21 +54,18 @@ const signin = async () => {
   }
 };
 
-const initListeners = () => {
-  const signupLinkButton = document.getElementById("signup-link");
-  // signupLinkButton?.removeEventListener("click", (e) => {
-  //   console.log("HEYYE");
-  //   updateContent('/signup', e)
-  // });
-  signupLinkButton?.addEventListener("click", (e) => {
-    console.log("HEYYE");
-    updateContent('/signup', e)
-  });
-};
+// const initListeners = () => {
+//   const signupLinkButton = document.getElementById("signup-link");
+//   signupLinkButton?.addEventListener("click", (e) => {
+//     console.log("HEYYE");
+//     updateContent('/signup', e)
+//   });
+// };
 
-export const initiateLogin = () => {
+export function initiateLogin () {
+// export const initiateLogin = () => {
   console.log("login page landed!");
-  initListeners();
+  // initListeners();
 
   const loginButton = document.getElementById("login-btn");
   console.log("loginButton", loginButton);

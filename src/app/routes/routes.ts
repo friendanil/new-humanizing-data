@@ -1,8 +1,8 @@
 
-import login from "../../app/pages/login.ts";
-import signup from "../../app/pages/signup.ts";
-import home from "../../app/pages/home.ts";
-import dashboard from "../../app/pages/dashboard.ts"
+import login from "../pages/login/login.ts";
+import signup from "../pages/signup/signup.ts";
+import home from "../pages/home/home.ts";
+import dashboard from "../pages/dashboard/dashboard.ts"
 
 const routes: any = {
   "/": {
