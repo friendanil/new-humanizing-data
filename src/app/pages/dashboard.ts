@@ -1,3 +1,10 @@
+import topNavigation from "../modules/top-nav/top-navigation";
+
 export default `
-  <h1>Dahshboard</h1>
+  ${topNavigation}
+
+  <div>
+    <h1>Dashboard page</h1>
+  </div>
+
 `

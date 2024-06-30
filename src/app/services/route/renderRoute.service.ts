@@ -7,6 +7,21 @@ import { initiateSignup } from "../signup/signup.service";
 const app: any = document.getElementById("app");
 // const nav: any = document.querySelector("#nav");
 
+const renderPage = () => {
+  if (location.pathname === "/" || location.pathname === "") {
+    console.log("0 Home page");
+    initiateHome();
+  } else if (location.pathname === "/login") {
+    console.log("0 Login page");
+    initiateLogin();
+  } else if (location.pathname === "/signup") {
+    console.log("0 Signup page");
+    initiateSignup();
+  } else if (location.pathname === "/dashboard") {
+    initiateDashboard();
+  }
+};
+
 // export const renderContent = (route: any) => (app.innerHTML = routes[route]?.content);
 export const renderContent = (route: any, e: any = "") => {
   console.log("route", route);
@@ -15,19 +30,8 @@ export const renderContent = (route: any, e: any = "") => {
   // app.innerHTML = ''
   app.innerHTML = routes[route]?.content;
   // window.history.pushState({prevUrl: window.location.href}, "", route)
-  
-  if (location.pathname === "/" || location.pathname === "") {
-    console.log('0 Home page')
-    initiateHome();
-  } else if (location.pathname === "/login") {
-    console.log('0 Login page')
-    initiateLogin();
-  } else if (location.pathname === "/signup") {
-    console.log('0 Signup page')
-    initiateSignup()
-  } else if (location.pathname === "/dashboard") {
-    initiateDashboard()
-  }
+
+  renderPage();
 };
 
 export const updateContent = (route: any, e: any = "") => {
@@ -40,22 +44,11 @@ export const updateContent = (route: any, e: any = "") => {
   window.history.pushState({ route }, "", route);
   app.innerHTML = routes[route]?.content;
 
-  if (location.pathname === "/" || location.pathname === "") {
-    console.log('0 Home page')
-    initiateHome();
-  } else if (location.pathname === "/login") {
-    console.log('0 Login page')
-    initiateLogin();
-  } else if (location.pathname === "/signup") {
-    console.log('0 Signup page')
-    initiateSignup()
-  } else if (location.pathname === "/dashboard") {
-    initiateDashboard()
-  }
+  renderPage();
 };
 
 const navigate = (e: any) => {
-  console.log('e.state on navigate', e.state)
+  console.log("e.state on navigate", e.state);
   const route = e?.target?.location?.pathname;
   console.log("route clicked e", e, e.target.location.pathname);
   // const route = e.target.location.pathname;
@@ -77,15 +70,12 @@ const navigate = (e: any) => {
 export const registerNavLinks = () => {
   // document.addEventListener("DOMContentLoaded", (e: any) => {
   window.addEventListener("popstate", (e: any) => {
-    console.log("Location: " + document.location + ", state: " + JSON.stringify(e.state));
+    console.log(
+      "Location: " + document.location + ", state: " + JSON.stringify(e.state)
+    );
     console.log("window.history", window.history);
     console.log("e ->", e);
     console.log("e state ->", e.state);
-
-    // if (Object.keys(e.state).length === 0) {
-    //   initiateHome();
-    // }
-
     console.log("e pathname ->", e?.target?.location?.pathname);
     // e.preventDefault();
     const { href } = e?.target;
@@ -112,12 +102,12 @@ export const registerNavLinks = () => {
 //   nav.append(navFragment);
 // };
 
-const registerBrowserBackAndForth = () => {
-  window.onpopstate = function () {
-    const route = window.location.pathname;
-    renderContent(route);
-  };
-};
+// const registerBrowserBackAndForth = () => {
+//   window.onpopstate = function () {
+//     const route = window.location.pathname;
+//     renderContent(route);
+//   };
+// };
 
 const renderInitialPage = () => {
   const route = window.location.pathname;
@@ -131,9 +121,51 @@ const renderInitialPage = () => {
 //   renderInitialPage();
 // })();
 
+// <router-link> </router-link>
+const initRouterLinks = () => {
+  customElements.define(
+    "router-link",
+    class extends HTMLElement {
+      constructor() {
+        super();
+        this.handleClick = this.handleClick.bind(this);
+      }
+
+      connectedCallback() {
+        this.addEventListener("click", this.handleClick);
+      }
+
+      disconnectedCallback() {
+        this.removeEventListener("click", this.handleClick);
+      }
+
+      handleClick(event: any) {
+        event.preventDefault(); // Prevent default anchor tag behavior
+
+        const href = this.getAttribute("href");
+        console.log("href ->", href);
+        updateContent(href);
+        // Simulate navigation using History API (replace with your routing logic)
+        // history.pushState({}, '', href);
+        // window.dispatchEvent(new PopStateEvent("popstate")); // Trigger route change event
+      }
+
+      // Optional: Set attributes through properties
+      set href(val: any) {
+        this.setAttribute("href", val);
+      }
+
+      get href() {
+        return this.getAttribute("href");
+      }
+    }
+  );
+};
+
 export const bootup = () => {
   // renderNavlinks();
   registerNavLinks();
   // registerBrowserBackAndForth();
   renderInitialPage();
+  initRouterLinks();
 };
