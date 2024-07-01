@@ -7,7 +7,9 @@ export default `
   <link rel="stylesheet" href="src/app/pages/login/login.style.css">
   <div class="grid grid-cols-1 md:grid-cols-2 overflow-y-auto">
     <div class="grid bg-green-900 h-screen place-content-center">
-      <img alt="humanzing logo" src="/images/humanizing-data-icon.png">
+      <router-link href="/" class="cursor-pointer">
+        <img alt="humanzing logo" src="/images/humanizing-data-icon.png">
+      </router-link>
     </div>
 
     <div class="h-screen p-10">
