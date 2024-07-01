@@ -62,21 +62,54 @@ const signin = async () => {
 //   });
 // };
 
-export function initiateLogin () {
-// export const initiateLogin = () => {
+export function initiateLogin() {
+  // export const initiateLogin = () => {
   console.log("login page landed!");
   // initListeners();
 
-  const loginButton = document.getElementById("login-btn");
-  console.log("loginButton", loginButton);
-  loginButton?.addEventListener("click", async (e) => {
-    e.preventDefault();
-    // alert("hello");
-    console.log("login button clicked!");
-    const signResponse = await signin();
-    console.log("signResponse", signResponse);
-    if (signResponse.statusCode === 200) {
-      updateContent("/dashboard", e);
-    }
-  });
-};
+  // const loginButton = document.getElementById("login-btn");
+  // console.log("loginButton", loginButton);
+  // loginButton?.addEventListener("click", async (e) => {
+  //   e.preventDefault();
+  //   // alert("hello");
+  //   console.log("login button clicked!");
+  //   const signResponse = await signin();
+  //   console.log("signResponse", signResponse);
+  //   if (signResponse.statusCode === 200) {
+  //     updateContent("/dashboard", e);
+  //   }
+  // });
+
+  // const loginForm = document.getElementById("login-form");
+  // loginForm?.addEventListener("submit", async (e) => {
+  //   e.preventDefault();
+  //   console.log("login button clicked!");
+  //   const signResponse = await signin();
+  //   console.log("signResponse", signResponse);
+  //   if (signResponse.statusCode === 200) {
+  //     updateContent("/dashboard", e);
+  //   }
+  // });
+
+  // const path = window.location.pathname;
+  // console.log('path ->', path, path.indexOf("/login"))
+  // if (path.indexOf("/login") !== -1) {
+  //   // load css file
+  //   const styles = document.createElement("link");
+  //   styles.rel = "stylesheet";
+  //   styles.type = "text/css";
+  //   styles.href = "src/app/pages/login/login.style.css"; // your file's URL
+  //   document.getElementsByTagName("head")[0].appendChild(styles);
+  // }
+
+}
+
+export async function submitLoginForm(e: any) {
+  e.preventDefault()
+  alert('Are you sure to want to login?')
+  const signResponse = await signin();
+  console.log("signResponse", signResponse);
+  if (signResponse.statusCode === 200) {
+    updateContent("/dashboard", e);
+  }
+}

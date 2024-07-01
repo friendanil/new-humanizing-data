@@ -1,4 +1,10 @@
+import { submitLoginForm } from "./login.service";
+
+// Attach the function to the global window object
+(window as any).submitLoginForm = submitLoginForm;
+
 export default `
+  <link rel="stylesheet" href="src/app/pages/login/login.style.css">
   <div class="grid grid-cols-1 md:grid-cols-2 overflow-y-auto">
     <div class="grid bg-green-900 h-screen place-content-center">
       <img alt="humanzing logo" src="/images/humanizing-data-icon.png">
@@ -8,7 +14,7 @@ export default `
       <h2 class="text-2xl mb-4">Sign In</h2>
       <!-- <p>Don't have an account? <span id="signup-link">Sign up</span></p>-->
       <p>Don't have an account? <router-link href="/signup">Sign up</router-link></p>
-      <form method="post" action="/" class="mt-8">
+      <form method="post" action="/" class="mt-8" onsubmit="submitLoginForm(event)" id="login-form">
         <label for="email" class="block w-full">Email Address</label>
         <input type="text" name="email" id="email" class="h-10 border mt-1 rounded px-4 w-full md:w-1/2 bg-gray-50" value="" placeholder="email@domain.com" />
 
