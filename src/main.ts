@@ -8,9 +8,9 @@ import {
 
 bootup();
 
-let url = location.href;
-console.log("URL", url, location.pathname);
-console.log("routes", Object.keys(routes));
+// let url = location.href;
+// console.log("URL", url, location.pathname);
+// console.log("routes", Object.keys(routes));
 if (!Object.keys(routes).includes(location.pathname)) {
   renderContent("/404");
 }

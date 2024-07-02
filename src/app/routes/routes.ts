@@ -32,6 +32,7 @@ const routes: any = {
   "/dashboard": {
     linkLabel: "dashboard",
     content: dashboard,
+    isAuthenticated: true
   },
 };
 

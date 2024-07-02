@@ -1,24 +1,13 @@
+import { environment } from "../../environments/environment.dev";
 import { IUser } from "../../interfaces/IUser.interface";
 import { updateContent } from "../../routes/renderRoute.service";
 
 const signin = async (signinData: any) => {
-  // const raw = JSON.stringify({
-  //   email: "anilmaharjan@mentorfriends.com",
-  //   password: "freeschema",
-  // });
-  // let freeschemaRes: any = {
-  //   message: "success",
-  //   status: false,
-  //   statusCode: 200,
-  //   data: "",
-  // };
-
-  const loginURL = "http://localhost:5000/api/v1/signin";
-  // const loginURL = "https://theta.boomconcole.com/api/auth/login";
+  const baseURL = environment?.baseURL
+  const loginURL = `${baseURL}/signin`;
   let freeschemaRes: any;
   const myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
-  // const url = process.env.BASE_URL + '/auth/login'
   try {
     const response = await fetch(loginURL, {
       method: "POST",
@@ -45,7 +34,7 @@ const signin = async (signinData: any) => {
     }
     return freeschemaRes;
   } catch (error) {
-    console.log("Sign in api error", error);
+    console.error("Sign in api error", error);
     freeschemaRes = {
       message: "error",
       status: false,
@@ -59,7 +48,6 @@ const signin = async (signinData: any) => {
 // const initListeners = () => {
 //   const signupLinkButton = document.getElementById("signup-link");
 //   signupLinkButton?.addEventListener("click", (e) => {
-//     console.log("HEYYE");
 //     updateContent('/signup', e)
 //   });
 // };
@@ -70,13 +58,10 @@ export function initiateLogin() {
   // initListeners();
 
   // const loginButton = document.getElementById("login-btn");
-  // console.log("loginButton", loginButton);
   // loginButton?.addEventListener("click", async (e) => {
   //   e.preventDefault();
   //   // alert("hello");
-  //   console.log("login button clicked!");
   //   const signResponse = await signin();
-  //   console.log("signResponse", signResponse);
   //   if (signResponse.statusCode === 200) {
   //     updateContent("/dashboard", e);
   //   }
@@ -85,16 +70,13 @@ export function initiateLogin() {
   // const loginForm = document.getElementById("login-form");
   // loginForm?.addEventListener("submit", async (e) => {
   //   e.preventDefault();
-  //   console.log("login button clicked!");
   //   const signResponse = await signin();
-  //   console.log("signResponse", signResponse);
   //   if (signResponse.statusCode === 200) {
   //     updateContent("/dashboard", e);
   //   }
   // });
 
   // const path = window.location.pathname;
-  // console.log('path ->', path, path.indexOf("/login"))
   // if (path.indexOf("/login") !== -1) {
   //   // load css file
   //   const styles = document.createElement("link");
@@ -121,18 +103,14 @@ export async function submitLoginForm(e: any) {
   };
 
   const signinResponse = await signin(signinData);
-  console.log("signinResponse", signinResponse);
-
   saveTolocalStorage(signinResponse);
 
   if (signinResponse.statusCode === 200) {
-    updateContent("/dashboard", e);
+    updateContent("/dashboard");
   }
 }
 
 export async function saveTolocalStorage(signinResponse: any) {
-  console.log("signinResponse -> ", signinResponse);
-
   let userProfile: IUser = {
     token: signinResponse?.data?.token,
     refreshToken: signinResponse?.data?.refreshtoken,
@@ -141,6 +119,5 @@ export async function saveTolocalStorage(signinResponse: any) {
     userConcept: signinResponse?.data?.userConcept,
   };
 
-  console.log("userProfile", userProfile);
   localStorage.setItem("profile", JSON.stringify(userProfile));
 }

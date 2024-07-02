@@ -32,7 +32,7 @@ export default `
 
       <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email <span class="text-rose-400">*</span></label>
       <div class="mt-2">
-        <input type="email" name="email" id="email" autocomplete="given-name" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
+        <input type="email" name="email" id="email" autocomplete="email-id" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
       </div>
 
       <label for="gender" class="block text-sm font-medium leading-6 text-gray-900">Gender <span class="text-rose-400">*</span></label>
@@ -47,21 +47,21 @@ export default `
 
       <label for="firstName" class="block text-sm font-medium leading-6 text-gray-900">First name <span class="text-rose-400">*</span></label>
       <div class="mt-2">
-        <input type="text" name="firstName" id="firstName" autocomplete="given-name" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
+        <input type="text" name="firstName" id="firstName" autocomplete="first-name" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
       </div>
 
       <label for="lastName" class="block text-sm font-medium leading-6 text-gray-900">Last name <span class="text-rose-400">*</span></label>
       <div class="mt-2">
-        <input type="text" name="lastName" id="lastName" autocomplete="given-name" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
+        <input type="text" name="lastName" id="lastName" autocomplete="last-name" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
       </div>
 
       <label for="password" class="block text-sm font-medium leading-6 text-gray-900">Password <span class="text-rose-400">*</span></label>
       <div class="mt-2">
-        <input type="password" name="password" id="password" autocomplete="given-name" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
+        <input type="password" name="password" id="password" autocomplete="new-password" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
       </div>
       <label for="confirmPassword" class="block text-sm font-medium leading-6 text-gray-900">Confirm password <span class="text-rose-400">*</span></label>
       <div class="mt-2">
-        <input type="password" name="confirmPassword" id="confirmPassword" autocomplete="given-name" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
+        <input type="password" name="confirmPassword" id="confirmPassword" autocomplete="confirm-password" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
       </div>
       <p class="text-sm my-4">Submitting this form you are agreed to the Terms and Conditions and Privacy Policy</p>
 

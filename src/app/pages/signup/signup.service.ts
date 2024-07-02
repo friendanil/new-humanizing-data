@@ -1,14 +1,9 @@
+import { environment } from "../../environments/environment.dev";
 import { updateContent } from "../../routes/renderRoute.service";
 
 export async function submitSignupForm(e: any) {
   e.preventDefault();
   // alert("Are you sure to want to signup?");
-
-  // const signResponse = await signin();
-  // console.log("signResponse", signResponse);
-  // if (signResponse.statusCode === 200) {
-  //   updateContent("/dashboard", e);
-  // }
 
   const inputType = <HTMLInputElement>document.getElementById("type");
   const typeValue = inputType?.value;
@@ -30,7 +25,6 @@ export async function submitSignupForm(e: any) {
 
   const inputPassword = <HTMLInputElement>document.getElementById("password");
   const passwordValue = inputPassword?.value;
-  console.log("passwordValue", passwordValue);
 
   const inputConfirmPassword = <HTMLInputElement>(
     document.getElementById("confirmPassword")
@@ -49,19 +43,15 @@ export async function submitSignupForm(e: any) {
     lname: lastNameValue,
   };
 
-  console.log("signupData", signupData);
   const signupResponse = await signup(signupData);
-  console.log("signupResponse ->", signupResponse);
-
   if (!signupResponse?.error && signupResponse?.data) {
     updateContent("/login");
   }
 }
 
 export async function signup(signupData: any) {
-  const baseURL = "http://localhost:5000/api/v1";
-
-  const response: any = await fetch(`${baseURL}/signup`, {
+  const baseURL = environment?.baseURL;
+  const response: any = await fetch(`${baseURL}/entity/signup`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

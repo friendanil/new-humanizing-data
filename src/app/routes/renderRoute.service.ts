@@ -2,10 +2,34 @@ import routes from "./routes";
 // import { initiateDashboard } from "../dashboard/dashboard.service";
 // import { initiateHome } from "../home/home.service";
 import { initiateLogin } from "../pages/login/login.service";
+import { IUser } from "../interfaces/IUser.interface";
 // import { initiateLogin } from "../login/login.service";
 // import { initiateSignup } from "../signup/signup.service";
 
-const app: any = document.getElementById("app");
+const app = <HTMLElement>document.getElementById("app");
+
+const checkAuthentication = () => {
+  let dataFromLocalStorage: string = localStorage?.getItem("profile") || ''
+  if (dataFromLocalStorage) {
+    const profileData: IUser = JSON.parse(dataFromLocalStorage)
+    return profileData?.token ? true : false
+  } else {
+    return false
+  }
+}
+
+const checkRouteAuthentication = (route: string) => {
+  if (routes?.[route]?.isAuthenticated) {
+    const isAuthenticationValid = checkAuthentication()
+    if (!isAuthenticationValid) {
+      updateContent('/login')
+      return
+    }
+  }
+  window.history.pushState({ route }, "", route);
+  app.innerHTML = routes[route]?.content;
+  renderPage();
+}
 
 const renderPage = () => {
   if (location.pathname === "/" || location.pathname === "") {
@@ -22,28 +46,36 @@ const renderPage = () => {
   }
 };
 
-export const renderContent = (route: any, e: any = "") => {
-  console.log("route", route);
-  console.log("renderContent e ->", e);
+export const renderContent = (route: string) => {
+  console.log("renderContent route", route);
+  if (routes?.[route]?.isAuthenticated) {
+    const isAuthenticationValid = checkAuthentication()
+    if (!isAuthenticationValid) {
+      updateContent('/login')
+      return
+    }
+  }
   app.innerHTML = routes?.[route]?.content;
   renderPage();
 };
 
-export const updateContent = (route: any, e: any = "") => {
-  console.log("updateContent route ->", route);
-  console.log("updateContent e ->", e);
-  console.log("window.location.href", window.location.href);
-  window.history.pushState({ route }, "", route);
-  app.innerHTML = routes[route]?.content;
-  renderPage();
+export const updateContent = (route: any) => {
+  // console.log("updateContent route ->", route);
+  
+  console.log('isAuthenticated', routes?.[route]?.isAuthenticated)
+  checkRouteAuthentication(route)
+
+  // window.history.pushState({ route }, "", route);
+  // app.innerHTML = routes[route]?.content;
+  // renderPage();
 };
 
 const navigate = (e: any) => {
   console.log("e.state on navigate", e.state);
   const route = e?.target?.location?.pathname;
-  console.log("route clicked e", e, e.target.location.pathname);
+  // console.log("route clicked e", e, e.target.location.pathname);
   console.log("route clicked", route);
-  updateContent(route, e);
+  updateContent(route);
 };
 
 export const registerNavLinks = () => {
@@ -51,12 +83,12 @@ export const registerNavLinks = () => {
     console.log(
       "Location: " + document.location + ", state: " + JSON.stringify(e.state)
     );
-    console.log("window.history", window.history);
-    console.log("e ->", e);
-    console.log("e state ->", e.state);
-    console.log("e pathname ->", e?.target?.location?.pathname);
-    const { href } = e?.target;
-    console.log("href", href);
+    // console.log("window.history", window.history);
+    // console.log("e ->", e);
+    // console.log("e state ->", e.state);
+    // console.log("e pathname ->", e?.target?.location?.pathname);
+    // const { href } = e?.target;
+    // console.log("href", href);
     navigate(e);
   });
 };
