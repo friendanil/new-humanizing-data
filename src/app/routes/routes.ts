@@ -3,6 +3,7 @@ import login from "../pages/login/login.ts";
 import signup from "../pages/signup/signup.ts";
 import home from "../pages/home/home.ts";
 import dashboard from "../pages/dashboard/dashboard.ts"
+import profile from "../pages/profile/profile.ts";
 
 const routes: any = {
   "/": {
@@ -32,6 +33,11 @@ const routes: any = {
   "/dashboard": {
     linkLabel: "dashboard",
     content: dashboard,
+    isAuthenticated: true
+  },
+  "/profile": {
+    linkLabel: "profile",
+    content: profile,
     isAuthenticated: true
   },
 };

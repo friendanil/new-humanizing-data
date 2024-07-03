@@ -3,6 +3,7 @@ import routes from "./routes";
 // import { initiateHome } from "../home/home.service";
 import { initiateLogin } from "../pages/login/login.service";
 import { IUser } from "../interfaces/IUser.interface";
+import { initiateProfile } from "../pages/profile/profile.service";
 // import { initiateLogin } from "../login/login.service";
 // import { initiateSignup } from "../signup/signup.service";
 
@@ -43,6 +44,8 @@ const renderPage = () => {
     // initiateSignup();
   } else if (location.pathname === "/dashboard") {
     // initiateDashboard();
+  } else if (location.pathname === "/profile") {
+    initiateProfile();
   }
 };
 
