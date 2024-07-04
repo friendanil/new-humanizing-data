@@ -4,6 +4,7 @@ import routes from "./routes";
 import { initiateLogin } from "../pages/login/login.service";
 import { IUser } from "../interfaces/IUser.interface";
 import { initiateProfile } from "../pages/profile/profile.service";
+import { initiateListing } from "../pages/listing/listing.service";
 // import { initiateLogin } from "../login/login.service";
 // import { initiateSignup } from "../signup/signup.service";
 
@@ -46,6 +47,8 @@ const renderPage = () => {
     // initiateDashboard();
   } else if (location.pathname === "/profile") {
     initiateProfile();
+  } else if (location.pathname === "/listing") {
+    initiateListing();
   }
 };
 

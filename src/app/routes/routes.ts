@@ -4,6 +4,7 @@ import signup from "../pages/signup/signup.ts";
 import home from "../pages/home/home.ts";
 import dashboard from "../pages/dashboard/dashboard.ts"
 import profile from "../pages/profile/profile.ts";
+import listingHTML from "../pages/listing/listing.ts";
 
 const routes: any = {
   "/": {
@@ -38,6 +39,11 @@ const routes: any = {
   "/profile": {
     linkLabel: "profile",
     content: profile,
+    isAuthenticated: true
+  },
+  "/listing": {
+    linkLabel: "listing",
+    content: listingHTML,
     isAuthenticated: true
   },
 };
