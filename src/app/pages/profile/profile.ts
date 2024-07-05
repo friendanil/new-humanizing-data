@@ -6,7 +6,7 @@ import { popupAlert, saveProfileDetails, updateProfile } from "./profile.service
 (window as any).saveProfileDetails = saveProfileDetails;
 (window as any).updateProfile = updateProfile;
 
- const profile = `
+const profile = `
   ${topNavigation}
   ${loadHTML}
 `

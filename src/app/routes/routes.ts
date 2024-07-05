@@ -5,6 +5,7 @@ import home from "../pages/home/home.ts";
 import dashboard from "../pages/dashboard/dashboard.ts"
 import profile from "../pages/profile/profile.ts";
 import listingHTML from "../pages/listing/listing.ts";
+import listItemHTML from "../pages/listItem/listItem.ts";
 
 const routes: any = {
   "/": {
@@ -44,6 +45,12 @@ const routes: any = {
   "/listing": {
     linkLabel: "listing",
     content: listingHTML,
+    isAuthenticated: true
+  },
+  "/listitem": {
+  // "/list/:id": {
+    linkLabel: "listitem",
+    content: listItemHTML,
     isAuthenticated: true
   },
 };

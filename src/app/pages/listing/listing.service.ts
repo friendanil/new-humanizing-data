@@ -1,3 +1,5 @@
+import { initTopNavigation } from "../../modules/top-nav/top-navigation.service";
+
 export async function getHTML() {
   try {
     const response = await fetch(
@@ -17,7 +19,7 @@ export const loadHTML = await getHTML();
 
 export async function initiateListing() {
   console.log("Listing page landed!!");
-
+  initTopNavigation()
   getProducts()
 }
 
@@ -31,9 +33,10 @@ export async function getProducts() {
 
   console.log('productList', productList)
 
-  const xyz = productList.map((product: any) => {
+  const listingItems = productList.map((product: any) => {
+    // href="/list/${product.id}"
     return `
-      <router-link href="javascript:;" class="mx-auto sm:mr-0 group cursor-pointer lg:mx-auto bg-white transition-all duration-500">
+      <router-link href="/listitem" class="mx-auto sm:mr-0 group cursor-pointer lg:mx-auto bg-white transition-all duration-500">
         <div class="">
           <img src="${product.image}" alt="face cream image" class="w-full aspect-square">
         </div>
@@ -49,7 +52,6 @@ export async function getProducts() {
   }).join('')
 
   const productListEl = <HTMLElement>document.getElementById('product-listings')
-  productListEl.innerHTML = xyz
-
+  productListEl.innerHTML = listingItems
 
 }

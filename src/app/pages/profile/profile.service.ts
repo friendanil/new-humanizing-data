@@ -1,5 +1,6 @@
 import { Concept, CreateConnectionBetweenTwoConcepts, CreateTheConnection, GetCompositionWithId, GetLink, GetTheConcept, MakeTheInstanceConcept, PatcherStructure, SyncData, UpdateComposition } from "mftsccs-browser";
 import { IUser } from "../../interfaces/IUser.interface";
+import { initTopNavigation } from "../../modules/top-nav/top-navigation.service";
 
 // Save profile details
 export async function saveProfileDetails(e: Event) {
@@ -98,8 +99,8 @@ export const loadHTML = await getHTML();
 
 export async function initiateProfile() {
   console.log("Profile page landed!!");
+  initTopNavigation()
   loadProfileDetails()
-
 }
 
 export async function popupAlert() {

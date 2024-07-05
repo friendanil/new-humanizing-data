@@ -5,6 +5,8 @@ import { initiateLogin } from "../pages/login/login.service";
 import { IUser } from "../interfaces/IUser.interface";
 import { initiateProfile } from "../pages/profile/profile.service";
 import { initiateListing } from "../pages/listing/listing.service";
+import { initiateListItem } from "../pages/listItem/listItem.service";
+import { initiateDashboard } from "../pages/dashboard/dashboard.service";
 // import { initiateLogin } from "../login/login.service";
 // import { initiateSignup } from "../signup/signup.service";
 
@@ -44,11 +46,13 @@ const renderPage = () => {
     console.log("0 Signup page");
     // initiateSignup();
   } else if (location.pathname === "/dashboard") {
-    // initiateDashboard();
+    initiateDashboard();
   } else if (location.pathname === "/profile") {
     initiateProfile();
   } else if (location.pathname === "/listing") {
     initiateListing();
+  } else if (location.pathname === "/listitem") {
+    initiateListItem();
   }
 };
 
@@ -66,8 +70,7 @@ export const renderContent = (route: string) => {
 };
 
 export const updateContent = (route: any) => {
-  // console.log("updateContent route ->", route);
-  
+  console.log("updateContent route ->", route);
   console.log('isAuthenticated', routes?.[route]?.isAuthenticated)
   checkRouteAuthentication(route)
 
