@@ -1,58 +1,76 @@
-
 import login from "../pages/login/login.ts";
 import signup from "../pages/signup/signup.ts";
 import home from "../pages/home/home.ts";
-import dashboard from "../pages/dashboard/dashboard.ts"
+import dashboard from "../pages/dashboard/dashboard.ts";
 import profile from "../pages/profile/profile.ts";
-import listingHTML from "../pages/listing/listing.ts";
-import listItemHTML from "../pages/listItem/listItem.ts";
+// import listingHTML from "../pages/listing/listing.ts";
+// import listItemHTML from "../pages/listItem/listItem.ts";
+import { listingHTML } from "../pages/listing/listing.ts";
+import { listItemHTML } from "../pages/listItem/listItem.ts";
+// import listingHTML from "../pages/listing/listing.ts";
+// import { listItemHTML } from "../pages/listItem/listItem.ts";
 
-const routes: any = {
-  "/": {
+const routes: any = [
+  {
+    path: "/",
     linkLabel: "Home",
     content: home,
   },
-  "/about": {
+  {
+    path: "/about",
     linkLabel: "About",
     content: `I am in about page`,
   },
-  "/friends": {
+  {
+    path: "/friends",
     linkLabel: "Friends",
     content: `I am in friends page`,
   },
-  "/login": {
+  {
+    path: "/login",
     linkLabel: "Login",
     content: login,
   },
-  "/signup": {
+  {
+    path: "/signup",
     linkLabel: "signup",
     content: signup,
   },
-  "/404": {
+  {
+    path: "/404",
     linkLabel: "404",
     content: `The page not found`,
   },
-  "/dashboard": {
+  {
+    path: "/dashboard",
     linkLabel: "dashboard",
     content: dashboard,
-    isAuthenticated: true
+    isAuthenticated: true,
   },
-  "/profile": {
+  {
+    path: "/profile",
     linkLabel: "profile",
     content: profile,
-    isAuthenticated: true
+    isAuthenticated: true,
   },
-  "/listing": {
+  {
+    path: "/listing",
     linkLabel: "listing",
+    // content: listingHTML,
     content: listingHTML,
-    isAuthenticated: true
+    isAuthenticated: true,
   },
-  "/listitem": {
-  // "/list/:id": {
+  {
+    path: "/listitem/:id",
     linkLabel: "listitem",
+    // content: listItem,
+    // content: () => listItemHTML,
     content: listItemHTML,
-    isAuthenticated: true
+    // content: `<h1>LIST ITEM PAGE</h1>`,
+    // content: (params: any) => `Profile of ${params.id}`,
+    // content: () => listItemHTML,
+    isAuthenticated: true,
   },
-};
+];
 
-export default routes
+export default routes;

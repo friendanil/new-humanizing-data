@@ -2,13 +2,15 @@ import { initTopNavigation } from "../../modules/top-nav/top-navigation.service"
 
 export async function getHTML() {
   try {
+    console.log('TRY')
     const response = await fetch(
-      "src/app/pages/listItem/listItem.component.html"
+      "/src/app/pages/listItem/listItem.component.html"
     );
     if (!response.ok) {
       throw new Error("Network response was not ok " + response.statusText);
     }
     const htmlContent = await response.text();
+    console.log('listItem htmlContent', htmlContent)
     return htmlContent;
   } catch (error) {
     console.error("There has been a problem with your fetch operation:", error);
@@ -17,14 +19,27 @@ export async function getHTML() {
 
 export const loadHTML = await getHTML();
 
+// export async function loadHTML() {
+//   await getHTML();
+// }
+
 export async function initiateListItem() {
   console.log('List Item page initialized!')
-  initTopNavigation()
-  getProductDetails()
+  console.log("listitem href", location.pathname)
+  // console.log('params ->', window.location.href.split('/').reverse()[0])
+  // window.addEventListener('DOMContentLoaded', async () => {
+    // await loadHTML()
+    // initTopNavigation()
+    // getProductDetails()
+  // })
+  
 }
 
-export async function getProductDetails() {
-  const product: any = await fetch('https://fakestoreapi.com/products/1')
+export async function getProductDetails(productId: number) {
+  // let productId: any = window?.location?.href?.split('/')?.reverse()?.[0]
+  console.log('productId ->', productId)
+  // if (typeof(productId) !== 'number') productId = 1
+  const product: any = await fetch(`https://fakestoreapi.com/products/${productId}`)
   .then(res=>res.json())
   .then(json=> {
     return json
@@ -119,7 +134,16 @@ export async function getProductDetails() {
     </p>
   </div>
     `
-  const productListEl = <HTMLElement>document.getElementById('list-item')
+
+  return productDetails
+
+  const productListEl: any = document.getElementById('list-item')
+  console.log('productListEl', productListEl)
   productListEl.innerHTML = productDetails
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const productListEl: any = document.getElementById('list-item')
+    console.log('productListEl', productListEl)
+  })
 
 }

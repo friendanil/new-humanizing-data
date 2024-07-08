@@ -20,8 +20,7 @@ export default `
         <router-link href="/" class="cursor-pointer text-sm text-gray-400 hover:text-gray-500">Services</router-link>
         <router-link href="/" class="cursor-pointer text-sm text-gray-400 hover:text-gray-500">Blog</router-link>
         <router-link href="/" class="cursor-pointer text-sm text-gray-400 hover:text-gray-500">Contact</router-link>
-        <router-link href="/dashboard"
-          class="cursor-pointer text-sm text-gray-400 hover:text-gray-500">Career</router-link>
+        <router-link href="/" class="cursor-pointer text-sm text-gray-400 hover:text-gray-500">Career</router-link>
       </ul>
 
       <router-link href="/login"

@@ -82,13 +82,15 @@ export async function saveProfileDetails(e: Event) {
 
 export async function getHTML() {
   try {
+    console.log('PROFILE TRY')
     const response = await fetch(
-      "src/app/pages/profile/profile.component.html"
+      "/src/app/pages/profile/profile.component.html"
     );
     if (!response.ok) {
       throw new Error("Network response was not ok " + response.statusText);
     }
     const htmlContent = await response.text();
+    console.log('profile htmlContent', htmlContent)
     return htmlContent;
   } catch (error) {
     console.error("There has been a problem with your fetch operation:", error);
