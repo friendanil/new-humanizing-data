@@ -7,17 +7,16 @@ export default class extends mainViewClass {
   constructor(params: any) {
     super(params);
     this.setTitle('Listing Item');
+    console.log('PROFILE PAGE')
   }
 
-  async getHtml() {
+  async getHtml(): Promise<string> {
     (window as any).popupAlert = popupAlert;
     (window as any).saveProfileDetails = saveProfileDetails;
     (window as any).updateProfile = updateProfile;
 
-    window.onload = () => {
-      console.log('all loaded!')
-      loadProfileDetails()
-    }
+    // load content
+    loadProfileDetails()
     
     return `
       ${topNavigation}
