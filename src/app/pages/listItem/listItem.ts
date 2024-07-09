@@ -3,7 +3,7 @@ import { getProductDetails } from "./listItem.service";
 
 console.log('LIST ITEM TS')
 
-async function onlistItemLoad() {
+export default async function onlistItemLoad() {
   let productId: any = window?.location?.href?.split("/")?.reverse()?.[0];
   console.log("hey productId ->", productId, typeof productId);
   if (!(Number(productId) > 0)) productId = 1;
@@ -26,7 +26,7 @@ async function onlistItemLoad() {
 `;
 }
 
-export const listItemHTML: any = await onlistItemLoad();
+// export const listItemHTML: any = await onlistItemLoad();
 // console.log('listItemHTML', listItemHTML)
 
 console.log("QWERT");

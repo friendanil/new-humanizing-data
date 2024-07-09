@@ -1,12 +1,12 @@
 import routes from "./routes";
 // import { initiateDashboard } from "../dashboard/dashboard.service";
 // import { initiateHome } from "../home/home.service";
-import { initiateLogin } from "../pages/login/login.service";
+// import { initiateLogin } from "../pages/login/login.service";
 import { IUser } from "../interfaces/IUser.interface";
-import { initiateProfile } from "../pages/profile/profile.service";
-import { initiateListing } from "../pages/listing/listing.service";
-import { initiateListItem } from "../pages/listItem/listItem.service";
-import { initiateDashboard } from "../pages/dashboard/dashboard.service";
+// import { initiateProfile } from "../pages/profile/profile.service";
+// import { initiateListing } from "../pages/listing/listing.service";
+// import { initiateListItem } from "../pages/listItem/listItem.service";
+// import { initiateDashboard } from "../pages/dashboard/dashboard.service";
 // import { initiateLogin } from "../login/login.service";
 // import { initiateSignup } from "../signup/signup.service";
 
@@ -65,62 +65,62 @@ const checkRouteAuthentication = async (route: string) => {
   // location.pathname = routeInfo?.path
 }
 
-const renderPage = async () => {
-  const routeResult: any = await checkRouting()
-  console.log('routeResult', routeResult)
+// const renderPage = async () => {
+//   const routeResult: any = await checkRouting()
+//   console.log('routeResult', routeResult)
 
-  const route = routeResult?.route?.path
+//   const route = routeResult?.route?.path
 
-  if (route === "/listitem/:id") {
-    console.log('listitem pathname')
-    initiateListItem();
-  } else if (route === "/" || route === "") {
-    console.log("0 Home page");
-    // initiateHome();
-  } else if (route === "/login") {
-    console.log("0 Login page");
-    initiateLogin();
-  } else if (route === "/signup") {
-    console.log("0 Signup page");
-    // initiateSignup();
-  } else if (route === "/dashboard") {
-    initiateDashboard();
-  } else if (route === "/profile") {
-    initiateProfile();
-  } else if (route === "/listing") {
-    initiateListing();
-  } else if (route === "/404") {
-    // initiateListItem();
-  }
+//   if (route === "/listitem/:id") {
+//     console.log('listitem pathname')
+//     initiateListItem();
+//   } else if (route === "/" || route === "") {
+//     console.log("0 Home page");
+//     // initiateHome();
+//   } else if (route === "/login") {
+//     console.log("0 Login page");
+//     initiateLogin();
+//   } else if (route === "/signup") {
+//     console.log("0 Signup page");
+//     // initiateSignup();
+//   } else if (route === "/dashboard") {
+//     initiateDashboard();
+//   } else if (route === "/profile") {
+//     initiateProfile();
+//   } else if (route === "/listing") {
+//     initiateListing();
+//   } else if (route === "/404") {
+//     // initiateListItem();
+//   }
 
-  // return
+//   // return
 
-  // console.log('check end')
-  // if (location.pathname === "/" || location.pathname === "") {
-  //   console.log("0 Home page");
-  //   // initiateHome();
-  // } else if (location.pathname === "/login") {
-  //   console.log("0 Login page");
-  //   initiateLogin();
-  // } else if (location.pathname === "/signup") {
-  //   console.log("0 Signup page");
-  //   // initiateSignup();
-  // } else if (location.pathname === "/dashboard") {
-  //   initiateDashboard();
-  // } else if (location.pathname === "/profile") {
-  //   initiateProfile();
-  // } else if (location.pathname === "/listing") {
-  //   initiateListing();
-  // } 
-  // else if (location.pathname === "/listitem/:id") {
-  //   console.log('listitem pathname')
-  //   initiateListItem();
-  // } 
-  // else if (location.pathname === "/404") {
-  //   // initiateListItem();
-  // }
+//   // console.log('check end')
+//   // if (location.pathname === "/" || location.pathname === "") {
+//   //   console.log("0 Home page");
+//   //   // initiateHome();
+//   // } else if (location.pathname === "/login") {
+//   //   console.log("0 Login page");
+//   //   initiateLogin();
+//   // } else if (location.pathname === "/signup") {
+//   //   console.log("0 Signup page");
+//   //   // initiateSignup();
+//   // } else if (location.pathname === "/dashboard") {
+//   //   initiateDashboard();
+//   // } else if (location.pathname === "/profile") {
+//   //   initiateProfile();
+//   // } else if (location.pathname === "/listing") {
+//   //   initiateListing();
+//   // } 
+//   // else if (location.pathname === "/listitem/:id") {
+//   //   console.log('listitem pathname')
+//   //   initiateListItem();
+//   // } 
+//   // else if (location.pathname === "/404") {
+//   //   // initiateListItem();
+//   // }
 
-};
+// };
 
 const pathToRegex = (path: any) => new RegExp('^' + path.replace(/:\w+/g, '(.+)') + '$');
 
@@ -189,16 +189,44 @@ export async function checkRouting() {
 
     // return match
   
-    const view = typeof match.route.content === 'function'
-      ? match.route.content(getParams(match))
-      : match.route.content;
+    // const view = typeof match.route.content === 'function'
+    //   ? match.route.content(getParams(match))
+    //   : match.route.content;
   
+    console.log('getParams(match)', getParams(match))
+
+    // const view = typeof match.route.content === 'function'
+    //   ? new match.route.content(getParams(match))
+    //   : match.route.content;
     
-    // const view = new match.route.content(getParams(match));
+    const view = new match.route.content(await getParams(match));
     console.log('view ->', view)
   
     // app.innerHTML = `<h1>${view}</h1>`;
-    app.innerHTML = view;
+    // app.innerHTML = view;
+
+    const htmlContentDetails = await view?.getHtml();
+    console.log('htmlContentDetails', htmlContentDetails)
+    app.innerHTML = htmlContentDetails;
+
+
+    // CHROME ADVICE:
+    // let htmlContentDetails = '';
+
+    // if (typeof match.route.content === 'function') {
+    //   const viewInstance = new match.route.content(getParams(match));
+    //   if (typeof viewInstance.getHTML === 'function') {
+    //     htmlContentDetails = await viewInstance.getHTML();
+    //   } else {
+    //     console.error('The view instance does not have a getHTML method.');
+    //     // Handle the error appropriately (e.g., display a default message)
+    //   }
+    // } else {
+    //   htmlContentDetails = match.route.content; // Directly use the content
+    // }
+
+    // console.log('htmlContentDetails', htmlContentDetails);
+    // app.innerHTML = htmlContentDetails;
 
     // return match
     // updateContent('/listItem')
@@ -258,8 +286,8 @@ export const updateContent = async (route: any) => {
   // route = routeResult?.route?.path
   // location.pathname = route
 
-  // window.history.pushState({ route }, "", route);
-  window.history.replaceState({ route }, "", route);
+  window.history.pushState({ route }, "", route);
+  // window.history.replaceState({ route }, "", route);
   checkRouteAuthentication(route)
   // renderContent(route)
 
