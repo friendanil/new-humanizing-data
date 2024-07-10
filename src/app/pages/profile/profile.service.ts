@@ -90,7 +90,7 @@ export async function getHTML() {
       throw new Error("Network response was not ok " + response.statusText);
     }
     const htmlContent = await response.text();
-    console.log('profile htmlContent', htmlContent)
+    // console.log('profile htmlContent', htmlContent)
     return htmlContent;
   } catch (error) {
     console.error("There has been a problem with your fetch operation:", error);

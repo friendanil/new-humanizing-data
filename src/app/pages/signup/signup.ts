@@ -21,7 +21,7 @@ export default `
         <select id="type" name="type" autocomplete="type-name" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
           <option value="person">Person</option>
           <option value="company">Company</option>
-          <option value"student">Student</option>
+          <option value="student">Student</option>
         </select>
       </div>
 
@@ -40,8 +40,8 @@ export default `
         <select id="gender" name="gender" autocomplete="gender-name" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
           <option value="" selected disabled>--- select gender ---</option>
           <option value="mr">Mr</option>
-          <option value"mrs">Mrs</option>
-          <option value"miss">Miss</option>
+          <option value="mrs">Mrs</option>
+          <option value="miss">Miss</option>
         </select>
       </div>
 

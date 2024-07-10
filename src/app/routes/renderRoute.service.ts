@@ -81,7 +81,7 @@ export async function checkRouting() {
   console.log("view ->", view);
 
   const htmlContentDetails = await view?.getHtml();
-  console.log("htmlContentDetails", htmlContentDetails);
+  // console.log("htmlContentDetails", htmlContentDetails);
   app.innerHTML = htmlContentDetails;
 }
 

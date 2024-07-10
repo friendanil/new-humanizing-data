@@ -1,4 +1,4 @@
-import { initTopNavigation } from "../../modules/top-nav/top-navigation.service";
+// import { initTopNavigation } from "../../modules/top-nav/top-navigation.service";
 
 export async function getHTML() {
   try {
@@ -10,7 +10,7 @@ export async function getHTML() {
       throw new Error("Network response was not ok " + response.statusText);
     }
     const htmlContent = await response.text();
-    console.log('listItem htmlContent', htmlContent)
+    // console.log('listItem htmlContent', htmlContent)
     return htmlContent;
   } catch (error) {
     console.error("There has been a problem with your fetch operation:", error);

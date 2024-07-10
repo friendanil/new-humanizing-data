@@ -6,6 +6,7 @@ import listingIndex from "../pages/listing/listing.index.ts";
 import listItemIndex from "../pages/listItem/listItem.index.ts";
 import profileIndex from "../pages/profile/profile.index.ts";
 import noPageFoundIndex from "../pages/noPageFound/noPageFound.index.ts";
+import addItemIndex from "../pages/addItem/addItem.index.ts";
 
 const routes: any = [
   {
@@ -55,6 +56,12 @@ const routes: any = [
     path: "/listitem/:id",
     linkLabel: "listitem",
     content: listItemIndex,
+    isAuthenticated: true,
+  },
+  {
+    path: "/additem",
+    linkLabel: "additem",
+    content: addItemIndex,
     isAuthenticated: true,
   },
 ];

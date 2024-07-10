@@ -18,9 +18,9 @@ export default class extends mainViewClass {
             <h2 class="font-manrope font-bold text-4xl text-black max-lg:text-center">
               Product list
             </h2>
-            <router-link href='/' class="inlin-block cursor-pointer px-4 py-3 mb-2 leading-loose text-xs text-center text-white font-semibold bg-green-600 hover:bg-green-700 rounded-xl">Add Item</router-link>
+            <router-link href='/additem' class="inlin-block cursor-pointer px-4 py-3 mb-2 leading-loose text-xs text-center text-white font-semibold bg-green-600 hover:bg-green-700 rounded-xl">Add Item</router-link>
           </div>
-          
+
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8" id="product-listings">
             ${prouductList}
           </div>
