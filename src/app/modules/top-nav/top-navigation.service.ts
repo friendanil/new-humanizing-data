@@ -11,12 +11,15 @@ export async function initTopNavigation() {
   const nav = document.getElementById('top-nav')
   const navLinks: any = nav?.querySelectorAll('router-link')
   navLinks?.forEach((navlink: any) => {
-    const routeName = navlink.getAttribute("href");
-    if (location.pathname === routeName) {
+    // const routeName = navlink.getAttribute("href");
+    // if (location.pathname === routeName) {
+    //   navlink.classList.add("active");
+    // }
+    navlink?.addEventListener('click', (e: any) => {
+      // initTopNavigation()
+      console.log('e ->', e)
+      console.log('navlink ->', navlink)
       navlink.classList.add("active");
-    }
-    navlink?.addEventListener('click', () => {
-      initTopNavigation()
     })
   })
 }
