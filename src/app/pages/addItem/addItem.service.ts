@@ -1,6 +1,7 @@
 import { Concept, MakeTheInstanceConcept, SyncData } from "mftsccs-browser";
 import { getLocalStorageData } from "../../services/helper.service";
 import { CreateConnectionBetweenEntity } from "../../services/entity.service";
+import { updateContent } from "../../routes/renderRoute.service";
 
 export async function getHTML() {
   try {
@@ -20,29 +21,34 @@ export async function getHTML() {
 
 export const loadHTML = await getHTML();
 
-
 export async function submitAddItemForm(e: any) {
   console.log('e ->', e)
   e.preventDefault()
-  // alert('Add item clicked!')
-
-  let formValues: any = {}
 
   const formData: any = new FormData(e.target);
   // output as an object
-  console.log(Object.fromEntries(formData));
+  console.log('formData entries ->', Object.fromEntries(formData));
+  const formValues: any = Object.fromEntries(formData)
+  console.log('formValues ->', formValues)
 
   // ...or iterate through the name-value pairs
-  for (let pair of formData.entries()) {
-    console.log(pair[0] + ": " + pair[1]);
-    formValues[pair[0]] = pair[1]
-  }
+  // for (let pair of formData.entries()) {
+  //   console.log(pair[0] + ": " + pair[1]);
+  //   formValues[pair[0]] = pair[1]
+  // }
 
-  console.log('formValues ->', formValues)
+  const elements = e.target;
+  for (let i = 0, len = elements.length; i < len; ++i) {
+    elements[i].disabled = true;
+  }
 
   const itemConceptResponse = await createItem(formValues)
   if (itemConceptResponse) {
     e?.target?.reset()
+    for (let i = 0, len = elements.length; i < len; ++i) {
+      elements[i].disabled = false;
+    }
+    updateContent("/listing");
   }
 }
 
@@ -65,7 +71,6 @@ export async function createItem(formValues: any) {
 
   console.log('itemEntityConcept ->', itemEntityConcept)
 
-
   for (const [key, value] of Object.entries(formValues)) {
     let ObjKey = key
 
@@ -82,30 +87,5 @@ export async function createItem(formValues: any) {
 
   await SyncData.SyncDataOnline()
   console.log('itemEntityConcept ID ->', itemEntityConcept?.id)
-  console.log('itemEntityConcept ->', itemEntityConcept)
   return itemEntityConcept
-}
-
-
-// check form with document.forms[]
-export async function formcheck() {
-  console.log('testtesttest')
-
-  const formdata: any = new FormData(document.forms[<any>"addItemForm"] as HTMLFormElement);
-  console.log('formdata', formdata)
-  const userInput = formdata.get('name');
-  console.log('name ->', userInput)
-
-  const form: any = document?.forms[0];
-  console.log('form ->', form)
-  form.addEventListener("submit", getValues);
-
-  function getValues(e: any) {
-    console.log('getvalues e', e)
-    e.preventDefault()
-  
-    console.log(form.name.value)
-  }
-
-  return true
 }
