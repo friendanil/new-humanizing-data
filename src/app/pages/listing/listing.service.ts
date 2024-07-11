@@ -17,7 +17,10 @@ export async function getHTML() {
   }
 }
 
-export const loadHTML = await getHTML();
+// export const loadHTML = await getHTML();
+// export async function loadHTML() {
+//   return await getHTML();
+// }
 
 export async function initiateListing() {
   console.log("Listing page landed!!");

@@ -12,7 +12,7 @@ export default class extends mainViewClass {
     (window as any).submitLoginForm = submitLoginForm;
 
     return `
-      <link rel="stylesheet" href="src/app/pages/login/login.style.css">
+      <!-- <link rel="stylesheet" href="src/app/pages/login/login.style.css"> -->
       <div class="grid grid-cols-1 md:grid-cols-2 overflow-y-auto">
         <div class="grid bg-green-900 h-screen place-content-center">
           <router-link href="/" class="cursor-pointer">

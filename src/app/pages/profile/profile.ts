@@ -1,5 +1,5 @@
 import topNavigation from "../../modules/top-nav/top-navigation"
-import { loadHTML } from "./profile.service"
+// import { loadHTML } from "./profile.service"
 import { popupAlert, saveProfileDetails, updateProfile } from "./profile.service"
 
 (window as any).popupAlert = popupAlert;
@@ -8,6 +8,5 @@ import { popupAlert, saveProfileDetails, updateProfile } from "./profile.service
 
 const profile = `
   ${topNavigation}
-  ${loadHTML}
 `
 export default profile

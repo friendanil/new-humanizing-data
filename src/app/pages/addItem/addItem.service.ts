@@ -19,7 +19,9 @@ export async function getHTML() {
   }
 }
 
-export const loadHTML = await getHTML();
+// export async function loadHTML() {
+//   return await getHTML();
+// }
 
 export async function submitAddItemForm(e: any) {
   console.log('e ->', e)

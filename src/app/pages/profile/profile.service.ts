@@ -97,7 +97,11 @@ export async function getHTML() {
   }
 }
 
-export const loadHTML = await getHTML();
+// export const loadHTML = await getHTML();
+// export async function loadHTML() {
+//   return await getHTML();
+// }
+
 
 // export async function initiateProfile() {
 //   console.log("Profile page landed!!");
