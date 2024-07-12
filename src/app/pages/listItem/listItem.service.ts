@@ -60,7 +60,7 @@ export async function getProductDetails(productId: number) {
       productDetails = `
         <div class="lg:grid lg:grid-cols-2 lg:gap-8 xl:gap-16" id="list-item">
           <div class="shrink-0 max-w-md lg:max-w-lg mx-auto">
-            <img class="w-full" src="https://placehold.co/600x400" alt="" />
+            <img class="w-full" src="https://placehold.co/600x600" alt="" />
             <!-- <img class="w-full hidden dark:block" src="${product?.image}" alt="" /> -->
           </div>
 
@@ -105,7 +105,7 @@ export async function getProductDetails(productId: number) {
             </p>
 
             <p class="mb-6 text-gray-500 dark:text-gray-400">
-            Stocks In: ${skuData?.totalStockIn}, Stocks Out: ${skuData?.totalStockOut}, Stocks Remaining: ${skuData?.toatalStockRemaining}
+            Stocks In: ${skuData?.totalStockIn || 0}, Stocks Out: ${skuData?.totalStockOut || 0}, Stocks Remaining: ${skuData?.toatalStockRemaining || 0}
             </p>
 
             <div class="max-w-screen-xl px-4 mx-auto 2xl:px-0 text-center py-8">

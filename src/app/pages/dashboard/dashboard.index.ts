@@ -11,7 +11,7 @@ export default class extends mainViewClass {
     return `
       ${topNavigation}
 
-      <div class="mx-auto text-center pt-20">
+      <div class="mx-auto text-center pt-20 dark:text-white dark:bg-gray-900">
         <h1>Dashboard page</h1>
       </div>
     `

@@ -23,7 +23,7 @@ export default class extends mainViewClass {
     return `
       ${topNavigation}
       <div class="w-4/5 mx-auto my-8">
-        <h1>Your Profile</h1>
+        <h1 class="dark:text-white">Your Profile</h1>
 
         <form method="post" onsubmit="updateProfile(event)" class="mt-10">
           <div class="grid gap-6 mb-6 md:grid-cols-2">
