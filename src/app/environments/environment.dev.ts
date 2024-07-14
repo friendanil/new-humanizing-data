@@ -1,8 +1,8 @@
 export const environment = {
   // DEVELOPMENT
-  baseURL: 'http://localhost:5001/api/v1',
-  baseNodeUrl: 'http://localhost:5001',
-  boomURL: 'https://localhost:7053',
+  baseURL: 'https://theta.boomconcole.com/api/v1',
+  baseNodeUrl: 'https://theta.boomconcole.com',
+  boomURL: 'https://theta.boomconcole.com',
   aiURL: 'https://www.devai.freeschema.com/api'
 
   // PRODUCTION

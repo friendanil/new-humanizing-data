@@ -72,7 +72,7 @@ export async function CreateConnectionBetweenEntityLocal(
 
   const connectionConcept = await MakeTheTypeConceptLocal(forwardLinker, sessionInformationId, sessionInformationUserId, userId);
   CreateTheConnectionLocal(concept1Data.id, concept2Data.id, connectionConcept.id, 1000);
-  LocalSyncData.SyncDataOnline();
+
   // const newConnection = new LConnection(
   //   0,
   //   concept1Data.id,

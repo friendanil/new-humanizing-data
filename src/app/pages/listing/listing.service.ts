@@ -33,7 +33,7 @@ export async function getProducts() {
   return new Promise(async (resolve: any, reject: any) => {
     try {
       const productList: any = await fetch(
-        `${thetaBoommAPI}/api/search-compositions-internal-clean?search=&type=&composition=the_item&inpage=10&page=1`
+        `${thetaBoommAPI}/api/search-compositions-internal-clean?search=&type=&composition=the_item&inpage=100&page=1`
       )
         .then((res) => res.json())
         .then((json) => {

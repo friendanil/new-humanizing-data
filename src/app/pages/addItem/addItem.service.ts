@@ -45,6 +45,8 @@ export async function submitAddItemForm(e: any) {
   }
 
   const itemConceptResponse = await createItem(formValues)
+  await LocalSyncData.SyncDataOnline()
+
   if (itemConceptResponse) {
     e?.target?.reset()
     for (let i = 0, len = elements.length; i < len; ++i) {
@@ -87,7 +89,6 @@ export async function createItem(formValues: any) {
     await CreateConnectionBetweenEntityLocal(itemEntityConcept, keyConcept, ObjKey)
   }
 
-  await LocalSyncData.SyncDataOnline()
   console.log('itemEntityConcept ID ->', itemEntityConcept?.id)
   return itemEntityConcept
 }
