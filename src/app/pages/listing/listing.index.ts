@@ -9,11 +9,23 @@ export default class extends mainViewClass {
   }
 
   async getHtml() {
-    const prouductList = await getProducts()
+    let prouductList: any = ''
+    // setTimeout(async () => {
+    //   prouductList = await getProducts()
+    // }, 100);
+    // const prouductList = await getProducts()
+
+    setTimeout(async () => {
+      await getProducts()
+    }, 100);
+
     return `
       ${topNavigation}
       <section class="py-8">
-        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="p-10 text-center dark:text-white" id="item-list-loader">
+          <h5>Loading...</h5>
+        </div>
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 hidden" id="item-list-container">
           <div class="flex justify-between items-center mb-8">
             <h2 class="font-manrope font-bold text-4xl text-black max-lg:text-center dark:text-white">
               Item list

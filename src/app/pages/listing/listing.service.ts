@@ -66,6 +66,18 @@ export async function getProducts() {
       // console.log('listingItems', listingItems, typeof(listingItems))
 
       // return listingItems
+      // resolve(listingItems);
+      // listContent.innerHTML = listingItems
+
+      const itemListLoader = <HTMLDivElement>document.getElementById('item-list-loader')
+      itemListLoader.classList.add('hidden')
+
+      const itemListContainer = <HTMLDivElement>document.getElementById('item-list-container')
+      itemListContainer.classList.remove('hidden')
+
+      const itemContainer = <HTMLDivElement>document.getElementById('product-listings')
+      itemContainer.innerHTML = listingItems
+
       resolve(listingItems);
     } catch (error) {
       console.error(error);
