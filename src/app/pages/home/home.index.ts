@@ -1,6 +1,7 @@
 import homeNavigation from "../../modules/home-nav/home-navigation";
 // import AbstractView from "../listItem/AbstractView";
 import mainViewClass from "../../default/mainView.class";
+import initNavigation from "../../modules/home-nav/home-navigation.service";
 
 export default class extends mainViewClass {
   constructor(params: any) {
@@ -9,6 +10,10 @@ export default class extends mainViewClass {
   }
 
   async getHtml(): Promise<string> {
+    setTimeout(() => {
+      initNavigation()
+    }, 100);
+
     return `
     ${homeNavigation}
       <!-- <h1>Home page</h1>
