@@ -49,9 +49,9 @@ export async function getProducts() {
       <router-link href="/listitem/${product?.id}" class="mx-auto border sm:mr-0 group cursor-pointer lg:mx-auto bg-white transition-all duration-500">
         <div class="">
           <!-- <img src="${product.image}" alt="face cream image" class="w-full aspect-square">-->
-          <img src="https://placehold.co/600x400" alt="face cream image" class="w-full aspect-square">
+          <img src="https://placehold.co/600x600" alt="face cream image" class="w-full aspect-square">
         </div>
-        <div class="mt-5">
+        <div class="p-4">
           <div class="flex items-center justify-between">
             <h6 class="font-semibold text-xl leading-8 text-black transition-all duration-500 group-hover:text-indigo-600">${product?.data?.the_item_name}</h6>
             <h6 class="font-semibold text-xl leading-8 text-indigo-600">$${product?.data?.the_item_price}</h6>

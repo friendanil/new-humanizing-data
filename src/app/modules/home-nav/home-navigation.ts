@@ -1,7 +1,7 @@
 import initNavigation from "./home-navigation.service";
 
 export default `
-  <nav class="relative px-4 py-4 flex justify-between items-center bg-white">
+  <nav class="relative px-4 py-4 flex justify-between items-center bg-white shadow-md z-10">
     <router-link href="/" class="cursor-pointer hover:opacity-85">
       <img src="./images/humanizing-data.png" alt="humanizing data logo" class="w-16 md:w-32 lg:w-48">
     </router-link>
@@ -15,6 +15,8 @@ export default `
     </div>
     <div class="flex justify-end">
       <ul class="hidden lg:flex lg:mx-auto lg:flex lg:items-center lg:mr-8 justify-end lg:w-auto lg:space-x-6">
+        <img src="./src/assets/images/dark/moon.svg" alt="Moon SVG" class="h-8 w-8 hidden dark:block moon cursor-pointer">
+        <img src="./src/assets/images/light/sun.svg" alt="Sun SVG" class="h-8 w-8 dark:hidden block sun cursor-pointer">
         <router-link href="/" class="cursor-pointer text-sm text-green-600 font-bold">Home</router-link>
         <router-link href="/" class="cursor-pointer text-sm text-gray-400 hover:text-gray-500">About</router-link>
         <router-link href="/" class="cursor-pointer text-sm text-gray-400 hover:text-gray-500">Services</router-link>

@@ -6,7 +6,8 @@ import "./top-navigation.style.css";
 
 export default `
   <!-- <link rel="stylesheet" href="src/app/modules/top-nav/top-navigation.style.css"> -->
-  <div class="flex items-center justify-around shadow-md z-10 relative">
+  <!-- <div class="flex items-center justify-around shadow-md z-10 relative"> -->
+  <div class="relative px-4 py-4 flex justify-between items-center bg-white shadow-md z-10">
     <router-link href="/" class="cursor-pointer">
       <img src="../images/humanizing-data.png" alt="humanizing data logo" class="w-16 md:w-32 lg:w-48">
     </router-link>
