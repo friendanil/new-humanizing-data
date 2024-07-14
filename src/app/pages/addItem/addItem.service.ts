@@ -1,6 +1,6 @@
-import { Concept, MakeTheInstanceConcept, SyncData } from "mftsccs-browser";
+import { Concept, LConcept, LocalSyncData, MakeTheInstanceConcept, MakeTheInstanceConceptLocal, SyncData } from "mftsccs-browser";
 import { getLocalStorageData } from "../../services/helper.service";
-import { CreateConnectionBetweenEntity } from "../../services/entity.service";
+import { CreateConnectionBetweenEntity, CreateConnectionBetweenEntityLocal } from "../../services/entity.service";
 import { updateContent } from "../../routes/renderRoute.service";
 
 export async function getHTML() {
@@ -62,7 +62,7 @@ export async function createItem(formValues: any) {
   const userId = profileStorageData?.userId
   console.log('userId ->', userId)
 
-  const itemEntityConcept = await MakeTheInstanceConcept(
+  const itemEntityConcept = await MakeTheInstanceConceptLocal(
     'the_item',
     '',
     true,
@@ -76,7 +76,7 @@ export async function createItem(formValues: any) {
   for (const [key, value] of Object.entries(formValues)) {
     let ObjKey = key
 
-    const keyConcept: Concept = await MakeTheInstanceConcept(
+    const keyConcept: LConcept = await MakeTheInstanceConceptLocal(
       `${ObjKey}`,
       `${value}`,
       false,
@@ -84,10 +84,10 @@ export async function createItem(formValues: any) {
       4,
       999,
     )
-    await CreateConnectionBetweenEntity(itemEntityConcept, keyConcept, ObjKey)
+    await CreateConnectionBetweenEntityLocal(itemEntityConcept, keyConcept, ObjKey)
   }
 
-  await SyncData.SyncDataOnline()
+  await LocalSyncData.SyncDataOnline()
   console.log('itemEntityConcept ID ->', itemEntityConcept?.id)
   return itemEntityConcept
 }

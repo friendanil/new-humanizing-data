@@ -9,7 +9,7 @@ import { init } from "mftsccs-browser";
 import { environment } from "./app/environments/environment.dev.ts";
 
 bootup();
-init(environment?.boomURL, environment?.aiURL, '', environment?.baseURL )
+init(environment?.boomURL, environment?.aiURL, '', environment?.baseNodeUrl )
 
 // let url = location.href;
 // console.log("URL", url, location.pathname);

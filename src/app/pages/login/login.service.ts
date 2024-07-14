@@ -1,3 +1,4 @@
+import { updateAccessToken } from "mftsccs-browser";
 import { environment } from "../../environments/environment.dev";
 import { IUser } from "../../interfaces/IUser.interface";
 import { updateContent } from "../../routes/renderRoute.service";
@@ -118,6 +119,7 @@ export async function saveTolocalStorage(signinResponse: any) {
     userId: signinResponse?.data?.entity?.[0]?.userId,
     userConcept: signinResponse?.data?.userConcept,
   };
+  updateAccessToken(userProfile.token);
 
   localStorage.setItem("profile", JSON.stringify(userProfile));
 }
