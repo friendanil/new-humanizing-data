@@ -71,7 +71,23 @@ export async function checkRouting() {
       route: notFoundURL,
       result: [location.pathname],
     };
+  } else {
+    // check route authentication
+    const routeInfo = match?.route
+    if (routeInfo?.isAuthenticated) {
+      const isAuthenticationValid = checkAuthentication();
+      if (!isAuthenticationValid) {
+        const loginURL = routes.find((route: any) => route.path === "/login");
+        match = {
+          route: loginURL,
+          result: loginURL?.path
+        };
+        history.pushState(null, "", loginURL?.path);
+      }
+    }
   }
+
+  console.log('match 2 ->', match)
 
   // const view = typeof match.route.content === 'function'
   //   ? new match.route.content(getParams(match))
@@ -89,14 +105,16 @@ export const renderContent = async (route: any) => {
   console.log("renderContent route", route);
   console.log("routes", routes);
   history.pushState(null, "", route);
-  checkRouteAuthentication(route);
+  // checkRouteAuthentication(route);
+  checkRouting();
 };
 
 export const updateContent = async (route: any) => {
   console.log("updateContent route ->", route);
   window.history.pushState({ route }, "", route);
   // window.history.replaceState({ route }, "", route);
-  checkRouteAuthentication(route);
+  // checkRouteAuthentication(route);
+  checkRouting();
 };
 
 // const navigate = (e: any) => {
