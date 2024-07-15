@@ -13,26 +13,26 @@ const checkAuthentication = () => {
   }
 };
 
-const checkRouteAuthentication = async (route: string) => {
-  console.log("checkRouteAuthentication route", route);
+// const checkRouteAuthentication = async (route: string) => {
+//   console.log("checkRouteAuthentication route", route);
 
-  let routeInfo = routes?.find((routeData: any) => routeData?.path === route);
-  console.log("routeInfo ->", routeInfo);
-  console.log("routeInfo?.isAuthenticated", routeInfo?.isAuthenticated);
+//   let routeInfo = routes?.find((routeData: any) => routeData?.path === route);
+//   console.log("routeInfo ->", routeInfo);
+//   console.log("routeInfo?.isAuthenticated", routeInfo?.isAuthenticated);
 
-  // Authentication check
-  if (routeInfo?.isAuthenticated) {
-    const isAuthenticationValid = checkAuthentication();
-    if (!isAuthenticationValid) {
-      const loginURL = routes.find((route: any) => route.path === "/login");
-      console.log("loginURL", loginURL);
-      app.innerHTML = loginURL?.content;
-      location.pathname = loginURL?.path;
-      return;
-    }
-  }
-  checkRouting();
-};
+//   // Authentication check
+//   if (routeInfo?.isAuthenticated) {
+//     const isAuthenticationValid = checkAuthentication();
+//     if (!isAuthenticationValid) {
+//       const loginURL = routes.find((route: any) => route.path === "/login");
+//       console.log("loginURL", loginURL);
+//       app.innerHTML = loginURL?.content;
+//       location.pathname = loginURL?.path;
+//       return;
+//     }
+//   }
+//   checkRouting();
+// };
 
 const pathToRegex = (path: any) =>
   new RegExp("^" + path.replace(/:\w+/g, "(.+)") + "$");
@@ -61,7 +61,7 @@ export async function checkRouting() {
   let match = potentialMatches.find(
     (potentialMatch: any) => potentialMatch.result !== null
   );
-  console.log("match ->", match);
+  // console.log("match ->", match);
 
   // NOT FOUND PAGE
   if (!match) {
@@ -94,7 +94,7 @@ export async function checkRouting() {
   //   : match.route.content;
 
   const view = new match.route.content(await getParams(match));
-  console.log("view ->", view);
+  // console.log("view ->", view);
 
   const htmlContentDetails = await view?.getHtml();
   // console.log("htmlContentDetails", htmlContentDetails);

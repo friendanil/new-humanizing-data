@@ -1,7 +1,16 @@
-import { Concept, LConcept, LocalSyncData, MakeTheInstanceConcept, MakeTheInstanceConceptLocal, SyncData } from "mftsccs-browser";
+// import { Concept, MakeTheInstanceConcept, SyncData } from "mftsccs-browser";
+import {
+  GetTheConceptLocal,
+  LConcept,
+  LocalSyncData,
+  MakeTheInstanceConceptLocal,
+} from "mftsccs-browser";
 import { getLocalStorageData } from "../../services/helper.service";
-import { CreateConnectionBetweenEntity, CreateConnectionBetweenEntityLocal } from "../../services/entity.service";
+import { CreateConnectionBetweenEntityLocal } from "../../services/entity.service";
 import { updateContent } from "../../routes/renderRoute.service";
+import { environment } from "../../environments/environment.dev";
+
+const thetaBoommAPI = environment?.boomURL;
 
 export async function getHTML() {
   try {
@@ -24,14 +33,14 @@ export async function getHTML() {
 // }
 
 export async function submitAddItemForm(e: any) {
-  console.log('e ->', e)
-  e.preventDefault()
+  console.log("e ->", e);
+  e.preventDefault();
 
   const formData: any = new FormData(e.target);
   // output as an object
-  console.log('formData entries ->', Object.fromEntries(formData));
-  const formValues: any = Object.fromEntries(formData)
-  console.log('formValues ->', formValues)
+  console.log("formData entries ->", Object.fromEntries(formData));
+  const formValues: any = Object.fromEntries(formData);
+  console.log("formValues ->", formValues);
 
   // ...or iterate through the name-value pairs
   // for (let pair of formData.entries()) {
@@ -44,11 +53,16 @@ export async function submitAddItemForm(e: any) {
     elements[i].disabled = true;
   }
 
-  const itemConceptResponse = await createItem(formValues)
-  await LocalSyncData.SyncDataOnline()
+  const itemConceptResponse = await createItem(formValues);
+  await LocalSyncData.SyncDataOnline();
+
+  // the_seller_s_item
+  const sellerItemResponse = await updateItem(itemConceptResponse);
+  console.log("sellerItemResponse ->", sellerItemResponse);
+  await LocalSyncData.SyncDataOnline();
 
   if (itemConceptResponse) {
-    e?.target?.reset()
+    e?.target?.reset();
     for (let i = 0, len = elements.length; i < len; ++i) {
       elements[i].disabled = false;
     }
@@ -57,27 +71,27 @@ export async function submitAddItemForm(e: any) {
 }
 
 export async function createItem(formValues: any) {
-  console.log('createItem formValues ->', formValues)
-  const itemName = formValues?.name
+  console.log("createItem formValues ->", formValues);
+  const itemName = formValues?.name;
 
-  const profileStorageData: any = await getLocalStorageData()
-  console.log('profileStorageData ->', profileStorageData)
-  const userId = profileStorageData?.userId
-  console.log('userId ->', userId)
+  const profileStorageData: any = await getLocalStorageData();
+  // console.log("profileStorageData ->", profileStorageData);
+  const userId = profileStorageData?.userId;
+  // console.log("userId ->", userId);
 
   const itemEntityConcept = await MakeTheInstanceConceptLocal(
-    'the_item',
+    "the_item",
     itemName,
     true,
     userId,
     4,
-    999,
-  )
+    999
+  );
 
-  console.log('itemEntityConcept ->', itemEntityConcept)
+  console.log("itemEntityConcept ->", itemEntityConcept);
 
   for (const [key, value] of Object.entries(formValues)) {
-    let ObjKey = key
+    let ObjKey = key;
 
     const keyConcept: LConcept = await MakeTheInstanceConceptLocal(
       `${ObjKey}`,
@@ -85,11 +99,81 @@ export async function createItem(formValues: any) {
       false,
       userId,
       4,
-      999,
-    )
-    await CreateConnectionBetweenEntityLocal(itemEntityConcept, keyConcept, ObjKey)
+      999
+    );
+    await CreateConnectionBetweenEntityLocal(
+      itemEntityConcept,
+      keyConcept,
+      ObjKey
+    );
   }
 
-  console.log('itemEntityConcept ID ->', itemEntityConcept?.id)
-  return itemEntityConcept
+  console.log("itemEntityConcept ID ->", itemEntityConcept?.id);
+  return itemEntityConcept;
+}
+
+export async function updateItem(itemEntityConcept: any) {
+  console.log("updateItem itemEntityConcept ->", itemEntityConcept);
+
+  const profileStorageData: any = await getLocalStorageData();
+  const userId = profileStorageData?.userId;
+  const userConceptId = profileStorageData?.userConcept;
+  const token = profileStorageData?.token;
+
+  let sellerEntityConcept: LConcept;
+
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+  myHeaders.append("Authorization", `Bearer ${token}`);
+
+  const sellerConceptResponse = await fetch(
+    `${thetaBoommAPI}/api/search-compositions-internal?search=&type=&composition=the_seller&inpage=10&page=1`,
+    {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    }
+  );
+
+  const output = await sellerConceptResponse.json();
+  console.log("output ->", output);
+
+  const sellerEntityId = Number(Object.keys(output)?.[0]);
+  console.log("sellerEntityId ->", sellerEntityId);
+
+  if (sellerEntityId) {
+    console.log("IF")
+    sellerEntityConcept = await GetTheConceptLocal(sellerEntityId);
+  } else {
+    console.log("ELSE")
+    const entityDetails: any = await fetch(
+      `${thetaBoommAPI}/api/get-entity-from-user?userConceptId=${userConceptId}`
+    )
+      .then((res) => res.json())
+      .then((json) => {
+        console.log(json);
+        return json;
+      });
+
+    console.log("entityDetails ->", entityDetails);
+    const entityId = entityDetails?.entity;
+    sellerEntityConcept = await MakeTheInstanceConceptLocal(
+      "the_seller",
+      entityId,
+      true,
+      userId,
+      4,
+      999
+    );
+  }
+
+  console.log("sellerEntityConcept ->", sellerEntityConcept);
+
+  await CreateConnectionBetweenEntityLocal(
+    sellerEntityConcept,
+    itemEntityConcept,
+    "s_item"
+  );
+
+  return sellerEntityConcept;
 }
