@@ -74,7 +74,7 @@ export async function getProductDetails(productId: number) {
               </p>
             </div>
 
-            <div class="mt-6 sm:gap-4 sm:items-center sm:flex sm:mt-8">
+            <!-- <div class="mt-6 sm:gap-4 sm:items-center sm:flex sm:mt-8">
               <router-link title=""
                 class="flex items-center justify-center py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-green-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                 role="button">
@@ -96,7 +96,7 @@ export async function getProductDetails(productId: number) {
                 </svg>
                 Add to cart
               </router-link>
-            </div>
+            </div> -->
 
             <hr class="my-6 md:my-8 border-gray-200 dark:border-gray-800" />
 
@@ -125,7 +125,8 @@ export async function getProductDetails(productId: number) {
             <div id="modelConfirm"
               class="fixed hidden z-50 inset-0 bg-gray-900 bg-opacity-60 overflow-y-auto h-full w-full px-4 ">
               <div class="relative top-20 mx-auto shadow-xl rounded-md bg-white max-w-md">
-                <div class="flex justify-end p-2">
+                <div class="flex justify-between px-4 pt-4">
+                  <h3 class="text-xl font-normal text-gray-500 my-0">SKU Details</h3>
                   <button onclick="closeModal('modelConfirm')" type="button"
                     class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center">
                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -137,8 +138,6 @@ export async function getProductDetails(productId: number) {
                 </div>
 
                 <div class="p-6 pt-0">
-                  <h3 class="text-xl font-normal text-gray-500 mt-0 mb-6">SKU Details</h3>
-                  
                   <form method="post" action="/" onsubmit="submitUpdateSKUForm(event)" name="updateSKUForm"
                     id="update-sku-form">
                     <div class="my-4">
@@ -166,15 +165,17 @@ export async function getProductDetails(productId: number) {
                       </div>
                     </div>
 
-                    <button type="button" onclick="closeModal('modelConfirm')"
-                      class="text-gray-900 bg-white hover:bg-gray-100 focus:ring-4 focus:ring-cyan-200 border border-gray-200 font-medium inline-flex items-center rounded-lg text-base px-3 py-2.5 text-center"
-                      data-modal-toggle="delete-user-modal">
-                      Cancel
-                    </button>
-                    <button type="submit"
-                      class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-base inline-flex items-center px-3 py-2.5 text-center mr-2">
-                      Update SKU Now
-                    </button>
+                    <div class="text-right">
+                      <button type="button" onclick="closeModal('modelConfirm')"
+                        class="text-gray-900 bg-white hover:bg-gray-100 focus:ring-4 focus:ring-cyan-200 border border-gray-200 font-medium inline-flex items-center rounded-lg text-base px-3 py-2.5 text-center"
+                        data-modal-toggle="delete-user-modal">
+                        Cancel
+                      </button>
+                      <button type="submit"
+                        class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-base inline-flex items-center px-3 py-2.5 text-center mr-2">
+                        Update SKU Now
+                      </button>
+                    </div>
                   </form>
 
                 </div>

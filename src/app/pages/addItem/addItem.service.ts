@@ -58,6 +58,7 @@ export async function submitAddItemForm(e: any) {
 
 export async function createItem(formValues: any) {
   console.log('createItem formValues ->', formValues)
+  const itemName = formValues?.name
 
   const profileStorageData: any = await getLocalStorageData()
   console.log('profileStorageData ->', profileStorageData)
@@ -66,7 +67,7 @@ export async function createItem(formValues: any) {
 
   const itemEntityConcept = await MakeTheInstanceConceptLocal(
     'the_item',
-    '',
+    itemName,
     true,
     userId,
     4,
