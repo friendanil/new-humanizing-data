@@ -1,3 +1,4 @@
+import { ViewInternalData } from "mftsccs-browser";
 import { environment } from "../../environments/environment.dev";
 
 const thetaBoommAPI = environment?.boomURL;
@@ -32,6 +33,8 @@ export async function initiateListing() {
 export async function getProducts() {
   return new Promise(async (resolve: any, reject: any) => {
     try {
+
+      await ViewInternalData(101112972);
       const productList: any = await fetch(
         `${thetaBoommAPI}/api/search-compositions-internal-clean?search=&type=&composition=the_item&inpage=100&page=1`
       )
