@@ -1,4 +1,4 @@
-import { Concept, GetTheConcept, GetTheConceptLocal, LConcept, SyncData } from "mftsccs-browser";
+import { Concept, GetTheConcept, GetTheConceptLocal, LConcept, SyncData, ViewInternalData } from "mftsccs-browser";
 import { itemSkuLinker, rfqAttachmentLinker, s_item_linker } from "../../constants/type.constants";
 import { environment } from "../../environments/environment.dev";
 import { createEntityInstance } from "../../services/createEntityInstance.service";
@@ -29,19 +29,25 @@ let attachmentConcept: LConcept
 
 export async function getProductDetails(productId: number) {
   try {
-    const product: any = await fetch(
-      `${thetaBoommAPI}/api/view-api-internal-data?id=${productId}`
-    ).then((res: any) => {
-      if (res.ok) {
-        return res.json();
-      } else {
-        console.error("error status ->", res.status);
-        // if (res.status === 404) throw new Error("404, Not found");
-        // if (res.status === 500) throw new Error("500, internal server error");
-        // throw new Error(res.status);
-        return res.json();
-      }
-    });
+    console.log("productId ->", productId);
+    const productList = await ViewInternalData([productId]);
+    const product = productList[0];
+    // const product: any = await fetch(
+    //   `${thetaBoommAPI}/api/view-api-internal-data?id=${productId}`
+    // ).then((res: any) => {
+    //   if (res.ok) {
+    //     return res.json();
+    //   } else {
+    //     console.log("error status ->", res.status);
+    //     // if (res.status === 404) throw new Error("404, Not found");
+    //     // if (res.status === 500) throw new Error("500, internal server error");
+    //     // throw new Error(res.status);
+    //     return res.json();
+    //   }
+    // });
+
+    console.log("product", product);
+    //console.log("product?.errors", product?.errors);
 
     let productDetails: string = "";
 
@@ -64,11 +70,11 @@ export async function getProductDetails(productId: number) {
 
           <div class="mt-6 sm:mt-8 lg:mt-0">
             <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">
-              ${product?.the_item_name}
+              ${product?.name}
             </h1>
             <div class="mt-4 sm:items-center sm:gap-4 sm:flex">
               <p class="text-2xl font-extrabold text-gray-900 sm:text-3xl dark:text-white">
-                $${product?.the_item_price}
+                $${product?.price}
               </p>
             </div>
 
@@ -99,7 +105,7 @@ export async function getProductDetails(productId: number) {
             <hr class="my-6 md:my-8 border-gray-200 dark:border-gray-800" />
 
             <p class="mb-6 text-gray-500 dark:text-gray-400">
-              ${product?.the_item_description}
+              ${product?.description}
             </p>
 
             <p class="mb-6 text-gray-500 dark:text-gray-400">
