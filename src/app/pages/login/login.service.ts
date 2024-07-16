@@ -2,9 +2,12 @@ import { updateAccessToken } from "mftsccs-browser";
 import { environment } from "../../environments/environment.dev";
 import { IUser } from "../../interfaces/IUser.interface";
 import { updateContent } from "../../routes/renderRoute.service";
+import { getEntityByUserconceptId } from "../../services/helper.service";
+
+const baseURL = environment?.baseURL
+const boomconsoleURL = environment?.boomURL
 
 const signin = async (signinData: any) => {
-  const baseURL = environment?.baseURL
   const loginURL = `${baseURL}/signin`;
   let freeschemaRes: any;
   const myHeaders = new Headers();
@@ -104,7 +107,7 @@ export async function submitLoginForm(e: any) {
   };
 
   const signinResponse = await signin(signinData);
-  saveTolocalStorage(signinResponse);
+  await saveTolocalStorage(signinResponse);
 
   if (signinResponse.statusCode === 200) {
     updateContent("/dashboard");
@@ -112,14 +115,20 @@ export async function submitLoginForm(e: any) {
 }
 
 export async function saveTolocalStorage(signinResponse: any) {
+  const userEntity = await getEntityByUserconceptId(signinResponse?.data?.userConcept, signinResponse?.data?.token)
+  console.log('login userEntity ->', userEntity)
+
   let userProfile: IUser = {
     token: signinResponse?.data?.token,
     refreshToken: signinResponse?.data?.refreshtoken,
     email: signinResponse?.data?.email,
     userId: signinResponse?.data?.entity?.[0]?.userId,
     userConcept: signinResponse?.data?.userConcept,
+    entityId: userEntity?.entity
   };
   updateAccessToken(userProfile.token);
 
   localStorage.setItem("profile", JSON.stringify(userProfile));
+
+  return true
 }

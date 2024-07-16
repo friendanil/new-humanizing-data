@@ -1,15 +1,17 @@
-import { Concept, GetTheConcept, SyncData } from "mftsccs-browser";
-import { itemSkuLinker } from "../../constants/type.constants";
+import { Concept, GetTheConcept, GetTheConceptLocal, LConcept, SyncData } from "mftsccs-browser";
+import { itemSkuLinker, rfqAttachmentLinker, s_item_linker } from "../../constants/type.constants";
 import { environment } from "../../environments/environment.dev";
 import { createEntityInstance } from "../../services/createEntityInstance.service";
-import { CreateConnectionBetweenEntity } from "../../services/entity.service";
-import { getLocalStorageData } from "../../services/helper.service";
+import { CreateConnectionBetweenEntity, CreateConnectionBetweenEntityLocal } from "../../services/entity.service";
+import { getEntityByUserconceptId, getLocalStorageData } from "../../services/helper.service";
+import rfqModal from "../../modules/rfq-modal/rfq-modal";
 
 const thetaBoommAPI = environment?.boomURL;
+// let rfqAttachment = ''
+let attachmentConcept: LConcept
 
 // export async function getHTML() {
 //   try {
-//     console.log("TRY");
 //     const response = await fetch(
 //       "/src/app/pages/listItem/listItem.component.html"
 //     );
@@ -17,7 +19,6 @@ const thetaBoommAPI = environment?.boomURL;
 //       throw new Error("Network response was not ok " + response.statusText);
 //     }
 //     const htmlContent = await response.text();
-//     // console.log('listItem htmlContent', htmlContent)
 //     return htmlContent;
 //   } catch (error) {
 //     console.error("There has been a problem with your fetch operation:", error);
@@ -28,23 +29,19 @@ const thetaBoommAPI = environment?.boomURL;
 
 export async function getProductDetails(productId: number) {
   try {
-    console.log("productId ->", productId);
     const product: any = await fetch(
       `${thetaBoommAPI}/api/view-api-internal-data?id=${productId}`
     ).then((res: any) => {
       if (res.ok) {
         return res.json();
       } else {
-        console.log("error status ->", res.status);
+        console.error("error status ->", res.status);
         // if (res.status === 404) throw new Error("404, Not found");
         // if (res.status === 500) throw new Error("500, internal server error");
         // throw new Error(res.status);
         return res.json();
       }
     });
-
-    console.log("product", product);
-    console.log("product?.errors", product?.errors);
 
     let productDetails: string = "";
 
@@ -56,12 +53,13 @@ export async function getProductDetails(productId: number) {
       `;
     } else {
       const skuData: any = await getSkuDetails();
-      console.log('total skuData ->', skuData)
       productDetails = `
         <div class="lg:grid lg:grid-cols-2 lg:gap-8 xl:gap-16" id="list-item">
           <div class="shrink-0 max-w-md lg:max-w-lg mx-auto">
             <img class="w-full" src="https://placehold.co/600x600" alt="" />
-            <!-- <img class="w-full hidden dark:block" src="${product?.image}" alt="" /> -->
+            <!-- <img class="w-full hidden dark:block" src="${
+              product?.image
+            }" alt="" /> -->
           </div>
 
           <div class="mt-6 sm:mt-8 lg:mt-0">
@@ -105,16 +103,27 @@ export async function getProductDetails(productId: number) {
             </p>
 
             <p class="mb-6 text-gray-500 dark:text-gray-400">
-            Stocks In: ${skuData?.totalStockIn || 0}, Stocks Out: ${skuData?.totalStockOut || 0}, Stocks Remaining: ${skuData?.toatalStockRemaining || 0}
+            Stocks In: ${skuData?.totalStockIn || 0}, Stocks Out: ${
+        skuData?.totalStockOut || 0
+      }, Stocks Remaining: ${skuData?.toatalStockRemaining || 0}
             </p>
 
             <div class="max-w-screen-xl px-4 mx-auto 2xl:px-0 text-center py-8">
+
+              <button class="bg-green-500 text-white rounded-md px-4 py-2 hover:bg-green-700 transition" onclick="openModal('rfq-modal')">
+                Add Request for Quote
+              </button>
+
               <button class="bg-rose-500 text-white rounded-md px-4 py-2 hover:bg-rose-700 transition"
                 onclick="openModal('modelConfirm')">
                 Update Item SKU
               </button>
             </div>
             </section>
+
+            <div id="rfq-modal" class="fixed hidden z-50 inset-0 bg-gray-900 bg-opacity-60 overflow-y-auto h-full w-full px-4">
+              ${rfqModal}
+            </div>
 
             <!-- <button class="bg-rose-500 text-white rounded-md px-4 py-2 hover:bg-rose-700 transition" onclick="openModal('modelConfirm')">
                 Click to Open modal
@@ -197,7 +206,6 @@ export async function getSkuDetails() {
     try {
       let urlPath = location.pathname;
       let itemId = Number(urlPath.substring(10));
-      console.log("itemId ->", itemId);
 
       const queryParams = [
         {
@@ -241,8 +249,6 @@ export async function getSkuDetails() {
         }
       );
       const output = await response.json();
-      console.log("output ->", output);
-      // if (response.ok) { }
 
       // sku summary
       const skuData = output?.data?.the_item?.the_item_s_sku;
@@ -253,7 +259,6 @@ export async function getSkuDetails() {
           Number(curr?.data?.the_sku?.the_sku_stockIn?.[0]?.data?.the_stockIn),
         0
       );
-      console.log("skuStockIn ->", skuStockIn);
 
       const skuStockOut = skuData?.reduce(
         (accum: number, curr: any) =>
@@ -263,7 +268,6 @@ export async function getSkuDetails() {
           ),
         0
       );
-      console.log("skuStockOut ->", skuStockOut);
 
       const skuStockRemaining = skuData?.reduce(
         (accum: number, curr: any) =>
@@ -274,180 +278,52 @@ export async function getSkuDetails() {
           ),
         0
       );
-      console.log("skuStockRemaining ->", skuStockRemaining);
 
       resolve({
         totalStockIn: skuStockIn,
         totalStockOut: skuStockOut,
-        toatalStockRemaining: skuStockRemaining
-      })
+        toatalStockRemaining: skuStockRemaining,
+      });
     } catch (error) {
       console.error(error);
-      reject(error)
+      reject(error);
     }
   });
 }
 
 export async function submitUpdateSKUForm(e: any) {
   e.preventDefault();
-
   const formData: any = new FormData(e.target);
-  // output as an object
-  console.log("formData entries ->", Object.fromEntries(formData));
-  const formValues: any = Object.fromEntries(formData);
-  console.log("formValues ->", formValues);
-
-  const skuResponse = await createItemSKU(formValues);
-  console.log("skuResponse", skuResponse);
+  const formValues: any = Object.fromEntries(formData); // output as an object
+  await createItemSKU(formValues);
 }
 
 export async function createItemSKU(formValues: any) {
-  console.log("createItem formValues ->", formValues);
-
   let urlPath = location.pathname;
   let itemId = Number(urlPath.substring(10));
-  console.log("itemId ->", itemId);
 
-  const itemEntityConcept: Concept = await GetTheConcept(itemId);
-  console.log("itemEntityConcept ->", itemEntityConcept);
+  // const itemEntityConcept: Concept = await GetTheConcept(itemId);
+  const itemEntityConcept: LConcept = await GetTheConceptLocal(itemId);
 
   const profileStorageData: any = await getLocalStorageData();
-  console.log("profileStorageData ->", profileStorageData);
   const userId = profileStorageData?.userId;
-  console.log("userId ->", userId);
 
-  const skuEntityConcept = await createEntityInstance(
+  const skuEntityConcept: LConcept = await createEntityInstance(
     "sku",
     userId,
     formValues
   );
-  console.log("skuEntityConcept ->", skuEntityConcept);
 
   // the_item_s_sku
-  await CreateConnectionBetweenEntity(
+  await CreateConnectionBetweenEntityLocal(
     itemEntityConcept,
     skuEntityConcept,
     itemSkuLinker
   );
   await SyncData.SyncDataOnline();
 
-  console.log("SKU completed");
   closeModal("modelConfirm");
 }
-
-// export async function _getProductDetails(productId: number) {
-//   // let productId: any = window?.location?.href?.split('/')?.reverse()?.[0]
-//   console.log("productId ->", productId);
-//   // if (typeof(productId) !== 'number') productId = 1
-//   const product: any = await fetch(
-//     `https://fakestoreapi.com/products/${productId}`
-//   )
-//     .then((res) => res.json())
-//     .then((json) => {
-//       return json;
-//     });
-
-//   console.log("product", product);
-//   // https://flowbite.com/blocks/e-commerce/product-overview/
-
-//   const productDetails = `
-//    <div class="shrink-0 max-w-md lg:max-w-lg mx-auto">
-//     <img class="w-full dark:hidden" src="${product?.image}"
-//       alt="" />
-//     <img class="w-full hidden dark:block"
-//       src="${product?.image}" alt="" />
-//   </div>
-
-//   <div class="mt-6 sm:mt-8 lg:mt-0">
-//     <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">
-//     ${product?.title}
-//     </h1>
-//     <div class="mt-4 sm:items-center sm:gap-4 sm:flex">
-//       <p class="text-2xl font-extrabold text-gray-900 sm:text-3xl dark:text-white">
-//         $${product?.price}
-//       </p>
-
-//       <div class="flex items-center gap-2 mt-2 sm:mt-0">
-//         <div class="flex items-center gap-1">
-//           <svg class="w-4 h-4 text-yellow-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
-//             height="24" fill="currentColor" viewBox="0 0 24 24">
-//             <path
-//               d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
-//           </svg>
-//           <svg class="w-4 h-4 text-yellow-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
-//             height="24" fill="currentColor" viewBox="0 0 24 24">
-//             <path
-//               d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
-//           </svg>
-//           <svg class="w-4 h-4 text-yellow-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
-//             height="24" fill="currentColor" viewBox="0 0 24 24">
-//             <path
-//               d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
-//           </svg>
-//           <svg class="w-4 h-4 text-yellow-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
-//             height="24" fill="currentColor" viewBox="0 0 24 24">
-//             <path
-//               d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
-//           </svg>
-//           <svg class="w-4 h-4 text-yellow-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
-//             height="24" fill="currentColor" viewBox="0 0 24 24">
-//             <path
-//               d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
-//           </svg>
-//         </div>
-//         <p class="text-sm font-medium leading-none text-gray-500 dark:text-gray-400">
-//           (${product?.rating?.rate})
-//         </p>
-//         <a href="#"
-//           class="text-sm font-medium leading-none text-gray-900 underline hover:no-underline dark:text-white">
-//           ${product?.rating?.count} Reviews
-//         </a>
-//       </div>
-//     </div>
-
-//     <div class="mt-6 sm:gap-4 sm:items-center sm:flex sm:mt-8">
-//       <a href="#" title=""
-//         class="flex items-center justify-center py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-green-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-//         role="button">
-//         <svg class="w-5 h-5 -ms-2 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
-//           height="24" fill="none" viewBox="0 0 24 24">
-//           <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-//             d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z" />
-//         </svg>
-//         Add to favorites
-//       </a>
-
-//       <a href="#" title=""
-//         class="text-white hover:text-white mt-4 sm:mt-0 bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800 flex items-center justify-center"
-//         role="button">
-//         <svg class="w-5 h-5 -ms-2 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
-//           height="24" fill="none" viewBox="0 0 24 24">
-//           <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-//             d="M4 4h1.5L8 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm.75-3H7.5M11 7H6.312M17 4v6m-3-3h6" />
-//         </svg>
-//         Add to cart
-//       </a>
-//     </div>
-
-//     <hr class="my-6 md:my-8 border-gray-200 dark:border-gray-800" />
-
-//     <p class="mb-6 text-gray-500 dark:text-gray-400">
-//     ${product?.description}
-//     </p>
-//   </div>
-//     `;
-
-//   return productDetails;
-
-//   const productListEl: any = document.getElementById("list-item");
-//   console.log("productListEl", productListEl);
-//   productListEl.innerHTML = productDetails;
-
-//   document.addEventListener("DOMContentLoaded", () => {
-//     const productListEl: any = document.getElementById("list-item");
-//     console.log("productListEl", productListEl);
-//   });
-// }
 
 // for modal
 export async function openModal(modalId: string) {
@@ -458,14 +334,20 @@ export async function openModal(modalId: string) {
   // Close all modals when press ESC
   document.onkeydown = function (event: any) {
     if (event.code === "Escape" || event.key === "Escape") {
-      console.log("Escape clicked!");
-      if (check) check.style.display = "none";
+      // if (check) check.style.display = "none";
+      closeModal(modalId)
     }
   };
 }
 
 export async function closeModal(modalId: string) {
-  const modal = document.getElementById(modalId);
+  const modal: any = document.getElementById(modalId);
+  console.log('modal', modal)
+
+  const modalFormEl = modal.querySelector('form')
+  console.log('modalFormEl', modalFormEl)
+  modalFormEl.reset()
+
   if (modal) modal.style.display = "none";
   document
     .getElementsByTagName("body")[0]
@@ -483,4 +365,155 @@ export async function closeModal(modalId: string) {
   //     });
   //   }
   // };
+}
+
+export async function submitRFQForm(e: any) {
+  e.preventDefault();
+
+  const formData: any = new FormData(e.target);
+  // output as an object
+  const formValues: any = Object.fromEntries(formData);
+  // console.log("formValues ->", formValues);
+
+  const rfqResponse = await createItemRFQ(formValues);
+  console.log("rfqResponse", rfqResponse);
+}
+
+export async function createItemRFQ(formValues: any) {
+  console.log("createItem formValues ->", formValues);
+  
+  let urlPath = location.pathname;
+  let itemId = Number(urlPath.substring(10));
+  console.log("itemId ->", itemId);
+
+  // const itemEntityConcept: Concept = await GetTheConcept(itemId);
+  const itemEntityConcept = await GetTheConceptLocal(itemId);
+  console.log("itemEntityConcept ->", itemEntityConcept);
+
+  const profileStorageData: any = await getLocalStorageData();
+  const userId = profileStorageData?.userId;
+  // const userConceptId = profileStorageData?.userConcept;
+  const token = profileStorageData?.token;
+  console.log("userId ->", userId);
+
+  // buyerAgentEntity
+  const buyerAgentEntity = await getEntityByUserconceptId(Number(formValues?.buyeragent), token)
+  console.log('login userEntity ->', buyerAgentEntity)
+
+  delete formValues.attachment
+  formValues.buyer = profileStorageData?.entityId
+  formValues.buyeragent = buyerAgentEntity?.entity
+  console.log("createItem formValues 2 ->", formValues);
+
+  // return
+
+  const rfqEntityConcept = await createEntityInstance(
+    "rfq",
+    userId,
+    formValues
+  );
+  console.log("rfqEntityConcept ->", rfqEntityConcept);
+
+  // the_rfq_s_attachment
+  // await CreateConnectionBetweenEntity(
+  //   rfqEntityConcept,
+  //   attachmentConcept,
+  //   rfqAttachmentLinker
+  // );
+  await CreateConnectionBetweenEntityLocal(
+    rfqEntityConcept,
+    attachmentConcept,
+    rfqAttachmentLinker
+  );
+
+  // the_rfq_s_item
+  // await CreateConnectionBetweenEntity(
+  //   rfqEntityConcept,
+  //   itemEntityConcept,
+  //   s_item_linker
+  // );
+  await CreateConnectionBetweenEntityLocal(
+    rfqEntityConcept,
+    itemEntityConcept,
+    s_item_linker
+  );
+  await SyncData.SyncDataOnline();
+
+  console.log("rfq completed");
+  closeModal("rfq-modal");
+}
+
+export async function addDocument() {
+  const attachmentEl = <HTMLInputElement>document.getElementById('attachment')
+  attachmentEl.addEventListener("change", (e: any) => {
+    console.log("e ->", e);
+    const files = e.target.files[0];
+    console.log("files", files);
+    // const docName = files.name;
+    // console.log("docName", docName);
+
+    // for (let i = 0; i < files.length; i++) {
+    //   const file = files.item(i);
+    //   const fileName = file.name;
+    //   console.log('document ->', file, fileName)
+    //   // this.uploadFile(file, fileName);
+    // }
+
+    // let formdata = new FormData();
+    // formdata.append("file", files);
+
+    uploadFile(files);
+  });
+
+  // event.target.value = null;
+}
+
+export async function uploadFile(files: any) {
+  console.log('files ->', files)
+
+  let formdata = new FormData();
+  formdata.append("file", files);
+  console.log("formdata ->", formdata);
+
+  const profileStorageData: any = await getLocalStorageData();
+  const userId = profileStorageData?.userId;
+  const token = profileStorageData?.token;
+
+  const myHeaders = new Headers();
+  // myHeaders.append("Content-Type", "application/json");
+  myHeaders.append("Authorization", `Bearer ${token}`);
+
+  const response = await fetch(
+    `${thetaBoommAPI}/api/Image/UploadFile`,
+    {
+      method: "POST",
+      headers: myHeaders,
+      body: formdata,
+      redirect: "follow",
+    }
+  );
+  if (!response.ok) {
+    const errorData = await response.text()
+    console.error(`${response.status} ${errorData}`)
+    return null
+  }
+  const output = await response.json();
+  console.log('output ->', output)
+  // rfqAttachment = output?.data
+
+  const attachmentValues = {
+    name: files?.name, 
+    size: files?.size,
+    type: files?.type,
+    url: output?.data
+  }
+
+  attachmentConcept = await createEntityInstance(
+    "attachment",
+    userId,
+    attachmentValues
+  );
+
+  console.log('attachmentConcept', attachmentConcept)
+  
 }
