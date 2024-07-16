@@ -1,4 +1,4 @@
-import { Concept, CreateConnectionBetweenTwoConcepts, CreateTheConnection, GetCompositionWithId, GetLink, GetTheConcept, MakeTheInstanceConcept, PatcherStructure, SyncData, UpdateComposition } from "mftsccs-browser";
+import { Concept, CreateConnectionBetweenTwoConcepts, CreateTheConnection, GetCompositionWithId, GetLink, GetTheConcept, MakeTheInstanceConcept, PatcherStructure, RecursiveSearchApi, SyncData, UpdateComposition } from "mftsccs-browser";
 import { IUser } from "../../interfaces/IUser.interface";
 // import { initTopNavigation } from "../../modules/top-nav/top-navigation.service";
 
@@ -122,6 +122,7 @@ export async function loadProfileDetails() {
     userId = Number(profileData?.userId)
     userConceptId = Number(profileData?.userConcept)
   }
+
   console.log('userId', userId)
 
   // const userProfileDetails = await GetCompositionWithId(userConceptId)

@@ -1,5 +1,6 @@
-import { ViewInternalData } from "mftsccs-browser";
+import { RecursiveSearchApi, SearchLinkInternal, SearchStructure, ViewInternalData } from "mftsccs-browser";
 import { environment } from "../../environments/environment.dev";
+import { getLocalStorageData } from "../../services/helper.service";
 
 const thetaBoommAPI = environment?.boomURL;
 
@@ -34,15 +35,25 @@ export async function getProducts() {
   return new Promise(async (resolve: any, reject: any) => {
     try {
 
-      await ViewInternalData(101112972);
-      const productList: any = await fetch(
-        `${thetaBoommAPI}/api/search-compositions-internal-clean?search=&type=&composition=the_item&inpage=100&page=1`
-      )
-        .then((res) => res.json())
-        .then((json) => {
-          console.log(json);
-          return json;
-        });
+       let search = new SearchStructure();
+       search.composition = "the_item";
+       search.inpage = 100;
+
+       const profileStorageData: any = await getLocalStorageData();
+       let token = profileStorageData?.token;
+       let values = await SearchLinkInternal(search,token);
+
+       console.log("this is the console data", values);  
+
+       const productList = values;
+      // const productList: any = await fetch(
+      //   `${thetaBoommAPI}/api/search-compositions-internal-clean?search=&type=&composition=the_item&inpage=100&page=1`
+      // )
+      //   .then((res) => res.json())
+      //   .then((json) => {
+      //     console.log(json);
+      //     return json;
+      //   });
 
       console.log("productList", productList);
 
@@ -56,10 +67,10 @@ export async function getProducts() {
         </div>
         <div class="mt-5">
           <div class="flex items-center justify-between">
-            <h6 class="font-semibold text-xl leading-8 text-black transition-all duration-500 group-hover:text-indigo-600">${product?.data?.the_item_name}</h6>
-            <h6 class="font-semibold text-xl leading-8 text-indigo-600">$${product?.data?.the_item_price}</h6>
+            <h6 class="font-semibold text-xl leading-8 text-black transition-all duration-500 group-hover:text-indigo-600">${product?.name}</h6>
+            <h6 class="font-semibold text-xl leading-8 text-indigo-600">$${product?.price}</h6>
           </div>
-          <p class="mt-2 font-normal text-sm leading-6 text-gray-500">${product?.data?.the_item_category}</p>
+          <p class="mt-2 font-normal text-sm leading-6 text-gray-500">${product?.category}</p>
         </div>
       </router-link>
     `;
