@@ -63,16 +63,16 @@ export async function getProductDetails(productId: number) {
         <div class="lg:grid lg:grid-cols-2 lg:gap-8 xl:gap-16" id="list-item">
           <div class="shrink-0 max-w-md lg:max-w-lg mx-auto">
             <img class="w-full" src="https://placehold.co/600x400" alt="" />
-            <!-- <img class="w-full hidden dark:block" src="${product?.image}" alt="" /> -->
+            <!-- <img class="w-full hidden dark:block" src="${product?.data?.image}" alt="" /> -->
           </div>
 
           <div class="mt-6 sm:mt-8 lg:mt-0">
             <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">
-              ${product?.name}
+              ${product?.data?.name}
             </h1>
             <div class="mt-4 sm:items-center sm:gap-4 sm:flex">
               <p class="text-2xl font-extrabold text-gray-900 sm:text-3xl dark:text-white">
-                $${product?.price}
+                $${product?.data?.price}
               </p>
             </div>
 
@@ -103,7 +103,7 @@ export async function getProductDetails(productId: number) {
             <hr class="my-6 md:my-8 border-gray-200 dark:border-gray-800" />
 
             <p class="mb-6 text-gray-500 dark:text-gray-400">
-              ${product?.description}
+              ${product?.data?.description}
             </p>
 
             <p class="mb-6 text-gray-500 dark:text-gray-400">

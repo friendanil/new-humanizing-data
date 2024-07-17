@@ -64,13 +64,14 @@ export async function createItem(formValues: any) {
   const userId = profileStorageData?.userId
   console.log('userId ->', userId)
 
+
   const itemEntityConcept = await MakeTheInstanceConceptLocal(
     'the_item',
     '',
     true,
     userId,
     4,
-    999,
+    999
   )
 
   console.log('itemEntityConcept ->', itemEntityConcept)
