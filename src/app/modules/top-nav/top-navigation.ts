@@ -13,7 +13,7 @@ export default `
     </router-link>
     <ul id="top-nav" class="hidden lg:flex lg:mx-auto lg:flex lg:items-center lg:mr-8 justify-end lg:w-auto lg:space-x-6">
       <li><router-link href="/dashboard" class="top-nav-item cursor-pointer text-sm text-gray-600 hover:text-gray-500">Dashboard</router-link></li>
-      <li><router-link href="/listing" class="top-nav-item cursor-pointer text-sm text-gray-600 hover:text-gray-500">Listing</router-link></li>
+      <li><router-link href="/listing" class="top-nav-item cursor-pointer text-sm text-gray-600 hover:text-gray-500">My Listing</router-link></li>
       <li><router-link href="/profile" class="top-nav-item cursor-pointer text-sm text-gray-600 hover:text-gray-500">Profile</router-link></li>
       <li><button type="button" class="cursor-pointer text-sm text-red-400 hover:text-red-700" onclick="logout()">Log out</button></li>
     </ul>

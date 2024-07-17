@@ -4,6 +4,8 @@ import {
   LConcept,
   LocalSyncData,
   MakeTheInstanceConceptLocal,
+  SearchLinkInternal,
+  SearchStructure,
 } from "mftsccs-browser";
 import { getLocalStorageData } from "../../services/helper.service";
 import { CreateConnectionBetweenEntityLocal } from "../../services/entity.service";
@@ -136,7 +138,13 @@ export async function updateItem(itemEntityConcept: any) {
   );
 
   const output = await sellerConceptResponse.json();
-  console.log("output ->", output);
+
+  // let search = new SearchStructure();
+  // search.composition = "the_seller";
+  // search.inpage = 100;
+  // const output = await SearchLinkInternal(search, token);
+
+  console.log("output the_seller ->", output);
 
   const sellerEntityId = Number(Object.keys(output)?.[0]);
   console.log("sellerEntityId ->", sellerEntityId);

@@ -1,14 +1,20 @@
-import { Concept, GetTheConcept, GetTheConceptLocal, LConcept, SyncData, ViewInternalData } from "mftsccs-browser";
+import { GetTheConceptLocal, LConcept, MakeTheInstanceConceptLocal, SyncData, ViewInternalData } from "mftsccs-browser";
 import { itemSkuLinker, rfqAttachmentLinker, s_item_linker } from "../../constants/type.constants";
 import { environment } from "../../environments/environment.dev";
 import { createEntityInstance } from "../../services/createEntityInstance.service";
-import { CreateConnectionBetweenEntity, CreateConnectionBetweenEntityLocal } from "../../services/entity.service";
+import { CreateConnectionBetweenEntityLocal } from "../../services/entity.service";
 import { getEntityByUserconceptId, getLocalStorageData } from "../../services/helper.service";
-import rfqModal from "../../modules/rfq-modal/rfq-modal";
+// import rfqModal from "../../modules/rfq-modal/rfq-modal";
+// import { rfqModalHTML } from "../../modules/rfq-modal/rfq-modal";
+
+import rfqModalHTML from "../../modules/rfq-modal/rfq-modal";
 
 const thetaBoommAPI = environment?.boomURL;
 // let rfqAttachment = ''
 let attachmentConcept: LConcept
+let rfqModalHTMLCode = `
+  <h1>Hey</h1>
+`
 
 // export async function getHTML() {
 //   try {
@@ -128,7 +134,7 @@ export async function getProductDetails(productId: number) {
             </section>
 
             <div id="rfq-modal" class="fixed hidden z-50 inset-0 bg-gray-900 bg-opacity-60 overflow-y-auto h-full w-full px-4">
-              ${rfqModal}
+              ${rfqModalHTMLCode}
             </div>
 
             <!-- <button class="bg-rose-500 text-white rounded-md px-4 py-2 hover:bg-rose-700 transition" onclick="openModal('modelConfirm')">
@@ -285,6 +291,8 @@ export async function getSkuDetails() {
         0
       );
 
+      rfqModalHTMLCode = await rfqModalHTML()
+
       resolve({
         totalStockIn: skuStockIn,
         totalStockOut: skuStockOut,
@@ -344,14 +352,18 @@ export async function openModal(modalId: string) {
       closeModal(modalId)
     }
   };
+
+  // if (modalId === 'rfq-modal') {
+  //   console.log('xxxyyyzzz')
+  //   rfqModalHTMLCode = await rfqModalHTML()
+  //   console.log('rfqModalHTMLCode', rfqModalHTMLCode)
+  // }
 }
 
 export async function closeModal(modalId: string) {
   const modal: any = document.getElementById(modalId);
-  console.log('modal', modal)
 
   const modalFormEl = modal.querySelector('form')
-  console.log('modalFormEl', modalFormEl)
   modalFormEl.reset()
 
   if (modal) modal.style.display = "none";
@@ -403,12 +415,12 @@ export async function createItemRFQ(formValues: any) {
   console.log("userId ->", userId);
 
   // buyerAgentEntity
-  const buyerAgentEntity = await getEntityByUserconceptId(Number(formValues?.buyeragent), token)
-  console.log('login userEntity ->', buyerAgentEntity)
+  const buyAgentEntityDetails = await getBuyerAgentData(Number(formValues?.buyeragent), token)
+  console.log('buyAgentEntityDetails', buyAgentEntityDetails)
 
   delete formValues.attachment
   formValues.buyer = profileStorageData?.entityId
-  formValues.buyeragent = buyerAgentEntity?.entity
+  // formValues.buyeragent = buyerAgentEntity?.entity
   console.log("createItem formValues 2 ->", formValues);
 
   // return
@@ -447,6 +459,78 @@ export async function createItemRFQ(formValues: any) {
 
   console.log("rfq completed");
   closeModal("rfq-modal");
+}
+
+export async function getBuyerAgentData(buyerAgentConceptId: number, token: string) {
+  let buyerAgentEntityConcept: LConcept;
+
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+  myHeaders.append("Authorization", `Bearer ${token}`);
+
+  const buyerAgentConceptResponse = await fetch(
+    `${thetaBoommAPI}/api/search-compositions-internal?search=&type=&composition=the_buyeragent&inpage=10&page=1`,
+    {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    }
+  );
+
+  const output = await buyerAgentConceptResponse.json();
+
+  // let search = new SearchStructure();
+  // search.composition = "the_seller";
+  // search.inpage = 100;
+  // const output = await SearchLinkInternal(search, token);
+
+  console.log("output the_buyerAgent ->", output);
+
+  const buyerAgentEntityId = Number(Object.keys(output)?.[0]);
+  console.log("buyerAgentEntityId ->", buyerAgentEntityId);
+
+  if (buyerAgentEntityId) {
+    console.log("IF")
+    buyerAgentEntityConcept = await GetTheConceptLocal(buyerAgentEntityId);
+  } else {
+    console.log("ELSE")
+
+    const entityDetails = await getEntityByUserconceptId(Number(buyerAgentConceptId), token)
+    console.log('buyer agent entityDetails ->', entityDetails)
+
+
+    // const entityDetails: any = await fetch(
+    //   `${thetaBoommAPI}/api/get-entity-from-user?userConceptId=${userConceptId}`
+    // )
+    //   .then((res) => res.json())
+    //   .then((json) => {
+    //     console.log(json);
+    //     return json;
+    //   });
+
+    console.log("entityDetails ->", entityDetails);
+    const entityId = entityDetails?.entity;
+
+    buyerAgentEntityConcept = await MakeTheInstanceConceptLocal(
+      "the_buyeragent",
+      entityId,
+      true,
+      999,
+      4,
+      999
+    );
+  }
+
+  console.log("buyerAgentEntityConcept ->", buyerAgentEntityConcept);
+
+  // await CreateConnectionBetweenEntityLocal(
+  //   buyerAgentEntityConcept,
+  //   itemEntityConcept,
+  //   "s_item"
+  // );
+
+  return buyerAgentEntityConcept;
+
 }
 
 export async function addDocument() {
