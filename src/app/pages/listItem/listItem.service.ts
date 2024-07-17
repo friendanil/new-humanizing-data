@@ -8,6 +8,7 @@ import { getEntityByUserconceptId, getLocalStorageData } from "../../services/he
 // import { rfqModalHTML } from "../../modules/rfq-modal/rfq-modal";
 
 import rfqModalHTML from "../../modules/rfq-modal/rfq-modal";
+import listModalHTML from "../../modules/list-modal/list-modal";
 
 const thetaBoommAPI = environment?.boomURL;
 // let rfqAttachment = ''
@@ -15,6 +16,7 @@ let attachmentConcept: LConcept
 let rfqModalHTMLCode = `
   <h1>Hey</h1>
 `
+let listModalHTMLCode = await listModalHTML()
 
 // export async function getHTML() {
 //   try {
@@ -120,6 +122,10 @@ export async function getProductDetails(productId: number) {
 
             <div class="max-w-screen-xl px-4 mx-auto 2xl:px-0 text-center py-8">
 
+            <button class="bg-green-500 text-white rounded-md px-4 py-2 hover:bg-green-700 transition" onclick="openModal('list-modal')">
+                List this Item
+              </button>
+
               <button class="bg-green-500 text-white rounded-md px-4 py-2 hover:bg-green-700 transition" onclick="openModal('rfq-modal')">
                 Add Request for Quote
               </button>
@@ -130,6 +136,10 @@ export async function getProductDetails(productId: number) {
               </button>
             </div>
             </section>
+
+            <div id="list-modal" class="fixed hidden z-50 inset-0 bg-gray-900 bg-opacity-60 overflow-y-auto h-full w-full px-4">
+              ${listModalHTMLCode}
+            </div>
 
             <div id="rfq-modal" class="fixed hidden z-50 inset-0 bg-gray-900 bg-opacity-60 overflow-y-auto h-full w-full px-4">
               ${rfqModalHTMLCode}
@@ -396,6 +406,13 @@ export async function closeModal(modalId: string) {
   //   }
   // };
 }
+
+// listing platform
+export async function submitListingForm(e: any) {
+  e.preventDefault()
+  console.log('submitListingForm clicked!')
+}
+
 
 export async function submitRFQForm(e: any) {
   e.preventDefault();
