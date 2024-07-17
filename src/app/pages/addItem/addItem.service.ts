@@ -4,8 +4,6 @@ import {
   LConcept,
   LocalSyncData,
   MakeTheInstanceConceptLocal,
-  SearchLinkInternal,
-  SearchStructure,
 } from "mftsccs-browser";
 import { getLocalStorageData } from "../../services/helper.service";
 import { CreateConnectionBetweenEntityLocal } from "../../services/entity.service";
@@ -81,6 +79,7 @@ export async function createItem(formValues: any) {
   const userId = profileStorageData?.userId;
   // console.log("userId ->", userId);
 
+
   const itemEntityConcept = await MakeTheInstanceConceptLocal(
     "the_item",
     itemName,
@@ -88,7 +87,7 @@ export async function createItem(formValues: any) {
     userId,
     4,
     999
-  );
+  )
 
   console.log("itemEntityConcept ->", itemEntityConcept);
 
