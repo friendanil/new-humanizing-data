@@ -9,6 +9,7 @@ import { getLocalStorageData } from "../../services/helper.service";
 import { CreateConnectionBetweenEntityLocal } from "../../services/entity.service";
 import { updateContent } from "../../routes/renderRoute.service";
 import { environment } from "../../environments/environment.dev";
+import { createEntityInstance } from "../../services/createEntityInstance.service";
 
 const thetaBoommAPI = environment?.boomURL;
 
@@ -79,14 +80,17 @@ export async function createItem(formValues: any) {
   const userId = profileStorageData?.userId;
   // console.log("userId ->", userId);
 
+  const itemNameConcept = await createEntityInstance('name', userId, {title: itemName})
+  console.log('itemNameConcept ->', itemNameConcept)
 
   const itemEntityConcept = await MakeTheInstanceConceptLocal(
     "the_item",
-    itemName,
+    '',
     true,
     userId,
     4,
-    999
+    999,
+    itemNameConcept?.id
   )
 
   console.log("itemEntityConcept ->", itemEntityConcept);

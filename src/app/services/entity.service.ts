@@ -3,8 +3,6 @@ import {
   Connection,
   CreateTheConnectionLocal,
   LConcept,
-  LConnection,
-  LocalSyncData,
   MakeTheTypeConceptApi,
   MakeTheTypeConceptLocal,
   SyncData,

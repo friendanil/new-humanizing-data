@@ -1,4 +1,4 @@
-import { GetTheConceptLocal, LConcept, MakeTheInstanceConceptLocal, SyncData, ViewInternalData } from "mftsccs-browser";
+import { GetTheConceptLocal, LConcept, MakeTheInstanceConceptLocal, SearchLinkMultipleAll, SearchQuery, SyncData, ViewInternalData } from "mftsccs-browser";
 import { itemSkuLinker, rfqAttachmentLinker, s_item_linker } from "../../constants/type.constants";
 import { environment } from "../../environments/environment.dev";
 import { createEntityInstance } from "../../services/createEntityInstance.service";
@@ -68,7 +68,7 @@ export async function getProductDetails(productId: number) {
       productDetails = `
         <div class="lg:grid lg:grid-cols-2 lg:gap-8 xl:gap-16" id="list-item">
           <div class="shrink-0 max-w-md lg:max-w-lg mx-auto">
-            <img class="w-full" src="https://placehold.co/600x400" alt="" />
+            <img class="w-full" src="https://placehold.co/600x600" alt="" />
             <!-- <img class="w-full hidden dark:block" src="${product?.data?.image}" alt="" /> -->
           </div>
 
@@ -217,48 +217,62 @@ export async function getSkuDetails() {
       let urlPath = location.pathname;
       let itemId = Number(urlPath.substring(10));
 
-      const queryParams = [
-        {
-          composition: itemId,
-          fullLinkers: ["the_item_s_sku"],
-          inpage: 100,
-          page: 1,
-          logic: "or",
-          filterSearches: [],
-        },
-        {
-          fullLinkers: [
-            "the_sku_stockIn",
-            "the_sku_stockOut",
-            "the_sku_stockRemaining",
-          ],
-          inpage: 100,
-          page: 1,
-          logic: "or",
-          filterSearches: [],
-        },
+      let searchfirst = new SearchQuery();
+      searchfirst.composition = itemId
+      searchfirst.fullLinkers = ["the_item_s_sku"]
+      searchfirst.inpage = 100
+
+      let searchsecond = new SearchQuery();
+      searchsecond.fullLinkers = [
+        "the_sku_stockIn",
+        "the_sku_stockOut",
+        "the_sku_stockRemaining",
       ];
+      searchsecond.inpage = 100
 
-      // {{theta}}/Connection/search-link-multiple-clean
-      // Authorization: 'Bearer ' + token
+      const queryParams = [searchfirst, searchsecond];
+      const output = await SearchLinkMultipleAll(queryParams)
+      console.log('output ->', output)
 
-      const profileStorageData: any = await getLocalStorageData();
-      const token = profileStorageData?.token;
+      // const queryParams = [
+      //   {
+      //     composition: itemId,
+      //     fullLinkers: ["the_item_s_sku"],
+      //     inpage: 100,
+      //     page: 1,
+      //     logic: "or",
+      //     filterSearches: [],
+      //   },
+      //   {
+      //     fullLinkers: [
+      //       "the_sku_stockIn",
+      //       "the_sku_stockOut",
+      //       "the_sku_stockRemaining",
+      //     ],
+      //     inpage: 100,
+      //     page: 1,
+      //     logic: "or",
+      //     filterSearches: [],
+      //   },
+      // ];
 
-      const myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-      myHeaders.append("Authorization", `Bearer ${token}`);
+      // const profileStorageData: any = await getLocalStorageData();
+      // const token = profileStorageData?.token;
 
-      const response = await fetch(
-        `${thetaBoommAPI}/api/Connection/search-link-multiple-clean`,
-        {
-          method: "POST",
-          headers: myHeaders,
-          body: JSON.stringify(queryParams),
-          redirect: "follow",
-        }
-      );
-      const output = await response.json();
+      // const myHeaders = new Headers();
+      // myHeaders.append("Content-Type", "application/json");
+      // myHeaders.append("Authorization", `Bearer ${token}`);
+
+      // const response = await fetch(
+      //   `${thetaBoommAPI}/api/Connection/search-link-multiple-clean`,
+      //   {
+      //     method: "POST",
+      //     headers: myHeaders,
+      //     body: JSON.stringify(queryParams),
+      //     redirect: "follow",
+      //   }
+      // );
+      // const output = await response.json();
 
       // sku summary
       const skuData = output?.data?.the_item?.the_item_s_sku;
@@ -418,6 +432,7 @@ export async function createItemRFQ(formValues: any) {
 
   delete formValues.attachment
   formValues.buyer = profileStorageData?.entityId
+  formValues.timestamp = new Date().toISOString()
   // formValues.buyeragent = buyerAgentEntity?.entity
   console.log("createItem formValues 2 ->", formValues);
 

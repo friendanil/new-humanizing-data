@@ -1,8 +1,8 @@
-import { RecursiveSearchApi, SearchLinkInternal, SearchStructure, ViewInternalData } from "mftsccs-browser";
-import { environment } from "../../environments/environment.dev";
+import { SearchLinkInternal, SearchStructure } from "mftsccs-browser";
+// import { environment } from "../../environments/environment.dev";
 import { getLocalStorageData } from "../../services/helper.service";
 
-const thetaBoommAPI = environment?.boomURL;
+// const thetaBoommAPI = environment?.boomURL;
 
 export async function getHTML() {
   try {
