@@ -55,6 +55,7 @@ export async function getProductDetails(productId: number) {
     // });
 
     console.log("product", product);
+    if (!product?.data.image) product.data.image = 'https://placehold.co/600x600'
     //console.log("product?.errors", product?.errors);
 
     let productDetails: string = "";
@@ -70,8 +71,8 @@ export async function getProductDetails(productId: number) {
       productDetails = `
         <div class="lg:grid lg:grid-cols-2 lg:gap-8 xl:gap-16" id="list-item">
           <div class="shrink-0 max-w-md lg:max-w-lg mx-auto">
-            <img class="w-full" src="https://placehold.co/600x600" alt="" />
-            <!-- <img class="w-full hidden dark:block" src="${product?.data?.image}" alt="" /> -->
+            <!-- <img class="w-full" src="https://placehold.co/600x600" alt="" /> -->
+            <img class="w-full border" src="${product?.data?.image}" alt="item image" />
           </div>
 
           <div class="mt-6 sm:mt-8 lg:mt-0">

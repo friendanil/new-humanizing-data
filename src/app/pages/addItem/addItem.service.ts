@@ -12,6 +12,8 @@ import { environment } from "../../environments/environment.dev";
 import { createEntityInstance } from "../../services/createEntityInstance.service";
 
 const thetaBoommAPI = environment?.boomURL;
+let attachmentValues: any
+let attachmentConcept
 
 export async function getHTML() {
   try {
@@ -94,6 +96,9 @@ export async function createItem(formValues: any) {
   )
 
   console.log("itemEntityConcept ->", itemEntityConcept);
+  delete formValues.itemAttachment
+  formValues.image = attachmentValues?.url
+  console.log('final formValues ->', formValues)
 
   for (const [key, value] of Object.entries(formValues)) {
     let ObjKey = key;
@@ -187,4 +192,78 @@ export async function updateItem(itemEntityConcept: any) {
   );
 
   return sellerEntityConcept;
+}
+
+export async function addItemDocument() {
+  const attachmentEl = <HTMLInputElement>document.getElementById('itemAttachment')
+  attachmentEl.addEventListener("change", (e: any) => {
+    // console.log("e ->", e);
+    const files = e.target.files[0];
+    // console.log("files", files);
+    // const docName = files.name;
+    // console.log("docName", docName);
+
+    // for (let i = 0; i < files.length; i++) {
+    //   const file = files.item(i);
+    //   const fileName = file.name;
+    //   console.log('document ->', file, fileName)
+    //   // this.uploadFile(file, fileName);
+    // }
+
+    // let formdata = new FormData();
+    // formdata.append("file", files);
+
+    uploadFile(files);
+  });
+
+  // event.target.value = null;
+}
+
+export async function uploadFile(files: any) {
+  console.log('files ->', files)
+
+  let formdata = new FormData();
+  formdata.append("image", files);
+  // console.log("formdata ->", formdata);
+
+  const profileStorageData: any = await getLocalStorageData();
+  const userId = profileStorageData?.userId;
+  const token = profileStorageData?.token;
+
+  const myHeaders = new Headers();
+  // myHeaders.append("Content-Type", "application/json");
+  myHeaders.append("Authorization", `Bearer ${token}`);
+
+  const response = await fetch(
+    `${thetaBoommAPI}/api/Image/UploadImage`,
+    {
+      method: "POST",
+      headers: myHeaders,
+      body: formdata,
+      redirect: "follow",
+    }
+  );
+  if (!response.ok) {
+    const errorData = await response.text()
+    console.error(`${response.status} ${errorData}`)
+    return null
+  }
+  const output = await response.json();
+  // console.log('output ->', output)
+
+  attachmentValues = {
+    name: files?.name, 
+    size: files?.size,
+    type: files?.type,
+    url: output?.data
+  }
+
+  attachmentConcept = await createEntityInstance(
+    "attachment",
+    userId,
+    attachmentValues
+  );
+
+  // console.log('attachmentConcept', attachmentConcept)
+  
 }

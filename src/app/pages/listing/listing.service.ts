@@ -59,21 +59,22 @@ export async function getProducts() {
 
       const listingItems = await productList
         .map((product: any) => {
+          if (!product?.data?.image) product.data.image = "https://placehold.co/600x600"
           return `
-      <router-link href="/listitem/${product?.id}" class="mx-auto border sm:mr-0 group cursor-pointer lg:mx-auto bg-white transition-all duration-500">
-        <div class="">
-          <!-- <img src="${product.image}" alt="face cream image" class="w-full aspect-square">-->
-          <img src="https://placehold.co/600x600" alt="face cream image" class="w-full aspect-square">
-        </div>
-        <div class="p-4">
-          <div class="flex items-center justify-between">
-            <h6 class="font-semibold text-xl leading-8 text-black transition-all duration-500 group-hover:text-indigo-600">${product?.data?.name}</h6>
-            <h6 class="font-semibold text-xl leading-8 text-indigo-600">$${product?.data?.price}</h6>
-          </div>
-          <p class="mt-2 font-normal text-sm leading-6 text-gray-500">${product?.data?.category}</p>
-        </div>
-      </router-link>
-    `;
+            <router-link href="/listitem/${product?.id}" class="mx-auto border sm:mr-0 group cursor-pointer lg:mx-auto bg-white transition-all duration-500">
+              <div class="">
+                <img src="${product?.data?.image}" alt="face cream image" class="w-full border aspect-square">
+                <!-- <img src="https://placehold.co/600x600" alt="face cream image" class="w-full aspect-square"> -->
+              </div>
+              <div class="p-4">
+                <div class="flex items-center justify-between">
+                  <h6 class="font-semibold text-xl leading-8 text-black transition-all duration-500 group-hover:text-indigo-600">${product?.data?.name}</h6>
+                  <h6 class="font-semibold text-xl leading-8 text-indigo-600">$${product?.data?.price}</h6>
+                </div>
+                <p class="mt-2 font-normal text-sm leading-6 text-gray-500">${product?.data?.category}</p>
+              </div>
+            </router-link>
+          `;
         })
         .join("");
 

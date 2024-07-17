@@ -1,8 +1,7 @@
 import mainViewClass from "../../default/mainView.class";
 import topNavigation from "../../modules/top-nav/top-navigation";
-// import { getHTML } from "./addItem.service";
 
-import { submitAddItemForm } from "./addItem.service";
+import { addItemDocument, submitAddItemForm } from "./addItem.service";
 
 export default class extends mainViewClass {
   constructor(params: any) {
@@ -13,9 +12,7 @@ export default class extends mainViewClass {
   async getHtml() {
     // Attach the function to the global window object
     (window as any).submitAddItemForm = submitAddItemForm;
-
-    // const loadHTML = await getHTML()
-    // ${loadHTML}
+    (window as any).addItemDocument = addItemDocument;
 
     return `
       ${topNavigation}
@@ -42,6 +39,15 @@ export default class extends mainViewClass {
               <option value="category2">Real State</option>
               <option value="category3">Fabrics</option>
             </select>
+          </div>
+
+          <div class="my-4">
+            <label for="itemAttachment" class="block text-sm font-medium leading-6 text-gray-900">Item Images<span
+                class="text-rose-400">*</span></label>
+            <div class="mt-2">
+              <input type="file" accept=".png, .jpg, .jpeg" onclick="addItemDocument()" name="itemAttachment" id="itemAttachment" autocomplete="item-attachment"
+                class="block w-full rounded-md border-0 px-3 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-md sm:text-sm sm:leading-6">
+            </div>
           </div>
 
           <div class="my-4">
