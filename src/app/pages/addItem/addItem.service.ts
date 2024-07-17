@@ -264,6 +264,6 @@ export async function uploadFile(files: any) {
     attachmentValues
   );
 
-  // console.log('attachmentConcept', attachmentConcept)
+  console.log('attachmentConcept', attachmentConcept)
   
 }

@@ -5,7 +5,7 @@ import { updateContent } from "../../routes/renderRoute.service";
 import { getEntityByUserconceptId } from "../../services/helper.service";
 
 const baseURL = environment?.baseURL
-const boomconsoleURL = environment?.boomURL
+// const boomconsoleURL = environment?.boomURL
 
 const signin = async (signinData: any) => {
   const loginURL = `${baseURL}/signin`;

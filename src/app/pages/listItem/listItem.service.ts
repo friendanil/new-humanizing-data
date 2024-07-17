@@ -1,4 +1,4 @@
-import { GetTheConceptLocal, LConcept, MakeTheInstanceConceptLocal, SearchLinkMultipleAll, SearchQuery, SyncData, ViewInternalData } from "mftsccs-browser";
+import { GetTheConceptLocal, LConcept, LocalSyncData, MakeTheInstanceConceptLocal, SearchLinkMultipleAll, SearchQuery, SyncData, ViewInternalData } from "mftsccs-browser";
 import { itemSkuLinker, rfqAttachmentLinker, s_item_linker } from "../../constants/type.constants";
 import { environment } from "../../environments/environment.dev";
 import { createEntityInstance } from "../../services/createEntityInstance.service";
@@ -16,7 +16,9 @@ let attachmentConcept: LConcept
 let rfqModalHTMLCode = `
   <h1>Hey</h1>
 `
-let listModalHTMLCode = await listModalHTML()
+let listModalHTMLCode = `
+  <h1>List Modal</h1>
+`
 
 // export async function getHTML() {
 //   try {
@@ -228,6 +230,9 @@ export async function getSkuDetails() {
       let urlPath = location.pathname;
       let itemId = Number(urlPath.substring(10));
 
+      const profileStorageData: any = await getLocalStorageData();
+      const token = profileStorageData?.token;
+
       let searchfirst = new SearchQuery();
       searchfirst.composition = itemId
       searchfirst.fullLinkers = ["the_item_s_sku"]
@@ -242,7 +247,7 @@ export async function getSkuDetails() {
       searchsecond.inpage = 100
 
       const queryParams = [searchfirst, searchsecond];
-      const output = await SearchLinkMultipleAll(queryParams)
+      const output = await SearchLinkMultipleAll(queryParams, token)
       console.log('output ->', output)
 
       // const queryParams = [
@@ -314,6 +319,7 @@ export async function getSkuDetails() {
         0
       );
 
+      listModalHTMLCode = await listModalHTML()
       rfqModalHTMLCode = await rfqModalHTML()
 
       resolve({
@@ -336,6 +342,7 @@ export async function submitUpdateSKUForm(e: any) {
 }
 
 export async function createItemSKU(formValues: any) {
+  console.log('formValues SKU ->', formValues)
   let urlPath = location.pathname;
   let itemId = Number(urlPath.substring(10));
 
@@ -357,7 +364,7 @@ export async function createItemSKU(formValues: any) {
     skuEntityConcept,
     itemSkuLinker
   );
-  await SyncData.SyncDataOnline();
+  await LocalSyncData.SyncDataOnline();
 
   closeModal("modelConfirm");
 }

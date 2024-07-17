@@ -4,12 +4,16 @@ import { IUser } from "../interfaces/IUser.interface";
 const boomconsoleURL = environment?.boomURL;
 
 export async function getLocalStorageData() {
-  let dataFromLocalStorage: string = localStorage?.getItem("profile") || "";
-  if (dataFromLocalStorage) {
-    const profileData: IUser = JSON.parse(dataFromLocalStorage);
-    return profileData;
-  }
-  return;
+  return new Promise((resolve: any) => {
+    let dataFromLocalStorage: string = localStorage?.getItem("profile") || "";
+    if (dataFromLocalStorage) {
+      const profileData: IUser = JSON.parse(dataFromLocalStorage);
+      // return profileData;
+      resolve(profileData);
+    } else {
+      resolve();
+    }
+  });
 }
 
 export async function getEntityByUserconceptId(
