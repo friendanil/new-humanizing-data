@@ -22,7 +22,7 @@ export default class extends mainViewClass {
     return `
       ${topNavigation}
       <section class="py-8">
-        <div class="p-10 text-center dark:text-white" id="item-list-loader">
+        <div class="p-10 text-center text-zinc-900 dark:text-white" id="item-list-loader">
           <h5>Loading...</h5>
         </div>
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 hidden" id="item-list-container">

@@ -4,9 +4,9 @@ import { submitListingForm } from "../../pages/listItem/listItem.service";
 export default async function listModalHTML() {
 
   return `
-    <div class="relative top-20 mx-auto shadow-xl rounded-md bg-white max-w-md">
+    <div class="relative top-20 mx-auto shadow-xl rounded-md bg-white max-w-md text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">
     <div class="flex justify-between px-4 pt-4">
-      <h3 class="text-xl font-normal text-gray-500 my-0">List the Item</h3>
+      <h3 class="text-xl font-normal my-0">List the Item</h3>
       <button onclick="closeModal('list-modal')" type="button"
         class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center">
         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -53,10 +53,10 @@ export default async function listModalHTML() {
         </div> -->
 
         <div class="my-4">
-          <label for="listingPlatform" class="block text-sm font-medium leading-6 text-gray-900">Listing platform<span
+          <label for="listingPlatform" class="block text-sm font-medium leading-6">Listing platform<span
             class="text-rose-400">*</span></label>
           <select id="listingPlatform" name="listingPlatform" autocomplete="listing-platform"
-            class="block w-full rounded-md border-0 px-3 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-md sm:text-sm sm:leading-6">
+            class="block w-full rounded-md border-0 px-3 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-md sm:text-sm sm:leading-6 text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">
             <option value="" disabled selected>--- select listing platform ---</option>
             <option value="boomconsole">Boomconsole Listing</option>
             <option value="humanizingdata">Humanizing Data</option>
@@ -66,7 +66,7 @@ export default async function listModalHTML() {
 
         <div class="text-right">
           <button type="button" onclick="closeModal('list-modal')"
-            class="text-gray-900 bg-white hover:bg-gray-100 focus:ring-4 focus:ring-cyan-200 border border-gray-200 font-medium inline-flex items-center rounded-lg text-base px-3 py-2.5 text-center"
+            class="text-gray-900 bg-white hover:bg-gray-300 focus:ring-4 focus:ring-cyan-200 border border-gray-200 font-medium inline-flex items-center rounded-lg text-base px-3 py-2.5 text-center"
             data-modal-toggle="delete-user-modal">
             Cancel
           </button>

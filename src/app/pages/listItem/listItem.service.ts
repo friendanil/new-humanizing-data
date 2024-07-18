@@ -140,11 +140,11 @@ export async function getProductDetails(productId: number) {
             </div>
             </section>
 
-            <div id="list-modal" class="fixed hidden z-50 inset-0 bg-gray-900 bg-opacity-60 overflow-y-auto h-full w-full px-4">
+            <div id="list-modal" class="fixed hidden z-50 inset-0 bg-gray-900 bg-opacity-60 dark:bg-gray-200 dark:bg-opacity-40 overflow-y-auto h-full w-full px-4">
               ${listModalHTMLCode}
             </div>
 
-            <div id="rfq-modal" class="fixed hidden z-50 inset-0 bg-gray-900 bg-opacity-60 overflow-y-auto h-full w-full px-4">
+            <div id="rfq-modal" class="fixed hidden z-50 inset-0 bg-gray-900 bg-opacity-60 dark:bg-gray-200 dark:bg-opacity-40 overflow-y-auto h-full w-full px-4">
               ${rfqModalHTMLCode}
             </div>
 
@@ -155,10 +155,10 @@ export async function getProductDetails(productId: number) {
             <!-- https://tailwindflex.com/@lukas-muller/modal-popup -->
 
             <div id="modelConfirm"
-              class="fixed hidden z-50 inset-0 bg-gray-900 bg-opacity-60 overflow-y-auto h-full w-full px-4 ">
-              <div class="relative top-20 mx-auto shadow-xl rounded-md bg-white max-w-md">
+              class="fixed hidden z-50 inset-0 bg-gray-900 bg-opacity-60 dark:bg-gray-200 dark:bg-opacity-40 overflow-y-auto h-full w-full px-4 ">
+              <div class="relative top-20 mx-auto shadow-xl rounded-md bg-white max-w-md text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">
                 <div class="flex justify-between px-4 pt-4">
-                  <h3 class="text-xl font-normal text-gray-500 my-0">SKU Details</h3>
+                  <h3 class="text-xl font-normal text-zinc-900 dark:text-white my-0">SKU Details</h3>
                   <button onclick="closeModal('modelConfirm')" type="button"
                     class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center">
                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -173,33 +173,33 @@ export async function getProductDetails(productId: number) {
                   <form method="post" action="/" onsubmit="submitUpdateSKUForm(event)" name="updateSKUForm"
                     id="update-sku-form">
                     <div class="my-4">
-                      <label for="stockIn" class="block text-sm font-medium leading-6 text-gray-900">Stock In<span
+                      <label for="stockIn" class="block text-sm font-medium leading-6">Stock In<span
                           class="text-rose-400">*</span></label>
                       <div class="mt-2">
                         <input type="number" name="stockIn" id="stockIn" autocomplete="sku-stockIn"
-                          class="block w-full rounded-md border-0 px-3 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-md sm:text-sm sm:leading-6">
+                          class="block w-full rounded-md border-0 px-3 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-md sm:text-sm sm:leading-6 text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">
                       </div>
                     </div>
                     <div class="my-4">
-                      <label for="stockOut" class="block text-sm font-medium leading-6 text-gray-900">Stock Out<span
+                      <label for="stockOut" class="block text-sm font-medium leading-6">Stock Out<span
                           class="text-rose-400">*</span></label>
                       <div class="mt-2">
                         <input type="number" name="stockOut" id="stockOut" autocomplete="sku-stockOut"
-                          class="block w-full rounded-md border-0 px-3 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-md sm:text-sm sm:leading-6">
+                          class="block w-full rounded-md border-0 px-3 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-md sm:text-sm sm:leading-6 text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">
                       </div>
                     </div>
                     <div class="my-4">
-                      <label for="stockRemaining" class="block text-sm font-medium leading-6 text-gray-900">Stock Remaining<span
+                      <label for="stockRemaining" class="block text-sm font-medium leading-6">Stock Remaining<span
                           class="text-rose-400">*</span></label>
                       <div class="mt-2">
                         <input type="number" name="stockRemaining" id="stockRemaining" autocomplete="sku-stockRemaining"
-                          class="block w-full rounded-md border-0 px-3 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-md sm:text-sm sm:leading-6">
+                          class="block w-full rounded-md border-0 px-3 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-md sm:text-sm sm:leading-6 text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">
                       </div>
                     </div>
 
                     <div class="text-right">
                       <button type="button" onclick="closeModal('modelConfirm')"
-                        class="text-gray-900 bg-white hover:bg-gray-100 focus:ring-4 focus:ring-cyan-200 border border-gray-200 font-medium inline-flex items-center rounded-lg text-base px-3 py-2.5 text-center"
+                        class="text-gray-900 bg-white hover:bg-gray-300 focus:ring-4 focus:ring-cyan-200 border border-gray-200 font-medium inline-flex items-center rounded-lg text-base px-3 py-2.5 text-center"
                         data-modal-toggle="delete-user-modal">
                         Cancel
                       </button>

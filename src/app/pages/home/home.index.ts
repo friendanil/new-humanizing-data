@@ -24,7 +24,7 @@ export default class extends mainViewClass {
       <router-link href="/dashboard"
         class="bg-green-600 hover:bg-green-900 text-white text-sm leading-6 font-medium py-2 px-3 rounded-lg">Dashboard</router-link> -->
 
-      <div class="w-full px-8 py-24 text-center bg-slate-200 dark:text-white dark:bg-gray-700">
+      <div class="w-full px-8 py-24 text-center bg-slate-200 text-zinc-900 dark:text-white dark:bg-gray-700">
         <div class="lg:w-1/2 mx-auto">
           <h1 class="my-4">Humanizing Data</h1>
           <h2 class="text-2xl">using the best practices to find staff and develop the software concepts you want.</h2>
@@ -40,7 +40,7 @@ export default class extends mainViewClass {
       </div>
 
       <!-- About -->
-      <div class="py-8 dark:text-white dark:bg-gray-900">
+      <div class="py-8 text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">
         <h2 class="text-center text-5xl">ABOUT US</h2>
         <div class="w-4/5 flex justify-center mx-auto my-8 gap-8">
           <div class="w-1/2">

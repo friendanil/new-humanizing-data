@@ -57,7 +57,7 @@ export async function submitAddItemForm(e: any) {
   }
 
   const itemConceptResponse = await createItem(formValues);
-  await LocalSyncData.SyncDataOnline();
+  // await LocalSyncData.SyncDataOnline();
 
   // the_seller_s_item
   const sellerItemResponse = await updateItem(itemConceptResponse);
