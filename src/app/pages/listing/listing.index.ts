@@ -9,7 +9,7 @@ export default class extends mainViewClass {
   }
 
   async getHtml() {
-    let prouductList: any = ''
+    // let prouductList: any = ''
     // setTimeout(async () => {
     //   prouductList = await getProducts()
     // }, 100);
@@ -34,7 +34,6 @@ export default class extends mainViewClass {
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8" id="product-listings">
-            ${prouductList}
           </div>
         </div>
       </section>

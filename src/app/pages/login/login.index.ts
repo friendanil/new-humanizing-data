@@ -31,9 +31,10 @@ export default class extends mainViewClass {
             <label for="password" class="block w-full mt-5">Password</label>
             <input type="password" name="password" id="password" autocomplete="current-password" class="h-10 border mt-1 rounded px-4 w-full md:w-1/2 text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900" value="" placeholder="******" />
 
-            <div class="block w-full md:w-1/2 mt-5">
+            <div class="block w-full md:w-1/2 mt-5" id="login-submit">
               <button id="login-btn" type="submit" class="bg-green-700 hover:bg-green-900 text-white py-2 px-4 rounded-md w-full">Submit</button>
             </div>
+            
           </form>
         </div>
       </div>
