@@ -1,7 +1,8 @@
-import homeNavigation from "../../modules/home-nav/home-navigation";
+// import homeNavigation from "../../modules/home-nav/home-navigation";
 // import AbstractView from "../listItem/AbstractView";
 import mainViewClass from "../../default/mainView.class";
 import initNavigation from "../../modules/home-nav/home-navigation.service";
+import loadHomeNavHTML from "../../modules/home-nav/home-navigation";
 
 export default class extends mainViewClass {
   constructor(params: any) {
@@ -14,8 +15,11 @@ export default class extends mainViewClass {
       initNavigation()
     }, 100);
 
+    const mainNavigation = await loadHomeNavHTML()
+    
+    // ${homeNavigation}
     return `
-    ${homeNavigation}
+      ${mainNavigation}
       <!-- <h1>Home page</h1>
       <router-link href="/login"
         class="bg-green-600 hover:bg-green-900 text-white text-sm leading-6 font-medium py-2 px-3 rounded-lg">Login</router-link>

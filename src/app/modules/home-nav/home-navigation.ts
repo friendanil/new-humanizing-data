@@ -1,6 +1,24 @@
 import initNavigation from "./home-navigation.service";
+import { checkLogIn } from "./home-navigation.service";
 
-export default `
+export default async function loadHomeNavHTML() {
+  const loginStatus = await checkLogIn();
+  let homeButtonHTML: string;
+  if (loginStatus) {
+    homeButtonHTML = `
+      <router-link href="/dashboard"
+        class="block px-4 py-3 mb-2 leading-loose text-xs text-center text-white font-semibold bg-green-800 hover:bg-green-700 rounded-xl cursor-pointer">Dashboard</router-link>
+    `;
+  } else {
+    homeButtonHTML = `
+      <router-link href="/login"
+        class="block px-4 py-3 mb-2 mr-2 leading-loose text-xs text-center text-white font-semibold bg-green-600 hover:bg-green-700 rounded-xl cursor-pointer">Login</router-link>
+      <router-link href="/signup"
+        class="block px-4 py-3 mb-2 leading-loose text-xs text-center text-white font-semibold bg-green-600 hover:bg-green-700 rounded-xl cursor-pointer">Signup</router-link>
+    `;
+  }
+
+  return `
   <nav class="relative px-4 py-4 flex justify-between items-center bg-white shadow-md z-10">
     <router-link href="/" class="cursor-pointer hover:opacity-85">
       <img src="./images/humanizing-data.png" alt="humanizing data logo" class="w-16 md:w-32 lg:w-48">
@@ -25,10 +43,12 @@ export default `
         <router-link href="/" class="cursor-pointer text-sm text-gray-400 hover:text-gray-500">Career</router-link>
       </ul>
 
-      <router-link href="/login"
+      <!-- <router-link href="/login"
         class="block px-4 py-3 mb-2 mr-2 leading-loose text-xs text-center text-white font-semibold bg-green-600 hover:bg-green-700 rounded-xl cursor-pointer">Login</router-link>
       <router-link href="/signup"
-        class="block px-4 py-3 mb-2 leading-loose text-xs text-center text-white font-semibold bg-green-600 hover:bg-green-700 rounded-xl cursor-pointer">Signup</router-link>
+        class="block px-4 py-3 mb-2 leading-loose text-xs text-center text-white font-semibold bg-green-600 hover:bg-green-700 rounded-xl cursor-pointer">Signup</router-link> -->
+
+      ${homeButtonHTML}      
 
     </div>
   </nav>
@@ -76,14 +96,15 @@ export default `
       </div>
       <div class="mt-auto">
         <div class="pt-6">
-          <router-link href="/login"
+          <!-- <router-link href="/login"
             class="block px-4 py-3 mb-3 leading-loose text-xs text-center font-semibold leading-none bg-green-50 hover:bg-green-100 rounded-xl">Login</router-link>
           <router-link href="/signup"
-            class="block px-4 py-3 mb-2 leading-loose text-xs text-center text-white font-semibold bg-green-600 hover:bg-green-700 rounded-xl">Signup</router-link>
+            class="block px-4 py-3 mb-2 leading-loose text-xs text-center text-white font-semibold bg-green-600 hover:bg-green-700 rounded-xl">Signup</router-link> -->
         </div>
       </div>
     </nav>
   </div>
 `;
+}
 
 initNavigation();

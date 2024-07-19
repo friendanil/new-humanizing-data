@@ -1,3 +1,5 @@
+import { getLocalStorageData } from "../../services/helper.service";
+
 export default function initNavigation() {
 
   // light/dark mode switcher
@@ -75,4 +77,10 @@ export default function initNavigation() {
       }
     }
   });
+}
+
+export async function checkLogIn() {
+  const storageData: any = await getLocalStorageData()
+  const isLoggedIn = storageData?.token ? true : false
+  return isLoggedIn
 }
