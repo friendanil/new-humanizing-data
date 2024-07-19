@@ -7,7 +7,6 @@ export default class extends mainViewClass {
   constructor(params: any) {
     super(params);
     this.setTitle('Listing Item');
-    console.log('PROFILE PAGE')
   }
 
   async getHtml(): Promise<string> {

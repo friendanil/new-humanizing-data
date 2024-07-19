@@ -1,12 +1,8 @@
 export default function initNavigation() {
-  console.log("HOME INIT NAVIGATION");
 
   // light/dark mode switcher
   const sunIcon = document.querySelector(".sun");
   const moonIcon = document.querySelector(".moon");
-
-  console.log("sunIcon ->", sunIcon);
-  console.log("moonIcon ->", moonIcon);
 
   // Function to set theme based on user preference
   function setTheme(theme: string) {

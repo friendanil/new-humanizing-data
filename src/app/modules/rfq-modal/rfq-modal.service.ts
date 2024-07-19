@@ -4,8 +4,6 @@ import { getLocalStorageData } from "../../services/helper.service";
 const thetaBoommAPI = environment?.boomURL;
 
 export async function getBuyerAgents() {
-  console.log("getBuyerAgents");
-
   const profileStorageData: any = await getLocalStorageData();
   const token = profileStorageData?.token;
 
@@ -34,7 +32,6 @@ export async function getBuyerAgents() {
     }
   );
   const output = await response.json();
-  console.log('output buyeragents -> ', output)
 
   const buyerAgentList = output?.[0]?.buyerAgent_agent?.buyerAgent_agent_s_isAgent_by
   console.log('buyerAgentList', buyerAgentList)
@@ -42,9 +39,6 @@ export async function getBuyerAgents() {
   const buyerAgentOptions = buyerAgentList?.map((buyerAgent: any) => {
     return `<option value="${buyerAgent?.the_user?.id}">${buyerAgent?.the_user?.data?.entity?.data?.person?.data?.first_name} ${buyerAgent?.the_user?.data?.entity?.data?.person?.data?.last_name}</option>`
   })
-  console.log('buyerAgentOptions ->', buyerAgentOptions)
 
-
-  // return [1, 2, 3];
   return buyerAgentOptions
 }

@@ -12,8 +12,6 @@ export default class extends mainViewClass {
       .then(json => {
         return json;
       });
-    console.log(product, 'product');
-    console.log('product title', product.title);
     if (product) {
       return `
       <h1>Welcome back, Post</h1>

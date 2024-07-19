@@ -33,7 +33,6 @@ export async function getEntityByUserconceptId(
       }
     );
     const userEntity = await response.json();
-    console.log("userEntity ->", userEntity);
     return userEntity;
   } catch (error) {
     console.error(error);

@@ -1,4 +1,4 @@
-import { GetTheConceptLocal, LConcept, LocalSyncData, MakeTheInstanceConceptLocal, SearchLinkMultipleAll, SearchQuery, SyncData, ViewInternalData } from "mftsccs-browser";
+import { GetTheConceptLocal, LConcept, LocalSyncData, MakeTheInstanceConceptLocal, SearchLinkMultipleAll, SearchQuery, ViewInternalData } from "mftsccs-browser";
 import { itemSkuLinker, rfqAttachmentLinker, s_item_linker } from "../../constants/type.constants";
 import { environment } from "../../environments/environment.dev";
 import { createEntityInstance } from "../../services/createEntityInstance.service";
@@ -19,6 +19,7 @@ let rfqModalHTMLCode = `
 let listModalHTMLCode = `
   <h1>List Modal</h1>
 `
+let listingItem: any
 
 // export async function getHTML() {
 //   try {
@@ -48,7 +49,6 @@ export async function getProductDetails(productId: number) {
     //   if (res.ok) {
     //     return res.json();
     //   } else {
-    //     console.log("error status ->", res.status);
     //     // if (res.status === 404) throw new Error("404, Not found");
     //     // if (res.status === 500) throw new Error("500, internal server error");
     //     // throw new Error(res.status);
@@ -57,8 +57,8 @@ export async function getProductDetails(productId: number) {
     // });
 
     console.log("product", product);
+    listingItem = product
     if (!product?.data.image) product.data.image = 'https://placehold.co/600x600'
-    //console.log("product?.errors", product?.errors);
 
     let productDetails: string = "";
 
@@ -70,6 +70,13 @@ export async function getProductDetails(productId: number) {
       `;
     } else {
       const skuData: any = await getSkuDetails();
+      let listedInfoEl = ''
+      if (product?.data?.listing)  {
+        listedInfoEl = `
+          <hr class="my-6 md:my-8 border-gray-200 dark:border-gray-800" />
+          <p>Listed at: ${product?.data?.listing}</p>
+        `
+      }
       productDetails = `
         <div class="lg:grid lg:grid-cols-2 lg:gap-8 xl:gap-16" id="list-item">
           <div class="shrink-0 max-w-md lg:max-w-lg mx-auto">
@@ -118,10 +125,10 @@ export async function getProductDetails(productId: number) {
             </p>
 
             <p class="mb-6 text-gray-500 dark:text-gray-400">
-            Stocks In: ${skuData?.totalStockIn || 0}, Stocks Out: ${
-        skuData?.totalStockOut || 0
-      }, Stocks Remaining: ${skuData?.toatalStockRemaining || 0}
+            Stocks In: ${skuData?.totalStockIn || 0}, Stocks Out: ${skuData?.totalStockOut || 0}, Stocks Remaining: ${skuData?.toatalStockRemaining || 0}
             </p>
+
+            ${listedInfoEl}
 
             <div class="max-w-screen-xl px-4 mx-auto 2xl:px-0 text-center py-8">
 
@@ -224,6 +231,10 @@ export async function getProductDetails(productId: number) {
   }
 }
 
+export async function getListingItemDetails() {
+  return listingItem
+}
+
 export async function getSkuDetails() {
   return new Promise(async (resolve: any, reject: any) => {
     try {
@@ -248,7 +259,7 @@ export async function getSkuDetails() {
 
       const queryParams = [searchfirst, searchsecond];
       const output = await SearchLinkMultipleAll(queryParams, token)
-      console.log('output ->', output)
+      console.log('output SKU ->', output)
 
       // const queryParams = [
       //   {
@@ -384,10 +395,32 @@ export async function openModal(modalId: string) {
   };
 
   // if (modalId === 'rfq-modal') {
-  //   console.log('xxxyyyzzz')
   //   rfqModalHTMLCode = await rfqModalHTML()
-  //   console.log('rfqModalHTMLCode', rfqModalHTMLCode)
   // }
+
+  // if (modalId === 'list-modal') {
+  //   // createListingPlatform()
+
+  //   // const profileStorageData: any = await getLocalStorageData();
+  //   // const userId = profileStorageData?.userId;
+  //   // const platformList = await GetCompositionListWithId('the_listing', userId, 10, 1)
+  // }
+}
+
+export async function createListingPlatform() {
+  const profileStorageData: any = await getLocalStorageData();
+  const userId = profileStorageData?.userId;
+  const listingInstanceConcept: LConcept = await MakeTheInstanceConceptLocal(
+    `the_listing`,
+    'Nepal CRE',
+    true,
+    userId,
+    4,
+    999
+  );
+  
+  await LocalSyncData.SyncDataOnline();
+  console.log('listingInstanceConcept ->', listingInstanceConcept)
 }
 
 export async function closeModal(modalId: string) {
@@ -416,10 +449,9 @@ export async function closeModal(modalId: string) {
 }
 
 // listing platform
-export async function submitListingForm(e: any) {
-  e.preventDefault()
-  console.log('submitListingForm clicked!')
-}
+// export async function submitListingForm(e: any) {
+//   e.preventDefault()
+// }
 
 
 export async function submitRFQForm(e: any) {
@@ -428,7 +460,6 @@ export async function submitRFQForm(e: any) {
   const formData: any = new FormData(e.target);
   // output as an object
   const formValues: any = Object.fromEntries(formData);
-  // console.log("formValues ->", formValues);
 
   const rfqResponse = await createItemRFQ(formValues);
   console.log("rfqResponse", rfqResponse);
@@ -447,9 +478,7 @@ export async function createItemRFQ(formValues: any) {
 
   const profileStorageData: any = await getLocalStorageData();
   const userId = profileStorageData?.userId;
-  // const userConceptId = profileStorageData?.userConcept;
   const token = profileStorageData?.token;
-  console.log("userId ->", userId);
 
   // buyerAgentEntity
   const buyAgentEntityDetails = await getBuyerAgentData(Number(formValues?.buyeragent), token)
@@ -460,8 +489,6 @@ export async function createItemRFQ(formValues: any) {
   formValues.timestamp = new Date().toISOString()
   // formValues.buyeragent = buyerAgentEntity?.entity
   console.log("createItem formValues 2 ->", formValues);
-
-  // return
 
   const rfqEntityConcept = await createEntityInstance(
     "rfq",
@@ -493,7 +520,8 @@ export async function createItemRFQ(formValues: any) {
     itemEntityConcept,
     s_item_linker
   );
-  await SyncData.SyncDataOnline();
+  // await SyncData.SyncDataOnline();
+  await LocalSyncData.SyncDataOnline();
 
   console.log("rfq completed");
   closeModal("rfq-modal");
@@ -542,7 +570,6 @@ export async function getBuyerAgentData(buyerAgentConceptId: number, token: stri
     // )
     //   .then((res) => res.json())
     //   .then((json) => {
-    //     console.log(json);
     //     return json;
     //   });
 
@@ -574,16 +601,12 @@ export async function getBuyerAgentData(buyerAgentConceptId: number, token: stri
 export async function addDocument() {
   const attachmentEl = <HTMLInputElement>document.getElementById('attachment')
   attachmentEl.addEventListener("change", (e: any) => {
-    console.log("e ->", e);
     const files = e.target.files[0];
-    console.log("files", files);
     // const docName = files.name;
-    // console.log("docName", docName);
 
     // for (let i = 0; i < files.length; i++) {
     //   const file = files.item(i);
     //   const fileName = file.name;
-    //   console.log('document ->', file, fileName)
     //   // this.uploadFile(file, fileName);
     // }
 
@@ -597,11 +620,8 @@ export async function addDocument() {
 }
 
 export async function uploadFile(files: any) {
-  console.log('files ->', files)
-
   let formdata = new FormData();
   formdata.append("file", files);
-  console.log("formdata ->", formdata);
 
   const profileStorageData: any = await getLocalStorageData();
   const userId = profileStorageData?.userId;
@@ -626,8 +646,6 @@ export async function uploadFile(files: any) {
     return null
   }
   const output = await response.json();
-  console.log('output ->', output)
-  // rfqAttachment = output?.data
 
   const attachmentValues = {
     name: files?.name, 
@@ -643,5 +661,4 @@ export async function uploadFile(files: any) {
   );
 
   console.log('attachmentConcept', attachmentConcept)
-  
 }

@@ -5,7 +5,6 @@ const prouductList = await getProducts()
 
 async function onLoad () {
   await initiateListing()
-  // ${loadHTML}
   return `
     ${topNavigation}
     <section class="py-8">
@@ -22,11 +21,3 @@ async function onLoad () {
 }
 
 export const listingHTML: any = await onLoad()
-console.log('listingHTML', listingHTML)
-
-
-// const listingHTML = `
-//   ${topNavigation}
-//   ${loadHTML}
-// `
-// export default listingHTML

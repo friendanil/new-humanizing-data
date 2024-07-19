@@ -1,8 +1,10 @@
-import { submitListingForm } from "../../pages/listItem/listItem.service";
+// import { submitListingForm } from "../../pages/listItem/listItem.service";
+import { submitListingForm } from "./list-modal.service";
+import { getListingPlatforms } from "./list-modal.service";
 
 (window as any).submitListingForm = submitListingForm;
 export default async function listModalHTML() {
-
+  const listingPlatforms = await getListingPlatforms()
   return `
     <div class="relative top-20 mx-auto shadow-xl rounded-md bg-white max-w-md text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">
     <div class="flex justify-between px-4 pt-4">
@@ -58,9 +60,10 @@ export default async function listModalHTML() {
           <select id="listingPlatform" name="listingPlatform" autocomplete="listing-platform"
             class="block w-full rounded-md border-0 px-3 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-md sm:text-sm sm:leading-6 text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">
             <option value="" disabled selected>--- select listing platform ---</option>
-            <option value="boomconsole">Boomconsole Listing</option>
+            <!-- <option value="boomconsole">Boomconsole Listing</option>
             <option value="humanizingdata">Humanizing Data</option>
-            <option value="nepalcre">Nepal CRE</option>
+            <option value="nepalcre">Nepal CRE</option> -->
+            ${listingPlatforms}
           </select>
         </div>
 

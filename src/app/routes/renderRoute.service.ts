@@ -14,18 +14,14 @@ const checkAuthentication = () => {
 };
 
 // const checkRouteAuthentication = async (route: string) => {
-//   console.log("checkRouteAuthentication route", route);
 
 //   let routeInfo = routes?.find((routeData: any) => routeData?.path === route);
-//   console.log("routeInfo ->", routeInfo);
-//   console.log("routeInfo?.isAuthenticated", routeInfo?.isAuthenticated);
 
 //   // Authentication check
 //   if (routeInfo?.isAuthenticated) {
 //     const isAuthenticationValid = checkAuthentication();
 //     if (!isAuthenticationValid) {
 //       const loginURL = routes.find((route: any) => route.path === "/login");
-//       console.log("loginURL", loginURL);
 //       app.innerHTML = loginURL?.content;
 //       location.pathname = loginURL?.path;
 //       return;
@@ -47,21 +43,15 @@ const getParams = (match: any) => {
 
 export async function checkRouting() {
   const potentialMatches = routes.map((route: any) => {
-    // console.log('checkRouting route ->', route)
-    // console.log('pathToRegex(route.path)', pathToRegex(route.path))
-    // console.log('nnn', location.pathname.match(pathToRegex(route.path)))
     return {
       route: route,
       result: location.pathname.match(pathToRegex(route.path)),
     };
   });
 
-  console.log("potentialMatches", potentialMatches);
-
   let match = potentialMatches.find(
     (potentialMatch: any) => potentialMatch.result !== null
   );
-  // console.log("match ->", match);
 
   // NOT FOUND PAGE
   if (!match) {
@@ -87,30 +77,23 @@ export async function checkRouting() {
     }
   }
 
-  console.log('match 2 ->', match)
-
   // const view = typeof match.route.content === 'function'
   //   ? new match.route.content(getParams(match))
   //   : match.route.content;
 
   const view = new match.route.content(await getParams(match));
-  // console.log("view ->", view);
 
   const htmlContentDetails = await view?.getHtml();
-  // console.log("htmlContentDetails", htmlContentDetails);
   app.innerHTML = htmlContentDetails;
 }
 
 export const renderContent = async (route: any) => {
-  console.log("renderContent route", route);
-  console.log("routes", routes);
   history.pushState(null, "", route);
   // checkRouteAuthentication(route);
   checkRouting();
 };
 
 export const updateContent = async (route: any) => {
-  console.log("updateContent route ->", route);
   window.history.pushState({ route }, "", route);
   // window.history.replaceState({ route }, "", route);
   // checkRouteAuthentication(route);
@@ -118,25 +101,18 @@ export const updateContent = async (route: any) => {
 };
 
 // const navigate = (e: any) => {
-//   console.log("e.state on navigate", e.state);
 //   const route = e?.target?.location?.pathname;
-//   // console.log("route clicked e", e, e.target.location.pathname);
-//   console.log("route clicked", route);
 //   updateContent(route);
 // };
 
 // export const registerNavLinks = () => {
 //   window.addEventListener("popstate", (e: any) => {
-//     console.log(
-//       "Location: " + document.location + ", state: " + JSON.stringify(e.state)
-//     );
 //     navigate(e);
 //   });
 // };
 
 const renderInitialPage = () => {
   const route = window.location.pathname;
-  console.log("renderInitialPage route ->", route);
   renderContent(route);
 };
 
@@ -162,7 +138,6 @@ const initRouterLinks = () => {
         event.preventDefault(); // Prevent default anchor tag behavior
 
         const href = this.getAttribute("href");
-        console.log("href ->", href);
         // updateContent(href);
         renderContent(href);
         // checkRouting()
@@ -187,6 +162,5 @@ export const bootup = () => {
   // registerNavLinks();
   renderInitialPage();
   initRouterLinks();
-  console.log("bootup ->");
   window.addEventListener("popstate", checkRouting);
 };

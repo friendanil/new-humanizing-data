@@ -16,8 +16,6 @@ export async function createEntityInstance(
     999
   );
 
-  console.log("entityConcept ->", entityConcept);
-
   for (const [key, value] of Object.entries(conepts)) {
     let ObjKey = key;
 
@@ -33,7 +31,6 @@ export async function createEntityInstance(
   }
 
   await LocalSyncData.SyncDataOnline();
-  console.log("entityConcept ID ->", entityConcept?.id);
   return entityConcept;
 }
 
@@ -52,8 +49,6 @@ export async function _createEntityInstance(
     999
   );
 
-  console.log("entityConcept ->", entityConcept);
-
   for (const [key, value] of Object.entries(conepts)) {
     let ObjKey = key;
 
@@ -69,6 +64,5 @@ export async function _createEntityInstance(
   }
 
   await SyncData.SyncDataOnline();
-  console.log("entityConcept ID ->", entityConcept?.id);
   return entityConcept;
 }

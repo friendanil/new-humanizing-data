@@ -58,7 +58,6 @@ const signin = async (signinData: any) => {
 
 export function initiateLogin() {
   // export const initiateLogin = () => {
-  console.log("login page landed!");
   // initListeners();
 
   // const loginButton = document.getElementById("login-btn");
@@ -116,7 +115,6 @@ export async function submitLoginForm(e: any) {
 
 export async function saveTolocalStorage(signinResponse: any) {
   const userEntity = await getEntityByUserconceptId(signinResponse?.data?.userConcept, signinResponse?.data?.token)
-  console.log('login userEntity ->', userEntity)
 
   let userProfile: IUser = {
     token: signinResponse?.data?.token,

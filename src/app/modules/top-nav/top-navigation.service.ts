@@ -7,7 +7,6 @@ export async function logout() {
 }
 
 export async function initTopNavigation() {
-  console.log('INIT NAVIGATION')
   const nav = document.getElementById('top-nav')
   const navLinks: any = nav?.querySelectorAll('router-link')
   navLinks?.forEach((navlink: any) => {
@@ -18,7 +17,6 @@ export async function initTopNavigation() {
     navlink?.addEventListener('click', (e: any) => {
       // initTopNavigation()
       console.log('e ->', e)
-      console.log('navlink ->', navlink)
       navlink.classList.add("active");
     })
   })
