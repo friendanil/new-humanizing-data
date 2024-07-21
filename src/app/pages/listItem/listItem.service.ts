@@ -58,7 +58,7 @@ export async function getProductDetails(productId: number) {
 
     console.log("product", product);
     listingItem = product
-    if (!product?.data.image) product.data.image = 'https://placehold.co/600x600'
+    if (!product?.data.image || product?.data?.image === 'undefined') product.data.image = 'https://placehold.co/600x600'
 
     let productDetails: string = "";
 

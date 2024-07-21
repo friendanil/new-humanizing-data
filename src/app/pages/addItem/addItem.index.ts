@@ -42,7 +42,7 @@ export default class extends mainViewClass {
           </div>
 
           <div class="my-4">
-            <label for="itemAttachment" class="block text-sm font-medium leading-6 text-gray-900">Item Images<span
+            <label for="itemAttachment" class="block text-sm font-medium leading-6">Item Images<span
                 class="text-rose-400">*</span></label>
             <div class="mt-2">
               <input type="file" accept=".png, .jpg, .jpeg" onclick="addItemDocument()" name="itemAttachment" id="itemAttachment" autocomplete="item-attachment"

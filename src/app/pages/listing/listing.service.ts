@@ -50,13 +50,13 @@ export async function getProducts() {
 
       const listingItems = await productList
         .map((product: any) => {
-          if (!product?.data?.image) product.data.image = "https://placehold.co/600x600"
+          if (!product?.data?.image || product?.data?.image === 'undefined') product.data.image = "https://placehold.co/600x600"
           return `
-            <router-link href="/listitem/${product?.id}" class="mx-auto border sm:mr-0 group cursor-pointer lg:mx-auto bg-white transition-all duration-500">
-              <div class="">
+            <router-link href="/listitem/${product?.id}" class="mx-auto border sm:mr-0 group cursor-pointer lg:mx-auto bg-white transition-all duration-500 w-full">
+              <img src="${product?.data?.image}" alt="face cream image" class="w-full border object-cover aspect-square">
+              <!-- <div>
                 <img src="${product?.data?.image}" alt="face cream image" class="w-full border aspect-square">
-                <!-- <img src="https://placehold.co/600x600" alt="face cream image" class="w-full aspect-square"> -->
-              </div>
+              </div> -->
               <div class="p-4">
                 <div class="flex items-center justify-between">
                   <h6 class="font-semibold text-xl leading-8 text-black transition-all duration-500 group-hover:text-indigo-600">${product?.data?.name}</h6>

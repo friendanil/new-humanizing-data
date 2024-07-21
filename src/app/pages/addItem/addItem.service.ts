@@ -10,6 +10,7 @@ import { CreateConnectionBetweenEntityLocal } from "../../services/entity.servic
 import { updateContent } from "../../routes/renderRoute.service";
 import { environment } from "../../environments/environment.dev";
 import { createEntityInstance } from "../../services/createEntityInstance.service";
+import { showToast } from "../../modules/toast-bar/toast-bar.index";
 
 const thetaBoommAPI = environment?.boomURL;
 let attachmentValues: any
@@ -60,13 +61,57 @@ export async function submitAddItemForm(e: any) {
   await LocalSyncData.SyncDataOnline();
 
   if (itemConceptResponse) {
+    // success toast message
+    setTimeout(async () => {
+      await showToast('success', 'Item added successfully!', 'List the item so anyone can view this item.', 'top-right', 5000)
+    }, 100);
+
     e?.target?.reset();
     for (let i = 0, len = elements.length; i < len; ++i) {
       elements[i].disabled = false;
     }
     updateContent("/listing");
+    
+  } else {
+    // error toast message
+    await showToast('error', 'Item can not add successfully!', 'There is something went wrong!', 'top-right', 5000)
   }
 }
+
+// toast with vanilla js
+// export async function _showToast(type: string, heading: string, msg: string) {
+//   const body = <HTMLElement>document.getElementById('app')
+//   const toastBar = document.createElement('div')
+//   let bgColor = 'bg-white'
+
+//   switch(type) {
+//     case 'info':
+//       bgColor = 'bg-blue-200'
+//       break
+//     case 'success':
+//       bgColor = 'bg-green-200'
+//       break
+//     case 'warning':
+//       bgColor = 'bg-yellow-200'
+//       break
+//     case 'error':
+//       bgColor = 'bg-red-200'
+//       break
+//     default:
+//       bgColor = 'bg-white'
+//   }
+  
+//   toastBar.innerHTML = `
+//     <div class="fixed top-4 right-4 p-4 ${bgColor} text-black z-20 border border-gray-200 rounded shadow-lg">
+//       <h4>${heading}</h4>
+//       <p>${msg}</p>
+//     </div>
+//   `
+//   body.appendChild(toastBar)
+//   setTimeout(() => {
+//     toastBar.remove()
+//   }, 5000);
+// }
 
 export async function createItem(formValues: any) {
   console.log("createItem formValues ->", formValues);
