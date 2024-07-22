@@ -12,7 +12,6 @@ export default class extends mainViewClass {
 
   async getHtml() {
     const itemList = await getListingItems()
-    // console.log('itemList ->', itemList)
 
     return `
       ${topNavigation}
