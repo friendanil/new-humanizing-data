@@ -34,6 +34,7 @@ let listModalHTMLCode = `
   <h1>List Modal</h1>
 `;
 let listingItem: any;
+let isItemListedByMe: boolean = false;
 
 export async function getMyListingItems() {
   let search = new SearchStructure();
@@ -73,8 +74,6 @@ export async function getProductDetails(productId: number) {
     // check if item is listed by me
     const myListingItems = await getMyListingItems();
     console.log("myListingItems", myListingItems);
-
-    let isItemListedByMe: boolean = false;
 
     if (myListingItems.length) {
       isItemListedByMe = myListingItems?.some(
@@ -293,6 +292,20 @@ export async function getSkuDetails() {
       const profileStorageData: any = await getLocalStorageData();
       const token = profileStorageData?.token;
 
+      let search = new SearchStructure();
+      search.composition = "the_rfq";
+      search.inpage = 100;
+
+      let values = await SearchLinkInternal(search, token);
+      console.log("values the rfq ->", values);
+
+      // let search = new SearchStructure();
+      // search.composition = "the_buyeragent";
+      // search.inpage = 100;
+
+      // let values = await SearchLinkInternal(search, token);
+      // console.log("values the_buyeragent ->", values);
+
       let searchfirst = new SearchQuery();
       searchfirst.composition = itemId;
       searchfirst.fullLinkers = ["the_item_s_sku"];
@@ -339,8 +352,8 @@ export async function getSkuDetails() {
         0
       );
 
-      listModalHTMLCode = await listModalHTML();
-      rfqModalHTMLCode = await rfqModalHTML();
+      if (isItemListedByMe) listModalHTMLCode = await listModalHTML();
+      else rfqModalHTMLCode = await rfqModalHTML();
 
       resolve({
         totalStockIn: skuStockIn,
@@ -450,6 +463,7 @@ export async function submitRFQForm(e: any) {
   const formData: any = new FormData(e.target);
   // output as an object
   const formValues: any = Object.fromEntries(formData);
+  console.log("rfq formValues ->", formValues);
 
   const rfqResponse = await createItemRFQ(formValues);
   console.log("rfqResponse", rfqResponse);
@@ -473,14 +487,18 @@ export async function createItemRFQ(formValues: any) {
   // buyerAgentEntity
   const buyAgentEntityDetails = await getBuyerAgentData(
     Number(formValues?.buyeragent),
+    userId,
     token
   );
   console.log("buyAgentEntityDetails", buyAgentEntityDetails);
 
   delete formValues.attachment;
+  delete formValues.buyeragent;
+  
   formValues.buyer = profileStorageData?.entityId;
   formValues.timestamp = new Date().toISOString();
   // formValues.buyeragent = buyerAgentEntity?.entity
+  // formValues.buyeragent = buyAgentEntityDetails?.id
   console.log("createItem formValues 2 ->", formValues);
 
   const rfqEntityConcept = await createEntityInstance(
@@ -489,6 +507,21 @@ export async function createItemRFQ(formValues: any) {
     formValues
   );
   console.log("rfqEntityConcept ->", rfqEntityConcept);
+
+  // the_rfq_buyeragent
+  // const keyConcept: LConcept = await MakeTheInstanceConceptLocal(
+  //   'buyeragent',
+  //   '',
+  //   false,
+  //   userId,
+  //   4,
+  //   999
+  // );
+
+  console.log('rfqEntityConcept 111', rfqEntityConcept)
+  console.log('buyAgentEntityDetails 111', buyAgentEntityDetails)
+  await CreateConnectionBetweenEntityLocal(rfqEntityConcept, buyAgentEntityDetails, 'buyeragent');
+  // buyAgentEntityDetails
 
   // the_rfq_s_attachment
   await CreateConnectionBetweenEntityLocal(
@@ -503,6 +536,7 @@ export async function createItemRFQ(formValues: any) {
     itemEntityConcept,
     s_item_linker
   );
+
   await LocalSyncData.SyncDataOnline();
 
   console.log("rfq completed");
@@ -511,38 +545,56 @@ export async function createItemRFQ(formValues: any) {
 
 export async function getBuyerAgentData(
   buyerAgentConceptId: number,
+  userId: number,
   token: string
 ) {
+  console.log("buyerAgentConceptId ->", buyerAgentConceptId);
+  console.log("token", token);
+  console.log("userId", userId);
+
   let buyerAgentEntityConcept: LConcept;
 
-  const myHeaders = new Headers();
-  myHeaders.append("Content-Type", "application/json");
-  myHeaders.append("Authorization", `Bearer ${token}`);
+  let search = new SearchStructure();
+  search.composition = "the_buyeragent";
+  search.inpage = 100;
 
-  const buyerAgentConceptResponse = await fetch(
-    `${thetaBoommAPI}/api/search-compositions-internal?search=&type=&composition=the_buyeragent&inpage=10&page=1`,
-    {
-      method: "GET",
-      headers: myHeaders,
-      redirect: "follow",
-    }
-  );
+  let values = await SearchLinkInternal(search, token);
+  console.log("values the_buyeragent ->", values);
 
-  const output = await buyerAgentConceptResponse.json();
+  // return
 
-  // let search = new SearchStructure();
-  // search.composition = "the_seller";
-  // search.inpage = 100;
-  // const output = await SearchLinkInternal(search, token);
+  // let buyerAgentEntityConcept: LConcept;
 
-  console.log("output the_buyerAgent ->", output);
+  // const myHeaders = new Headers();
+  // myHeaders.append("Content-Type", "application/json");
+  // myHeaders.append("Authorization", `Bearer ${token}`);
 
-  const buyerAgentEntityId = Number(Object.keys(output)?.[0]);
-  console.log("buyerAgentEntityId ->", buyerAgentEntityId);
+  // const buyerAgentConceptResponse = await fetch(
+  //   `${thetaBoommAPI}/api/search-compositions-internal?search=&type=&composition=the_buyeragent&inpage=10&page=1`,
+  //   {
+  //     method: "GET",
+  //     headers: myHeaders,
+  //     redirect: "follow",
+  //   }
+  // );
 
-  if (buyerAgentEntityId) {
-    buyerAgentEntityConcept = await GetTheConceptLocal(buyerAgentEntityId);
-  } else {
+  // const output = await buyerAgentConceptResponse.json();
+
+  // console.log("output the_buyerAgent ->", output);
+
+  // const buyerAgentEntityId = Number(Object.keys(output)?.[0]);
+  // console.log("buyerAgentEntityId ->", buyerAgentEntityId);
+
+  // return
+
+
+  // if (buyerAgentEntityId) {
+  // if (values.length) {
+  //   const buyerAgentEntityId = values?.[0]?.id
+  //   console.log('IF')
+  //   buyerAgentEntityConcept = await GetTheConceptLocal(buyerAgentEntityId);
+  // } else {
+    console.log('ELSE')
     const entityDetails = await getEntityByUserconceptId(
       Number(buyerAgentConceptId),
       token
@@ -562,13 +614,14 @@ export async function getBuyerAgentData(
 
     buyerAgentEntityConcept = await MakeTheInstanceConceptLocal(
       "the_buyeragent",
-      entityId,
+      '',
       true,
-      999,
+      userId,
       4,
-      999
+      999,
+      entityId
     );
-  }
+  // }
 
   console.log("buyerAgentEntityConcept ->", buyerAgentEntityConcept);
 

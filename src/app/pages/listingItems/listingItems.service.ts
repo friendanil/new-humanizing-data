@@ -11,17 +11,17 @@ export async function getListingItems() {
       const profileStorageData: any = await getLocalStorageData();
       const userId = profileStorageData?.userId;
       const token = profileStorageData?.token;
-
-      const humanizingData = await MakeTheInstanceConcept(
+      
+      const boomconsoleData = await MakeTheInstanceConcept(
         "the_listing",
-        "Humanizing Data",
+        "Boomconsole",
         false,
         userId
       );
-      console.log("humanizingData", humanizingData);
+      console.log("boomconsoleData", boomconsoleData);
 
       let searchfirst = new SearchQuery();
-      searchfirst.composition = humanizingData?.id;
+      searchfirst.composition = boomconsoleData?.id;
       searchfirst.fullLinkers = ["the_item_s_listing"];
       searchfirst.reverse = true;
       searchfirst.inpage = 100;

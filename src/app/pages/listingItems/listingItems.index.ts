@@ -1,6 +1,7 @@
 
 import mainViewClass from "../../default/mainView.class";
 import topNavigation from "../../modules/top-nav/top-navigation";
+import { initTopNavigation } from "../../modules/top-nav/top-navigation.service";
 import { getListingItems } from "./listingItems.service";
 
 
@@ -13,6 +14,10 @@ export default class extends mainViewClass {
   async getHtml() {
     const itemList = await getListingItems()
 
+    setTimeout(() => {
+      initTopNavigation();
+    }, 10);
+
     return `
       ${topNavigation}
       <section class="py-8">
@@ -22,7 +27,7 @@ export default class extends mainViewClass {
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" id="items-list-container">
           <div class="flex justify-between items-center mb-8">
             <h2 class="font-manrope font-bold text-4xl text-black max-lg:text-center dark:text-white">
-              All Items
+              All Boomconsole Items
             </h2>
           </div>
 
