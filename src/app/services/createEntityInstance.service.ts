@@ -30,7 +30,7 @@ export async function createEntityInstance(
     await CreateConnectionBetweenEntityLocal(entityConcept, keyConcept, ObjKey);
   }
 
-  await LocalSyncData.SyncDataOnline();
+  // await LocalSyncData.SyncDataOnline();
   return entityConcept;
 }
 

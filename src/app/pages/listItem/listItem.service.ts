@@ -494,7 +494,7 @@ export async function createItemRFQ(formValues: any) {
 
   delete formValues.attachment;
   delete formValues.buyeragent;
-  
+
   formValues.buyer = profileStorageData?.entityId;
   formValues.timestamp = new Date().toISOString();
   // formValues.buyeragent = buyerAgentEntity?.entity
@@ -523,6 +523,8 @@ export async function createItemRFQ(formValues: any) {
   await CreateConnectionBetweenEntityLocal(rfqEntityConcept, buyAgentEntityDetails, 'buyeragent');
   // buyAgentEntityDetails
 
+
+  console.log('attachmentConcept ->', attachmentConcept)
   // the_rfq_s_attachment
   await CreateConnectionBetweenEntityLocal(
     rfqEntityConcept,
@@ -530,6 +532,7 @@ export async function createItemRFQ(formValues: any) {
     rfqAttachmentLinker
   );
 
+  console.log('itemEntityConcept ->', itemEntityConcept)
   // the_rfq_s_item
   await CreateConnectionBetweenEntityLocal(
     rfqEntityConcept,

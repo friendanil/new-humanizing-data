@@ -30,16 +30,15 @@ export async function initiateListing() {
 export async function getProducts() {
   return new Promise(async (resolve: any, reject: any) => {
     try {
+      let search = new SearchStructure();
+      search.composition = "the_item";
+      search.inpage = 100;
 
-       let search = new SearchStructure();
-       search.composition = "the_item";
-       search.inpage = 100;
+      const profileStorageData: any = await getLocalStorageData();
+      let token = profileStorageData?.token;
+      let values = await SearchLinkInternal(search, token);
 
-       const profileStorageData: any = await getLocalStorageData();
-       let token = profileStorageData?.token;
-       let values = await SearchLinkInternal(search,token);
-
-       const productList = values;
+      const productList = values;
       // const productList: any = await fetch(
       //   `${thetaBoommAPI}/api/search-compositions-internal-clean?search=&type=&composition=the_item&inpage=100&page=1`
       // )
@@ -48,10 +47,18 @@ export async function getProducts() {
       //     return json;
       //   });
 
-      const listingItems = await productList
-        .map((product: any) => {
-          if (!product?.data?.image || product?.data?.image === 'undefined') product.data.image = "https://placehold.co/600x600"
-          return `
+      let listingItems = `
+        <div class="py-8 text-center">
+          <h4 class="text-center text-zinc-900 dark:text-white">You have not added any items yet.</h4>
+        </div>
+      `;
+
+      if (productList.length) {
+        listingItems = productList
+          .map((product: any) => {
+            if (!product?.data?.image || product?.data?.image === "undefined")
+              product.data.image = "https://placehold.co/600x600";
+            return `
             <router-link href="/listitem/${product?.id}" class="mx-auto border sm:mr-0 group cursor-pointer lg:mx-auto bg-white transition-all duration-500 w-full">
               <img src="${product?.data?.image}" alt="face cream image" class="w-full border object-cover aspect-square">
               <!-- <div>
@@ -66,17 +73,24 @@ export async function getProducts() {
               </div>
             </router-link>
           `;
-        })
-        .join("");
+          })
+          .join("");
+      }
 
-      const itemListLoader = <HTMLDivElement>document.getElementById('item-list-loader')
-      itemListLoader.classList.add('hidden')
+      const itemListLoader = <HTMLDivElement>(
+        document.getElementById("item-list-loader")
+      );
+      itemListLoader.classList.add("hidden");
 
-      const itemListContainer = <HTMLDivElement>document.getElementById('item-list-container')
-      itemListContainer.classList.remove('hidden')
+      const itemListContainer = <HTMLDivElement>(
+        document.getElementById("item-list-container")
+      );
+      itemListContainer.classList.remove("hidden");
 
-      const itemContainer = <HTMLDivElement>document.getElementById('product-listings')
-      itemContainer.innerHTML = listingItems
+      const itemContainer = <HTMLDivElement>(
+        document.getElementById("product-listings")
+      );
+      itemContainer.innerHTML = listingItems;
 
       resolve(listingItems);
     } catch (error) {
