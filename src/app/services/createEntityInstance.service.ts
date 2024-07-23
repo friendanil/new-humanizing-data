@@ -1,5 +1,15 @@
-import { Concept, LConcept, LocalSyncData, MakeTheInstanceConcept, MakeTheInstanceConceptLocal, SyncData } from "mftsccs-browser";
-import { CreateConnectionBetweenEntity, CreateConnectionBetweenEntityLocal } from "./entity.service";
+import {
+  Concept,
+  LConcept,
+  // LocalSyncData,
+  MakeTheInstanceConcept,
+  MakeTheInstanceConceptLocal,
+  SyncData,
+} from "mftsccs-browser";
+import {
+  CreateConnectionBetweenEntity,
+  CreateConnectionBetweenEntityLocal,
+} from "./entity.service";
 
 // LOCAL
 export async function createEntityInstance(

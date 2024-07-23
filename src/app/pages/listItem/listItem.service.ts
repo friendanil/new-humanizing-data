@@ -417,13 +417,13 @@ export async function openModal(modalId: string) {
 }
 
 export async function createListingPlatform() {
-  const profileStorageData: any = await getLocalStorageData();
-  const userId = profileStorageData?.userId;
+  // const profileStorageData: any = await getLocalStorageData();
+  // const userId = profileStorageData?.userId;
   const listingInstanceConcept: LConcept = await MakeTheInstanceConceptLocal(
     `the_listing`,
     "Nepal CRE",
     true,
-    userId,
+    999,
     4,
     999
   );

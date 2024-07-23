@@ -4,7 +4,7 @@ import {
   LConcept,
   LocalSyncData,
 } from "mftsccs-browser";
-import { getLocalStorageData } from "../../services/helper.service";
+// import { getLocalStorageData } from "../../services/helper.service";
 import { CreateConnectionBetweenEntityLocal } from "../../services/entity.service";
 // import { s_item_linker } from "../../constants/type.constants";
 import {
@@ -15,9 +15,9 @@ import {
 let platformList: any;
 
 export async function getListingPlatforms() {
-  const profileStorageData: any = await getLocalStorageData();
-  const userId = profileStorageData?.userId;
-  platformList = await GetCompositionListWithId("the_listing", userId, 10, 1);
+  // const profileStorageData: any = await getLocalStorageData();
+  // const userId = profileStorageData?.userId;
+  platformList = await GetCompositionListWithId("the_listing", 999, 10, 1);
   console.log("platformList", platformList);
 
   const listingItemData = await getListingItemDetails();
