@@ -24,6 +24,7 @@ import {
 
 import rfqModalHTML from "../../modules/rfq-modal/rfq-modal";
 import listModalHTML from "../../modules/list-modal/list-modal";
+import { showToast } from "../../modules/toast-bar/toast-bar.index";
 
 const thetaBoommAPI = environment?.boomURL;
 let attachmentConcept: LConcept;
@@ -472,13 +473,13 @@ export async function submitRFQForm(e: any) {
 export async function createItemRFQ(formValues: any) {
   console.log("createItem formValues ->", formValues);
 
-  let urlPath = location.pathname;
-  let itemId = Number(urlPath.substring(10));
-  console.log("itemId ->", itemId);
+  // let urlPath = location.pathname;
+  // let itemId = Number(urlPath.substring(10));
+  // console.log("itemId ->", itemId);
 
-  // const itemEntityConcept: Concept = await GetTheConcept(itemId);
-  const itemEntityConcept = await GetTheConceptLocal(itemId);
-  console.log("itemEntityConcept ->", itemEntityConcept);
+  // // const itemEntityConcept: Concept = await GetTheConcept(itemId);
+  // const itemEntityConcept = await GetTheConceptLocal(itemId);
+  // console.log("itemEntityConcept ->", itemEntityConcept);
 
   const profileStorageData: any = await getLocalStorageData();
   const userId = profileStorageData?.userId;
@@ -494,11 +495,10 @@ export async function createItemRFQ(formValues: any) {
 
   delete formValues.attachment;
   delete formValues.buyeragent;
+  delete formValues.buyer;
 
-  formValues.buyer = profileStorageData?.entityId;
+  // formValues.buyer = profileStorageData?.entityId;
   formValues.timestamp = new Date().toISOString();
-  // formValues.buyeragent = buyerAgentEntity?.entity
-  // formValues.buyeragent = buyAgentEntityDetails?.id
   console.log("createItem formValues 2 ->", formValues);
 
   const rfqEntityConcept = await createEntityInstance(
@@ -508,21 +508,15 @@ export async function createItemRFQ(formValues: any) {
   );
   console.log("rfqEntityConcept ->", rfqEntityConcept);
 
-  // the_rfq_buyeragent
-  // const keyConcept: LConcept = await MakeTheInstanceConceptLocal(
-  //   'buyeragent',
-  //   '',
-  //   false,
-  //   userId,
-  //   4,
-  //   999
-  // );
+  // the_rfq_buyer
+  const buyerConcept:LConcept = await GetTheConceptLocal(profileStorageData?.entityId)
+  console.log('buyerConcept ->', buyerConcept)
+  await CreateConnectionBetweenEntityLocal(rfqEntityConcept, buyerConcept, 'buyer');
 
+  // the_rfq_buyeragent
   console.log('rfqEntityConcept 111', rfqEntityConcept)
   console.log('buyAgentEntityDetails 111', buyAgentEntityDetails)
   await CreateConnectionBetweenEntityLocal(rfqEntityConcept, buyAgentEntityDetails, 'buyeragent');
-  // buyAgentEntityDetails
-
 
   console.log('attachmentConcept ->', attachmentConcept)
   // the_rfq_s_attachment
@@ -532,18 +526,28 @@ export async function createItemRFQ(formValues: any) {
     rfqAttachmentLinker
   );
 
-  console.log('itemEntityConcept ->', itemEntityConcept)
   // the_rfq_s_item
-  await CreateConnectionBetweenEntityLocal(
-    rfqEntityConcept,
-    itemEntityConcept,
-    s_item_linker
-  );
+  let urlPath = location.pathname;
+  let itemId = Number(urlPath.substring(10));
+  console.log("itemId ->", itemId);
+
+  if (itemId > 0) {
+    const itemEntityConcept = await GetTheConceptLocal(itemId);
+    // the_rfq_s_item
+    await CreateConnectionBetweenEntityLocal(
+      rfqEntityConcept,
+      itemEntityConcept,
+      s_item_linker
+    );
+  }
 
   await LocalSyncData.SyncDataOnline();
 
   console.log("rfq completed");
   closeModal("rfq-modal");
+  setTimeout(async () => {
+    await showToast('success', 'RFQ sent successfully!', 'Your RFQs can view in RFQ page.', 'top-right', 5000)
+  }, 100);
 }
 
 export async function getBuyerAgentData(

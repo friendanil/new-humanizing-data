@@ -15,6 +15,7 @@ export default `
       <li><router-link href="/dashboard" class="top-nav-item cursor-pointer text-sm text-gray-600 hover:text-gray-500">Dashboard</router-link></li>
       <li><router-link href="/items" class="top-nav-item cursor-pointer text-sm text-gray-600 hover:text-gray-500">Listing Items</router-link></li>
       <li><router-link href="/listing" class="top-nav-item cursor-pointer text-sm text-gray-600 hover:text-gray-500">My Listing</router-link></li>
+      <li><router-link href="/rfq" class="top-nav-item cursor-pointer text-sm text-gray-600 hover:text-gray-500">RFQ</router-link></li>
       <li><router-link href="/profile" class="top-nav-item cursor-pointer text-sm text-gray-600 hover:text-gray-500">Profile</router-link></li>
       <li><button type="button" class="cursor-pointer text-sm text-red-400 hover:text-red-700" onclick="logout()">Log out</button></li>
     </ul>

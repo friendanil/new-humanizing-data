@@ -1,4 +1,4 @@
-import initToastBar from "./toast-bar.service";
+// import initToastBar from "./toast-bar.service";
 
 // export async function loadToastHTML(
 //   type: string,
@@ -66,7 +66,7 @@ export async function showToast(
   }
 
   const toastPositions: any = position.split("-");
-  console.log("toastPositions", toastPositions);
+  // console.log("toastPositions", toastPositions);
 
   // const toastHTML = await loadToastHTML(type, heading, msg, position, autoClose)
   const toastHTML = `
@@ -75,9 +75,13 @@ export async function showToast(
       <p>${msg}</p>
     </toast-bar>
   `;
-  console.log("toastHTML ->", toastHTML);
+  // console.log("toastHTML ->", toastHTML);
   toastBar.innerHTML = `${toastHTML}`;
 
   body.appendChild(toastBar);
-  initToastBar();
+  // initToastBar();
+  const toastBarEl: any = document.querySelector("toast-bar");
+  setTimeout(() => {
+    toastBarEl?.remove();
+  }, autoClose);
 }
