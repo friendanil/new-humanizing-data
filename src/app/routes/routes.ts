@@ -9,8 +9,16 @@ import noPageFoundIndex from "../pages/noPageFound/noPageFound.index.ts";
 import addItemIndex from "../pages/addItem/addItem.index.ts";
 import listingItemsIndex from "../pages/listingItems/listingItems.index.ts";
 import rfqIndex from "../pages/rfq/rfq.index.ts";
+import roleClass from "../pages/roles/roles.index.ts";
 
-const routes: any = [
+type RouteParams = {
+  path: string,
+  linkLabel?: string,
+  content: any
+  isAuthenticated?: boolean
+}
+
+const routes: RouteParams[] = [
   {
     path: "/",
     linkLabel: "Home",
@@ -78,6 +86,11 @@ const routes: any = [
     content: rfqIndex,
     isAuthenticated: true,
   },
+  {
+    path: "/roles",
+    content: roleClass,
+    isAuthenticated: true
+  }
 ];
 
 export default routes;
