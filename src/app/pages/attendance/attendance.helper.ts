@@ -21,7 +21,7 @@ export function generateMonthOptions() {
   for (let i = 0; i < MONTHS.length; i++) {
     const month = MONTHS[i];
     monthOptions += `
-        <option value="${i}" ${i == new Date().getMonth() && "selected"}>
+        <option value="${i <= 9 ? `0${i}` : i}" ${i == new Date().getMonth() && "selected"}>
         ${month}
         </option>
         `;
@@ -43,4 +43,23 @@ export function getDuration(timeMs: number) {
   if (seconds) timeFormat += `${seconds}s `;
 
   return timeFormat;
+}
+
+export function getDateInMonth(year: number, month: number) {
+    const day = new Date(year, month, 0).getDate()
+    console.log('day', day)
+    const startDate = new Date(`${year}-${month}-2`)
+    const endDate = new Date(`${year}-${month}-${day}`)
+
+    const arr = [];
+    for (
+      const date = new Date(startDate);
+      date <= new Date(endDate);
+      date.setDate(date.getDate() + 1)
+    ) {
+      arr.push(new Date(date));
+    }
+    let dateList: string[] = [];
+    arr.map((v) => dateList.push(v.toISOString().slice(0, 10)));
+    return dateList
 }

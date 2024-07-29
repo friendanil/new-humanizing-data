@@ -9,7 +9,8 @@ import {
 import { getLocalStorageData } from "../../services/helper.service";
 import { createEntityInstance } from "../../services/createEntityInstance.service";
 import { CreateConnectionBetweenEntityLocal } from "../../services/entity.service";
-import { getDuration } from "./attendance.helper";
+import { getDateInMonth, getDuration } from "./attendance.helper";
+import { DAYS } from "../../constants/time.constants";
 
 export type Attendance = {
   id: any;
@@ -40,6 +41,7 @@ export async function handleAttendanceClick() {
   // check if the user have already logged in
   const attendanceList = await searchAttendance("");
   const attendanceConcept = await haveActiveAttendance(attendanceList);
+  console.log(attendanceConcept);
   console.log("attendanceList", attendanceConcept);
 
   if (attendanceConcept) {
@@ -60,6 +62,8 @@ export async function handleAttendanceClick() {
     checkInBtn.disabled = false;
     checkOutBtn.disabled = true;
   } else {
+    console.log("checkin");
+
     // checkin
     const attendanceEntityConcept = await createEntityInstance(
       "attendance",
@@ -85,17 +89,40 @@ export async function handleAttendanceClick() {
 }
 
 export async function handleMonthlyDateChange() {
-    const monthlyTableBody = document.getElementById('monthly-attendance') as HTMLTableElement
-    const yearSelect = document.getElementById('filter-attendance-year') as HTMLSelectElement
-    const monthSelect = document.getElementById('filter-attendance-month') as HTMLSelectElement
-    console.log('monthlyDateChange', `${yearSelect.value}-${monthSelect.value}`)
+  const monthlyTableBody = document.getElementById(
+    "monthly-attendance"
+  ) as HTMLTableElement;
+  const yearSelect = document.getElementById(
+    "filter-attendance-year"
+  ) as HTMLSelectElement;
+  const monthSelect = document.getElementById(
+    "filter-attendance-month"
+  ) as HTMLSelectElement;
+  console.log("monthlyDateChange", `${yearSelect.value}-${monthSelect.value}`);
 
-    const monthlyAttendanceList = await searchAttendance(`${yearSelect.value}-${monthSelect.value + 1}`)
-    console.log('list', monthlyAttendanceList, monthlyTableBody)
+  const monthlyAttendanceList = await searchAttendance(
+    `${yearSelect.value}-${parseInt(monthSelect.value) + 1 < 9 ? "0" : ""}${
+      parseInt(monthSelect.value) + 1
+    }`
+  );
+  console.log("list", monthlyAttendanceList, monthlyTableBody);
 
-    const attendanceListHTML = await fetchMonthlyAttendance(monthlyAttendanceList)
+  const attendanceListHTML = await fetchMonthlyAttendance(
+    monthlyAttendanceList
+  );
 
-    monthlyTableBody.innerHTML = attendanceListHTML
+  monthlyTableBody.innerHTML = attendanceListHTML;
+}
+
+/**
+ * Method to show active running timer
+ */
+export async function tickTimer() {
+  const timerEl = document?.getElementById("tick-timer");
+  if (timerEl)
+    setInterval(() => {
+      timerEl.innerText = new Date().toLocaleString();
+    }, 1000);
 }
 
 /**
@@ -107,6 +134,7 @@ export async function searchAttendance(searchDate: string) {
   const profileStorageData: any = await getLocalStorageData();
   const userConceptId = profileStorageData?.userConcept;
   const token = profileStorageData?.token;
+  console.log(searchDate, "seachdate");
 
   const checkInFilter = new FilterSearch();
   checkInFilter.type = "checkin";
@@ -133,7 +161,7 @@ export async function searchAttendance(searchDate: string) {
     "the_attendance_checkout",
     "the_attendance_status",
   ];
-  //   attendanceQuery.filterSearches = [checkInFilter]
+  attendanceQuery.filterSearches = [checkInFilter];
 
   console.log(searchQuery);
 
@@ -141,6 +169,7 @@ export async function searchAttendance(searchDate: string) {
     [searchQuery, attendanceQuery],
     token
   );
+  console.log("avc, ", [searchQuery, attendanceQuery]);
   console.log(user, "data");
 
   // TODO:: filter data to proper form
@@ -161,6 +190,7 @@ export function getActiveAttendanceRows(attendanceList: Attendance[]) {
             </tr>
         `;
   }
+  console.log("att", attendanceList);
 
   let todayAttendanceRows = "";
   for (let i = 0; i < attendanceList?.length; i++) {
@@ -204,7 +234,11 @@ export function getActiveAttendanceRows(attendanceList: Attendance[]) {
  * @returns string
  */
 export async function fetchMonthlyAttendance(monthlyAttendance: Attendance[]) {
-  if (monthlyAttendance.length == 0) {
+  if (
+    monthlyAttendance.length == 0 ||
+    (monthlyAttendance?.[0]?.checkin?.split(0, 4) < new Date().getFullYear() &&
+      monthlyAttendance?.[0]?.checkin?.split(5, 6) < new Date().getMonth())
+  ) {
     return `
             <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                 <td scope="row" colspan="7" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap text-center dark:text-white">No Attendance Found</td>
@@ -212,37 +246,123 @@ export async function fetchMonthlyAttendance(monthlyAttendance: Attendance[]) {
   }
 
   let attendanceRows = "";
-  for (let i = 0; i < monthlyAttendance?.length; i++) {
-    const attendance = monthlyAttendance[i];
+
+  const dateList = getDateInMonth(
+    new Date(monthlyAttendance?.[0]?.checkin).getFullYear(),
+    new Date(monthlyAttendance?.[0]?.checkin).getMonth() + 1
+  );
+  dateList.forEach((date: string) => {
+    if (new Date().getTime() > new Date(date).getTime()) return;
+
+    const attendances = monthlyAttendance.filter(
+      (attendance) =>
+        attendance?.checkin?.includes(date) ||
+        attendance?.checkout?.includes(date)
+    );
+    const obj: any = {
+      currentDate: date,
+      count: -1,
+    };
+    attendances.map((attendance) => {
+      if (!obj.checkin && attendance.checkin) obj.checkin = attendance.checkin;
+      else if (obj.checkin && attendance.checkin) {
+        if (
+          new Date(attendance.checkin).getTime() -
+            new Date(obj.checkin).getTime() <=
+          0
+        ) {
+          obj.checkin = attendance.checkin;
+        }
+      }
+
+      if (!obj.checkout && attendance.checkout)
+        obj.checkout = attendance.checkout;
+      else if (obj.checkout && attendance.checkout) {
+        if (
+          new Date(attendance.checkout).getTime() -
+            new Date(obj.checkout).getTime() >=
+          0
+        ) {
+          obj.checkout = attendance.checkout;
+        }
+      }
+      if (attendance.checkin && attendance.checkout) {
+        if (!obj.workingTime)
+          obj.workingTime =
+            new Date(attendance.checkout).getTime() -
+            new Date(attendance.checkin).getTime();
+        else
+          obj.workingTime +=
+            new Date(attendance.checkout).getTime() -
+            new Date(attendance.checkin).getTime();
+      }
+      obj.count += 1;
+    });
 
     attendanceRows += `
-            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-green-400 bg-opacity-25">2020-12-4</td>
-                <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-green-400 bg-opacity-25">
-                    Sun
-                </td>
-                <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-green-400 bg-opacity-25">
-                    06:00
-                </td>
-                <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-green-400 bg-opacity-25">
-                1 time(s)
-                </td>
-                <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-green-400 bg-opacity-25">
-                    06:00
-                </td>
-                <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-green-400 bg-opacity-25">
-                    8hr 42min
-                </td>
-                <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-green-400 bg-opacity-25">
-                    Present
-                </td>
-            </tr>
-        `;
-  }
+      <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+          <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-green-400 bg-opacity-25">${
+            obj.currentDate
+          }</td>
+          <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-green-400 bg-opacity-25">
+              ${obj.currentDate ? DAYS[new Date(obj.currentDate).getDay()] : ''}
+          </td>
+          <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-green-400 bg-opacity-25">
+              ${obj.checkin ? new Date(obj.checkin).toLocaleTimeString() : ""}
+          </td>
+          <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-green-400 bg-opacity-25">
+              ${obj.count > 0 ? `${obj.count} time(s)` : ""}
+          </td>
+          <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-green-400 bg-opacity-25">
+              ${obj.checkout ? new Date(obj.checkout).toLocaleTimeString() : ""}
+          </td>
+          <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-green-400 bg-opacity-25">
+              ${obj.workingTime? getDuration(obj.workingTime) : ''}
+          </td>
+          <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-green-400 bg-opacity-25">
+              ${obj.count > 0 ? `Present` : ""}
+          </td>
+      </tr>
+  `;
+  });
+
+  console.log("herearasfdasfa", attendanceRows);
+
+  //   for (let i = 0; i < monthlyAttendance?.length; i++) {
+  //     const attendance = monthlyAttendance[i];
+
+  //     attendanceRows += `
+  //             <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+  //                 <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-green-400 bg-opacity-25">2020-12-4</td>
+  //                 <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-green-400 bg-opacity-25">
+  //                     Sun
+  //                 </td>
+  //                 <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-green-400 bg-opacity-25">
+  //                     06:00
+  //                 </td>
+  //                 <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-green-400 bg-opacity-25">
+  //                 1 time(s)
+  //                 </td>
+  //                 <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-green-400 bg-opacity-25">
+  //                     06:00
+  //                 </td>
+  //                 <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-green-400 bg-opacity-25">
+  //                     8hr 42min
+  //                 </td>
+  //                 <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-green-400 bg-opacity-25">
+  //                     Present
+  //                 </td>
+  //             </tr>
+  //         `;
+  //   }
 
   return attendanceRows;
 }
 
+/**
+ * Method to enable and disable checkin buttons
+ * @param attendanceList Attendance[]
+ */
 export function enableButtons(attendanceList: Attendance[]) {
   const checkInBtn = document.getElementById(
     "checkin-btn"
@@ -259,13 +379,11 @@ export function enableButtons(attendanceList: Attendance[]) {
   ) {
     checkInBtn.disabled = false;
     checkOutBtn.disabled = true;
-    return;
   } else if (attendanceList?.[0]?.checkin && !attendanceList?.[0]?.checkout) {
     checkInBtn.disabled = true;
     checkOutBtn.disabled = false;
   }
 }
-
 
 async function haveActiveAttendance(attendanceList: any) {
   if (attendanceList?.length == 0) return;
@@ -295,4 +413,3 @@ async function formatAttendance(attendanceList: any[]) {
     }) || []
   );
 }
-

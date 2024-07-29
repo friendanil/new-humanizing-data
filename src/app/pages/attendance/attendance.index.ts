@@ -1,3 +1,4 @@
+import { DAYS } from "../../constants/time.constants";
 import mainViewClass from "../../default/mainView.class";
 import topNavigation from "../../modules/top-nav/top-navigation";
 import { generateMonthOptions, generateYearOptions } from "./attendance.helper";
@@ -8,6 +9,7 @@ import {
   handleAttendanceClick,
   handleMonthlyDateChange,
   searchAttendance,
+  tickTimer,
 } from "./attendance.service";
 
 export default class extends mainViewClass {
@@ -18,17 +20,20 @@ export default class extends mainViewClass {
     (window as any).handleAttendanceClick = handleAttendanceClick;
     (window as any).handleMonthlyDateChange = handleMonthlyDateChange;
 
-    const dailyDate = `${new Date().getFullYear()}-${
-      new Date().getMonth() + 1
-    }-${new Date().getDate()}`;
-    const monthlyDate = `${new Date().getFullYear()}-${
-      new Date().getMonth() + 1
-    }`;
+    const dailyDate = `${new Date().getFullYear()}-${(
+      "0" +
+      (new Date().getMonth() + 1)
+    ).slice(-2)}-${new Date().getDate()}`;
+    const monthlyDate = `${new Date().getFullYear()}-${(
+      "0" +
+      (new Date().getMonth() + 1)
+    ).slice(-2)}`;
 
     const [dailyAttendanceList, monthlyAttendanceList] = await Promise.all([
       searchAttendance(dailyDate),
       searchAttendance(monthlyDate),
     ]);
+    console.log(monthlyAttendanceList, "monthlyAttendanceList");
 
     [this.attendanceRowHTML, this.activeAttendanceRowHTML] = await Promise.all([
       fetchMonthlyAttendance(monthlyAttendanceList),
@@ -37,6 +42,7 @@ export default class extends mainViewClass {
 
     setTimeout(() => {
       enableButtons(dailyAttendanceList);
+      tickTimer();
     }, 1000);
 
     return `
@@ -50,8 +56,11 @@ export default class extends mainViewClass {
                 </div>
                 <div class="col-span-2">
                     <div class="flex flex-col gap-2 mb-4 text-gray-800">
-                        <p><b>Sunday, July 28, 2024</b></p>
-                        <p>Current time: 7/28/2024, 5:34:31 PM</p>
+                        <p><b>${DAYS[new Date().getDay()]}, 
+                            ${new Date().toLocaleDateString("en-US", {
+                              dateStyle: "medium",
+                            })}</b></p>
+                        <p>Current time: <span id="tick-timer">7/28/2024, 5:34:31 PM</span></p>
                     </div>
                     <div class="relative overflow-x-auto">
                         <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
