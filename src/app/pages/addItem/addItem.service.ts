@@ -11,10 +11,12 @@ import { updateContent } from "../../routes/renderRoute.service";
 import { environment } from "../../environments/environment.dev";
 import { createEntityInstance } from "../../services/createEntityInstance.service";
 import { showToast } from "../../modules/toast-bar/toast-bar.index";
+import { getAgents } from "../../services/agent.service";
 
 const thetaBoommAPI = environment?.boomURL;
-let attachmentValues: any
-let attachmentConcept
+// let attachmentValues: any;
+// let attachmentConcept;
+let attachedImageConcepts: any;
 
 export async function getHTML() {
   try {
@@ -35,12 +37,47 @@ export async function getHTML() {
 //   return await getHTML();
 // }
 
+export async function getListingAgents() {
+  const profileStorageData: any = await getLocalStorageData();
+  const token = profileStorageData?.token;
+
+  const listingAgentResposne = await getAgents("listingAgent_agent", token);
+  console.log("listingAgentResposne ->", listingAgentResposne);
+
+  const listingAgentOptions = listingAgentResposne
+    ?.map((listingAgent: any) => {
+      return `<option value="${listingAgent?.the_user?.id}">${listingAgent?.the_user?.data?.entity?.data?.person?.data?.first_name} ${listingAgent?.the_user?.data?.entity?.data?.person?.data?.last_name}</option>`;
+    })
+    .join("");
+
+  return listingAgentOptions;
+}
+
+export async function getSellerAgents() {
+  const profileStorageData: any = await getLocalStorageData();
+  const token = profileStorageData?.token;
+
+  const sellerAgentResposne = await getAgents("sellerAgent_agent", token);
+  console.log("sellerAgentResposne ->", sellerAgentResposne);
+
+  const sellerAgentOptions = sellerAgentResposne
+    ?.map((sellerAgent: any) => {
+      return `<option value="${sellerAgent?.the_user?.id}">${sellerAgent?.the_user?.data?.entity?.data?.person?.data?.first_name} ${sellerAgent?.the_user?.data?.entity?.data?.person?.data?.last_name}</option>`;
+    })
+    .join("");
+
+  return sellerAgentOptions;
+}
+
 export async function submitAddItemForm(e: any) {
   e.preventDefault();
 
   const formData: any = new FormData(e.target);
   // output as an object
   const formValues: any = Object.fromEntries(formData);
+  console.log("formValues ->", formValues);
+
+  // return;
 
   // ...or iterate through the name-value pairs
   // for (let pair of formData.entries()) {
@@ -63,7 +100,13 @@ export async function submitAddItemForm(e: any) {
   if (itemConceptResponse) {
     // success toast message
     setTimeout(async () => {
-      await showToast('success', 'Item added successfully!', 'List the item so anyone can view this item.', 'top-right', 5000)
+      await showToast(
+        "success",
+        "Item added successfully!",
+        "List the item so anyone can view this item.",
+        "top-right",
+        5000
+      );
     }, 100);
 
     e?.target?.reset();
@@ -71,10 +114,15 @@ export async function submitAddItemForm(e: any) {
       elements[i].disabled = false;
     }
     updateContent("/listing");
-    
   } else {
     // error toast message
-    await showToast('error', 'Item can not add successfully!', 'There is something went wrong!', 'top-right', 5000)
+    await showToast(
+      "error",
+      "Item can not add successfully!",
+      "There is something went wrong!",
+      "top-right",
+      5000
+    );
   }
 }
 
@@ -100,7 +148,7 @@ export async function submitAddItemForm(e: any) {
 //     default:
 //       bgColor = 'bg-white'
 //   }
-  
+
 //   toastBar.innerHTML = `
 //     <div class="fixed top-4 right-4 p-4 ${bgColor} text-black z-20 border border-gray-200 rounded shadow-lg">
 //       <h4>${heading}</h4>
@@ -120,21 +168,23 @@ export async function createItem(formValues: any) {
   const profileStorageData: any = await getLocalStorageData();
   const userId = profileStorageData?.userId;
 
-  const itemNameConcept = await createEntityInstance('name', userId, {title: itemName})
+  const itemNameConcept = await createEntityInstance("name", userId, {
+    title: itemName,
+  });
 
   const itemEntityConcept = await MakeTheInstanceConceptLocal(
     "the_item",
-    '',
+    "",
     true,
     userId,
     4,
     999,
     itemNameConcept?.id
-  )
+  );
 
-  delete formValues.itemAttachment
-  formValues.image = attachmentValues?.url
-  console.log('final formValues ->', formValues)
+  delete formValues.itemAttachment;
+  // formValues.image = attachmentValues?.url
+  console.log("final formValues ->", formValues);
 
   for (const [key, value] of Object.entries(formValues)) {
     let ObjKey = key;
@@ -154,7 +204,20 @@ export async function createItem(formValues: any) {
     );
   }
 
+  console.log("attachedImageConcepts 2 ->", attachedImageConcepts);
+  await Promise.all(
+    attachedImageConcepts.map(async (imageConcept: LConcept) => {
+      console.log("imageConcept", imageConcept);
+      return await CreateConnectionBetweenEntityLocal(
+        itemEntityConcept,
+        imageConcept,
+        "s_image"
+      );
+    })
+  );
+
   console.log("itemEntityConcept ID ->", itemEntityConcept?.id);
+  console.log("item created!");
   return itemEntityConcept;
 }
 
@@ -224,10 +287,23 @@ export async function updateItem(itemEntityConcept: any) {
   return sellerEntityConcept;
 }
 
+export async function toggleField(hideObj: any, showObj: any) {
+  hideObj.disabled = true;
+  hideObj.style.display = "none";
+  showObj.disabled = false;
+  showObj.style.display = "inline";
+  showObj.focus();
+  console.log("TOGGLE");
+}
+
 export async function addItemDocument() {
-  const attachmentEl = <HTMLInputElement>document.getElementById('itemAttachment')
+  const attachmentEl = <HTMLInputElement>(
+    document.getElementById("itemAttachment")
+  );
   attachmentEl.addEventListener("change", (e: any) => {
-    const files = e.target.files[0];
+    // const files = e.target.files[0];
+    const files = e.target.files;
+    console.log("files ->", files);
 
     // for (let i = 0; i < files.length; i++) {
     //   const file = files.item(i);
@@ -244,7 +320,16 @@ export async function addItemDocument() {
 
 export async function uploadFile(files: any) {
   let formdata = new FormData();
-  formdata.append("image", files);
+  // formdata.append("images", files);
+
+  for (let i = 0; i < files.length; i++) {
+    const file = files.item(i);
+    const fileName = file.name;
+    console.log("file", file);
+    console.log("fileName", fileName);
+    // this.uploadFile(file, fileName);
+    formdata.append("images", file, fileName);
+  }
 
   const profileStorageData: any = await getLocalStorageData();
   const userId = profileStorageData?.userId;
@@ -254,7 +339,9 @@ export async function uploadFile(files: any) {
   myHeaders.append("Authorization", `Bearer ${token}`);
 
   const response = await fetch(
-    `${thetaBoommAPI}/api/Image/UploadImage`,
+    // `${thetaBoommAPI}/api/Image/UploadImage`,
+    // `${thetaBoommAPI}/api/Image/upload_file_bulk`,
+    `${thetaBoommAPI}/api/Image/upload_image_bulk`,
     {
       method: "POST",
       headers: myHeaders,
@@ -263,25 +350,37 @@ export async function uploadFile(files: any) {
     }
   );
   if (!response.ok) {
-    const errorData = await response.text()
-    console.error(`${response.status} ${errorData}`)
-    return null
+    const errorData = await response.text();
+    console.error(`${response.status} ${errorData}`);
+    return null;
   }
   const output = await response.json();
+  console.log("output", output);
 
-  attachmentValues = {
-    name: files?.name, 
-    size: files?.size,
-    type: files?.type,
-    url: output?.data
-  }
+  attachedImageConcepts = await Promise.all(
+    output?.data?.map(async (image: string) => {
+      const itemImageValues = {
+        url: image,
+      };
 
-  attachmentConcept = await createEntityInstance(
-    "attachment",
-    userId,
-    attachmentValues
+      return await createEntityInstance("attachment", userId, itemImageValues);
+    })
   );
 
-  console.log('attachmentConcept', attachmentConcept)
-  
+  console.log("attachedImageConcepts 1 ->", attachedImageConcepts);
+
+  // attachmentValues = {
+  //   name: files?.name,
+  //   size: files?.size,
+  //   type: files?.type,
+  //   url: output?.data
+  // }
+
+  // attachmentConcept = await createEntityInstance(
+  //   "attachment",
+  //   userId,
+  //   attachmentValues
+  // );
+
+  // console.log('attachmentConcept', attachmentConcept)
 }

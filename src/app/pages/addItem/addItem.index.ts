@@ -1,7 +1,13 @@
 import mainViewClass from "../../default/mainView.class";
 import topNavigation from "../../modules/top-nav/top-navigation";
 
-import { addItemDocument, submitAddItemForm } from "./addItem.service";
+import {
+  addItemDocument,
+  getListingAgents,
+  getSellerAgents,
+  submitAddItemForm,
+  toggleField,
+} from "./addItem.service";
 
 export default class extends mainViewClass {
   constructor(params: any) {
@@ -13,6 +19,10 @@ export default class extends mainViewClass {
     // Attach the function to the global window object
     (window as any).submitAddItemForm = submitAddItemForm;
     (window as any).addItemDocument = addItemDocument;
+    (window as any).toggleField = toggleField;
+
+    const listingAgentsHTML = await getListingAgents();
+    const sellerAgentsHTML = await getSellerAgents();
 
     return `
       ${topNavigation}
@@ -30,26 +40,6 @@ export default class extends mainViewClass {
             </div>
           </div>
 
-          <div class="mt-4">
-            <label for="category" class="block text-sm font-medium leading-6">Item category <span
-              class="text-rose-400">*</span></label>
-            <select id="category" name="category" autocomplete="category-name"
-              class="block w-full rounded-md border-0 mt-2 px-3 py-2 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-md sm:text-sm sm:leading-6 text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">
-              <option value="category1">Service</option>
-              <option value="category2">Real State</option>
-              <option value="category3">Fabrics</option>
-            </select>
-          </div>
-
-          <div class="my-4">
-            <label for="itemAttachment" class="block text-sm font-medium leading-6">Item Images<span
-                class="text-rose-400">*</span></label>
-            <div class="mt-2">
-              <input type="file" accept=".png, .jpg, .jpeg" onclick="addItemDocument()" name="itemAttachment" id="itemAttachment" autocomplete="item-attachment"
-                class="block w-full rounded-md border-0 px-3 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-md sm:text-sm sm:leading-6 text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">
-            </div>
-          </div>
-
           <div class="my-4">
             <label for="description" class="block text-sm font-medium leading-6">Item description<span
                 class="text-rose-400">*</span></label>
@@ -59,23 +49,84 @@ export default class extends mainViewClass {
             </div>
           </div>
 
+          <div class="mt-4">
+            <label for="category" class="block text-sm font-medium leading-6">Item category <span
+              class="text-rose-400">*</span></label>
+            <select id="category" name="category" autocomplete="category-name"
+              class="block w-full rounded-md border-0 mt-2 px-3 py-2 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-md sm:text-sm sm:leading-6 text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900"
+              onchange="if(this.options[this.selectedIndex].value=='cat-custom'){toggleField(this,this.nextSibling); this.selectedIndex='0';}"
+              >
+              <option value="cat-products">Products</option>
+              <option value="cat-services">Services</option>
+              <option value="cat-realState">Real State</option>
+              <option value="cat-fabrics">Fabrics</option>
+              <option value="cat-custom">[type a custom category]</option>
+              <input name="category" style="display:none;" disabled="disabled" onblur="if(this.value==''){toggleField(this,this.previousSibling);}" class="block w-full rounded-md border-0 px-3 py-2 mt-2 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-md sm:text-sm sm:leading-6 text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">
+            </select>
+          </div>
+
           <div class="my-4">
+            <label for="price" class="block text-sm font-medium leading-6">
+              Item price<span class="text-rose-400">*</span>
+            </label>
+            <div class="w-full sm:max-w-md">
+            <div class="relative mt-2 rounded-md shadow-sm">
+              <!-- <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                <span class="text-gray-500 sm:text-sm">$</span>
+              </div> -->
+              
+              <input type="number" name="price" id="price" class="block w-full rounded-md border-0 py-1.5 pl-24 pr-32 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900" placeholder="0.00">
+              <div class="absolute inset-y-0 right-0 flex items-center">
+                <label for="priceType" class="sr-only">priceType</label>
+                <select id="priceType" name="priceType" class="h-full rounded-md border-0 text-zinc-900 dark:text-white bg-transparent py-0 pl-2 pr-7 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm">
+                  <option class="text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">per hr</option>
+                  <option class="text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">per day</option>
+                  <option class="text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">per week</option>
+                  <option class="text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">per month</option>
+                </select>
+              </div>
+              <div class="absolute inset-y-0 left-0 flex items-center">
+                <label for="priceCurrency" class="sr-only">priceCurrency</label>
+                <select id="priceCurrency" name="priceCurrency" class="h-full rounded-md border-0 text-zinc-900 dark:text-white bg-transparent py-0 px-3 mr-2 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm">
+                  <option class="text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">USD</option>
+                  <option class="text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">CAD</option>
+                  <option class="text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">EUR</option>
+                </select>
+              </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="my-4 sm:max-w-md">
+            <label for="itemAttachment" class="block text-sm font-medium leading-6">Item Images<span
+                class="text-rose-400">*</span></label>
+            <div class="mt-2">
+              <input type="file" multiple accept=".png, .jpg, .jpeg" onclick="addItemDocument()" name="itemAttachment" id="itemAttachment" autocomplete="item-attachment"
+                class="block w-full rounded-md border-0 px-3 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-md sm:text-sm sm:leading-6 text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">
+            </div>
+          </div>
+
+          <!-- <div class="my-4">
             <label for="price" class="block text-sm font-medium leading-6">Item price<span
                 class="text-rose-400">*</span></label>
             <div class="mt-2">
               <input type="number" name="price" id="price" autocomplete="item-price"
                 class="block w-full rounded-md border-0 px-3 py-2 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-md sm:text-sm sm:leading-6 text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">
             </div>
-          </div>
+          </div> -->
 
           <div class="mt-4">
             <label for="type" class="block text-sm font-medium leading-6">Item type <span
               class="text-rose-400">*</span></label>
             <select id="type" name="type" autocomplete="type-name"
-              class="block w-full rounded-md border-0 mt-2 px-3 py-2 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-md sm:text-sm sm:leading-6 text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">
+              class="block w-full rounded-md border-0 mt-2 px-3 py-2 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-md sm:text-sm sm:leading-6 text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900"
+              onchange="if(this.options[this.selectedIndex].value=='type-custom'){toggleField(this,this.nextSibling); this.selectedIndex='0';}"
+              >
               <option value="type1">Basic</option>
               <option value="type2">Standard</option>
               <option value="type3">Premium</option>
+              <option value="type-custom">[type a custom type]</option>
+              <input name="type" style="display:none;" disabled="disabled" onblur="if(this.value==''){toggleField(this,this.previousSibling);}" class="block w-full rounded-md border-0 px-3 py-2 mt-2 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-md sm:text-sm sm:leading-6 text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">
             </select>
           </div>
 
@@ -84,9 +135,8 @@ export default class extends mainViewClass {
               class="text-rose-400">*</span></label>
             <select id="listingagent" name="listingagent" autocomplete="listingagent-name"
               class="block w-full rounded-md border-0 mt-2 px-3 py-2 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-md sm:text-sm sm:leading-6 text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">
-              <option value="listingagent1">John Doe</option>
-              <option value="listingagent2">Jessica Pitt</option>
-              <option value="listingagent3">Ram Maharjan</option>
+              <option value="" selected disabled>-- select listing agent --</option>
+              ${listingAgentsHTML}
             </select>
           </div>
 
@@ -95,9 +145,8 @@ export default class extends mainViewClass {
               class="text-rose-400">*</span></label>
             <select id="selleragent" name="selleragent" autocomplete="selleragent-name"
               class="block w-full rounded-md border-0 mt-2 px-3 py-2 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-md sm:text-sm sm:leading-6 text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">
-              <option value="selleragent1">John Doe</option>
-              <option value="selleragent2">Jessica Pitt</option>
-              <option value="selleragent3">Ram Maharjan</option>
+              <option value="" selected disabled>-- select seller agent --</option>
+              ${sellerAgentsHTML}
             </select>
           </div>
 

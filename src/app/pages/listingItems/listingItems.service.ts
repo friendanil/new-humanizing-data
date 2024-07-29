@@ -11,7 +11,7 @@ export async function getListingItems() {
       const profileStorageData: any = await getLocalStorageData();
       const userId = profileStorageData?.userId;
       const token = profileStorageData?.token;
-      
+
       const boomconsoleData = await MakeTheInstanceConcept(
         "the_listing",
         "Boomconsole",
@@ -31,12 +31,18 @@ export async function getListingItems() {
         "the_item_name",
         "the_item_price",
         "the_item_category",
-        "the_item_image",
+        "the_item_s_image",
       ];
       searchsecond.inpage = 100;
 
-      const queryParams = [searchfirst, searchsecond];
-      console.log("queryParams ->", queryParams);
+      let searchthird = new SearchQuery();
+      searchthird.fullLinkers = [
+        // "the_attachment",
+        "the_attachment_url",
+      ];
+      searchthird.inpage = 100;
+
+      const queryParams = [searchfirst, searchsecond, searchthird];
       const output = await SearchLinkMultipleAll(queryParams, token);
       console.log("output ->", output);
 
@@ -50,7 +56,10 @@ export async function getListingItems() {
           name: itemDetails?.the_item_name?.[0]?.data?.the_name,
           price: itemDetails?.the_item_price?.[0]?.data?.the_price,
           category: itemDetails?.the_item_category?.[0]?.data?.the_category,
-          image: itemDetails?.the_item_image?.[0]?.data?.the_image,
+          // image: itemDetails?.the_item_image?.[0]?.data?.the_image,
+          image:
+            itemDetails?.the_item_s_image?.[0]?.data?.the_attachment
+              ?.the_attachment_url?.[0]?.data?.the_url,
         };
       });
 
