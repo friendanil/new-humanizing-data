@@ -1,7 +1,7 @@
 import mainViewClass from '../../default/mainView.class.ts';
 import topNavigation from "../../modules/top-nav/top-navigation"
-import { loadProfileDetails } from "./profile.service"
-import { popupAlert, saveProfileDetails, updateProfile } from "./profile.service"
+import { addEducation,addExperience,previewImage, loadProfileDetails } from "./profile.service"
+import { popupAlert, saveProfileDetails, updateProfile,submitAddProfileForm} from "./profile.service"
 
 export default class extends mainViewClass {
   constructor(params: any) {
@@ -10,10 +10,13 @@ export default class extends mainViewClass {
   }
 
   async getHtml(): Promise<string> {
-    (window as any).popupAlert = popupAlert;
-    (window as any).saveProfileDetails = saveProfileDetails;
-    (window as any).updateProfile = updateProfile;
-
+    // (window as any).popupAlert = popupAlert;
+    // (window as any).saveProfileDetails = saveProfileDetails;
+    // (window as any).updateProfile = updateProfile;
+    (window as any).submitAddProfileForm = submitAddProfileForm;
+    (window as any).addFn = addEducation;
+    (window as any).addExperience=addExperience;
+    (window as any).previewImage=previewImage;
     // const loadHTML = await getHTML()
 
     // load content
@@ -24,50 +27,220 @@ export default class extends mainViewClass {
       <div class="w-4/5 mx-auto my-8">
         <h1 class="dark:text-white">Your Profile</h1>
 
-        <form method="post" onsubmit="updateProfile(event)" class="mt-10">
-          <div class="grid gap-6 mb-6 md:grid-cols-2">
+        <form method="post" onsubmit="submitAddProfileForm(event)" class="mt-10">
+        <h2 class="dark:text-white text-2xl">Basic Information:</h2>
+          <div class="grid gap-6 mb-6 mt-6 md:grid-cols-3">
             <div>
               <label for="first_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">First name</label>
               <input type="text" id="first_name"
+                 name="first_name"
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="John" />
             </div>
             <div>
               <label for="last_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Last name</label>
               <input type="text" id="last_name"
+                name="last_name"
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="Doe" />
+                placeholder="Doe"
+                required />
             </div>
             <div>
-              <label for="company" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Company</label>
-              <input type="text" id="company"
+              <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
+              <input type="email" id="email"
+                name="email"
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="Flowbite" />
+                placeholder="xyz@email.com" />
             </div>
             <div>
               <label for="phone" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phone number</label>
               <input type="tel" id="phone"
+                name="phone"
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="1234567890" />
             </div>
             <div>
-              <label for="website" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Website URL</label>
-              <input type="url" id="website"
+              <label for="dob" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date of birth</label>
+              <input type="date" id="dob"
+                name="dob"
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="flowbite.com" />
             </div>
             <div class="mb-6">
-              <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email address</label>
-              <input type="email" id="email"
+              <label for="gender" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Gender</label>
+              <select id="gender" name="gender" autocomplete="gender-name"
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="john.doe@company.com" />
+                placeholder="" >
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
             </div>
+            <div class="mb-6">
+              <label for="maritialStatus" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Marital Status</label>
+              <select id="maritialStatus" name="maritialStatus" autocomplete="maritialStatus-name"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="" >
+                <option value="single">Single</option>
+                <option value="married">Married</option>
+                <option value="others">Others</option>
+              </select>
+            </div>
+            <div class="mb-6">
+              <label for="educationLevel" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Education Level</label>
+              <select id="educationLevel" name="educationLevel" autocomplete="educationLevel-name"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="" >
+                <option value="phd">PHD</option>
+                <option value="masters">Masters</option>
+                <option value="bachelore">Bachelore</option>
+                <option value="highSchool">High School</option>
+              </select>
+            </div>
+             <div class="mb-6">
+              <label for="department" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Department</label>
+              <select id="department" name="department" autocomplete="department-name"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="" >
+                <option value="technical">Technical</option>
+                <option value="sales">Sales</option>
+                <option value="marketing">Marketing</option>
+                <option value="finance">Finance</option>
+                <option value="administrator">Administrator</option>
+                <option value="humanResource">Human Resource</option>
+              </select>
+            </div>
+            <div>
+              <label for="workExperience" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Total Years of working experience</label>
+              <input type="number" id="workExperience"
+                name="dob"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="Total Years" />
+            </div>         
           </div>
+          
+          <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700">
 
-          <button type="submit"
+          <h2 class="dark:text-white text-2xl">Address:</h2>
+          <div class="grid gap-6 mb-6 mt-6 md:grid-cols-3">
+          
+          <div class="mb-6">
+              <label for="addressType" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Address Type</label>
+              <select id="addressType" name="addressType" autocomplete="addressType-name"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="" >
+                <option value="permanent">Permanent</option>
+                <option value="temporary">Temporary</option>
+              </select>
+            </div>
+            <div>
+              <label for="streetnumber" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Street Number</label>
+              <input type="number" id="streetnumber"
+                name="streetNumber"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="Street Number" />
+            </div>
+            <div>
+              <label for="streetAddress" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Street Addresss</label>
+              <input type="text" id="streetAddress"
+                name="streetAddress"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="Street Address" />
+            </div>
+            <div>
+              <label for="unit" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Unit</label>
+              <input type="text" id="unit"
+                name="unit"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="Unit" />
+            </div>
+            <div>
+              <label for="city" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">City</label>
+              <input type="text" id="city"
+                name="city"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="City" />
+            </div>
+          <div>
+              <label for="state" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">State</label>
+              <input type="text" id="state"
+                name="state"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="State" />
+          </div>
+          <div>
+              <label for="zip" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Zip</label>
+              <input type="text" id="Zip"
+                name="zip"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="zip" />
+          </div>
+           <div>
+              <label for="zip" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Zip</label>
+              <input type="text" id="Zip"
+                name="zip"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="zip" />
+          </div>
+          <div class="mb-6">
+              <label for="country" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Country</label>
+              <select id="country" name="country" autocomplete="country-name"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="" >
+                <option value="nepal">Nepal</option>
+              </select>
+          </div>
+          </div>
+        <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700">
+        <div id="inputFields">
+        </div>
+
+        <div class="grid gap-6 mb-6 mt-6 md:grid-cols-6">
+         <div class="container">
+        <button type="button"
+            onclick="addFn();"
+            class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"> +  Add Education</button>
+        </div>
+         </div>
+        <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700">
+        <div id="inputFields-1">
+        </div>
+         <div class="grid gap-6 mb-6 mt-6 md:grid-cols-6">
+         <div class="container-1">
+        <button type="button"
+            onclick="addExperience();"
+            class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"> +  Add Experience</button>
+        </div>
+         </div>
+        <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700">
+         <label for="itemAttachment" class="block text-sm font-medium leading-6">Profile Images<span
+                class="text-rose-400">*</span></label>
+            <div class="mt-2">
+              <input id="fileInput" type="file" accept=".png, .jpg, .jpeg" onchange="previewImage(event)" name="profilePic" autocomplete="item-attachment"
+                class="block w-full rounded-md border-0 px-3 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-md sm:text-sm sm:leading-6 text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">
+            </div>
+            <img class="mt-5" style="border-radius:50%"; height="100px" width="70px" id="preview" alt="Preview Image">
+        <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700">
+         <div class="grid gap-6 mb-6 mt-6 md:grid-cols-3">
+            <div>
+              <label for="currentSalary" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Current Salary</label>
+              <input type="text" id="currentSalary"
+                 name="currentSalary"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="Current Salary" />
+            </div>
+            <div>
+              <label for="desireSalary" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Desire Salary</label>
+              <input type="text" id="desireSalary"
+                 name="desireSalary"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="Desire Salary" />
+            </div>
+          </div> 
+          <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700"> 
+        <button type="submit"
             class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
         </form>
-
       </div>
     `
   }
