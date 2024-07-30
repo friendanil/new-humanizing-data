@@ -153,6 +153,7 @@ export async function searchAttendance(searchDate: string) {
   searchQuery.fullLinkers = ["the_user_s_attendance"];
   searchQuery.page = 1;
   searchQuery.inpage = 100;
+  searchQuery.doFilter = true
 
   const attendanceQuery = new SearchQuery();
   attendanceQuery.logic = "or";

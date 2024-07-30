@@ -12,6 +12,7 @@ import rfqIndex from "../pages/rfq/rfq.index.ts";
 import roleClass from "../pages/roles/roles.index.ts";
 import attendanceClass from "../pages/attendance/attendance.index.ts";
 import employeeAttendanceClass from "../pages/attendance/employees-attendance/employees-attendance.index.ts";
+import indivisualAttendanceClass from "../pages/attendance/indivisual-attendance/indivisual-attendance.index.ts";
 
 type RouteParams = {
   path: string,
@@ -106,7 +107,7 @@ const routes: RouteParams[] = [
   },
   {
     path: "/employee/attendance/:userConcept",
-    content: attendanceClass,
+    content: indivisualAttendanceClass,
     isAuthenticated: true
   }
 ];

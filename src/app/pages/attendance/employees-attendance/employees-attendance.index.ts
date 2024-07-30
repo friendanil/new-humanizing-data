@@ -1,15 +1,20 @@
 import mainViewClass from "../../../default/mainView.class";
-
+import { getEmployeesAttendanceList, showDropdownMenuOption } from "./employees-attendance.service";
 
 export default class extends mainViewClass {
+  async getHtml(): Promise<string> {
+    (window as any).showDropdownMenuOption = showDropdownMenuOption
 
-    async getHtml(): Promise<string> {
-        return `
-        <div class="container mx-auto my-4 text-gray-800">
+    const employeeAttendanceRows = getEmployeesAttendanceList([{id: 123}])
+    
+    return `
+        <div class="container relative mx-auto my-4 text-gray-800">
             <h3 class="text-3xl font-bold">Today's Attendance</h3>
-            <p class="text-gray-500">2024-2-10</p>
+            <p class="text-gray-500 mb-6">${new Date().toLocaleString("en-US", {
+              dateStyle: "full",
+            })}</p>
             <div class="w-full px-6 py-4 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-                <div class="relative overflow-x-auto">
+                <div class="overflow-x-auto">
                     <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                         <thead class="text-xs text-gray-700 uppercase bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
@@ -25,38 +30,12 @@ export default class extends mainViewClass {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-green-400 bg-opacity-25">2020-12-4</td>
-                                <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-green-400 bg-opacity-25">
-                                    Sun
-                                </td>
-                                <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-green-400 bg-opacity-25">
-                                    06:00
-                                </td>
-                                <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-green-400 bg-opacity-25">
-                                1 time(s)
-                                </td>
-                                <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-green-400 bg-opacity-25">
-                                    06:00
-                                </td>
-                                <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-green-400 bg-opacity-25">
-                                    8hr 42min
-                                </td>
-                                <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-green-400 bg-opacity-25">
-                                    8hr 42min
-                                </td>
-                                <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-green-400 bg-opacity-25">
-                                Present
-                                </td>
-                                <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-green-400 bg-opacity-25">
-                                    8hr 42min
-                                </td>
-                            </tr>
+                            ${employeeAttendanceRows}
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-        `
-    }
+        `;
+  }
 }
