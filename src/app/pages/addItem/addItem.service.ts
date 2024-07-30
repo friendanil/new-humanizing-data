@@ -4,6 +4,10 @@ import {
   LConcept,
   LocalSyncData,
   MakeTheInstanceConceptLocal,
+  SearchLinkInternal,
+  SearchLinkMultipleAll,
+  SearchQuery,
+  SearchStructure,
 } from "mftsccs-browser";
 import { getLocalStorageData } from "../../services/helper.service";
 import { CreateConnectionBetweenEntityLocal } from "../../services/entity.service";
@@ -17,6 +21,11 @@ const thetaBoommAPI = environment?.boomURL;
 // let attachmentValues: any;
 // let attachmentConcept;
 let attachedImageConcepts: any;
+let categoryListHTML: any;
+let typeListHTML: any;
+
+let categoryNameList: any
+let typeNameList: any
 
 export async function getHTML() {
   try {
@@ -37,13 +46,317 @@ export async function getHTML() {
 //   return await getHTML();
 // }
 
+export async function getTypeList() {
+  const profileStorageData: any = await getLocalStorageData();
+  const token = profileStorageData?.token;
+
+  const queryType = [
+    {
+      type: "the_itemtype",
+      fullLinkers: ["the_itemtype_name"],
+      inpage: 100,
+      page: 1,
+      logic: "or",
+      filterSearches: [],
+    },
+  ];
+
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+  myHeaders.append("Authorization", `Bearer ${token}`);
+
+  const response = await fetch(
+    `${thetaBoommAPI}/api/search-all-with-linker?inpage=100&page=1`,
+    {
+      method: "POST",
+      headers: myHeaders,
+      body: JSON.stringify(queryType),
+      redirect: "follow",
+    }
+  );
+  const output = await response.json();
+  console.log("TYPE output ->", output);
+
+  const typeNameList = output?.[0].data?.the_itemtype?.the_itemtype_name;
+
+  typeListHTML = typeNameList
+    ?.map((type: any) => {
+      return `<option value="${type?.id}">${type?.data?.the_name}</option>`;
+    })
+    .join("");
+
+  return typeListHTML;
+
+  // create the_itemtype
+  // const itemTypeConcept = await createEntityInstance("itemtype", 999, {
+  //   name: 'Basic',
+  //   price: 10
+  // });
+
+  // await LocalSyncData.SyncDataOnline();
+  // return itemTypeConcept;
+
+  // create new types with the_itemtype
+  let search = new SearchStructure();
+  search.composition = "the_itemtype";
+  search.inpage = 100;
+
+  let values = await SearchLinkInternal(search, token);
+
+  if (values.length) {
+    const typeEntityId = values?.[0]?.id;
+    const typeResponse: LConcept = await GetTheConceptLocal(typeEntityId);
+    const typeNameConcept: LConcept = await MakeTheInstanceConceptLocal(
+      `name`,
+      `Standard`,
+      false,
+      999,
+      4,
+      999
+    );
+
+    await CreateConnectionBetweenEntityLocal(
+      typeResponse,
+      typeNameConcept,
+      "name"
+    );
+
+    await LocalSyncData.SyncDataOnline();
+    return typeResponse;
+  }
+}
+
+export async function getCategoryList() {
+  const profileStorageData: any = await getLocalStorageData();
+  const token = profileStorageData?.token;
+
+  const queryRFQ = [
+    {
+      type: "the_itemcategory",
+      fullLinkers: ["the_itemcategory_name"],
+      inpage: 100,
+      page: 1,
+      logic: "or",
+      filterSearches: [],
+    },
+  ];
+
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+  myHeaders.append("Authorization", `Bearer ${token}`);
+
+  const response = await fetch(
+    `${thetaBoommAPI}/api/search-all-with-linker?inpage=100&page=1`,
+    {
+      method: "POST",
+      headers: myHeaders,
+      body: JSON.stringify(queryRFQ),
+      redirect: "follow",
+    }
+  );
+  const output = await response.json();
+  console.log("CATEGORY output ->", output);
+
+  categoryNameList =
+    output?.[0].data?.the_itemcategory?.the_itemcategory_name;
+
+  categoryListHTML = categoryNameList
+    ?.map((category: any) => {
+      return `<option value="${category?.id}">${category?.data?.the_name}</option>`;
+    })
+    .join("");
+
+  return categoryListHTML;
+
+  // create new category name with the_itemcategory
+  let search = new SearchStructure();
+  search.composition = "the_itemcategory";
+  search.inpage = 100;
+
+  let values = await SearchLinkInternal(search, token);
+
+  if (values.length) {
+    const categoryEntityId = values?.[0]?.id;
+    categoryListHTML = values;
+    return;
+    const categoryResponse: LConcept = await GetTheConceptLocal(
+      categoryEntityId
+    );
+
+    const categoryNameConcept: LConcept = await MakeTheInstanceConceptLocal(
+      `name`,
+      `Services`,
+      false,
+      999,
+      4,
+      999
+    );
+
+    await CreateConnectionBetweenEntityLocal(
+      categoryResponse,
+      categoryNameConcept,
+      "name"
+    );
+
+    await LocalSyncData.SyncDataOnline();
+    return categoryResponse;
+  }
+
+  return;
+
+  // create first the_itemcategory
+  const categoryEntityConcept: LConcept = await MakeTheInstanceConceptLocal(
+    `the_itemcategory`,
+    "",
+    true,
+    999,
+    4,
+    999
+  );
+
+  const categoryNameConcept: LConcept = await MakeTheInstanceConceptLocal(
+    `name`,
+    `Products`,
+    false,
+    999,
+    4,
+    999
+  );
+
+  await CreateConnectionBetweenEntityLocal(
+    categoryEntityConcept,
+    categoryNameConcept,
+    "name"
+  );
+
+  await LocalSyncData.SyncDataOnline();
+  return categoryEntityConcept;
+}
+
+export async function updateItemCategory(e: any) {
+  const selectedCategory = e?.target?.value;
+  console.log("selectedCategory ->", selectedCategory);
+  typeListHTML = "";
+
+  if (selectedCategory && selectedCategory !== "cat-custom") {
+    const profileStorageData: any = await getLocalStorageData();
+    const token = profileStorageData?.token;
+
+    let searchfirst = new SearchQuery();
+    searchfirst.composition = selectedCategory;
+    searchfirst.fullLinkers = ["the_name", "the_name_s_type"];
+    searchfirst.inpage = 100;
+
+    const queryParams = [searchfirst];
+    const output = await SearchLinkMultipleAll(queryParams, token);
+    console.log("output updateItemCategory ->", output);
+
+    if (output) {
+      const categorysType = output?.data?.the_name?.the_name_s_type;
+      if (categorysType?.length) {
+        typeNameList = categorysType
+        const typesHTML = categorysType
+          ?.map((type: any) => {
+            return `<option value="${type?.id}">${type?.data?.the_name}</option>`;
+          })
+          .join("");
+        typeListHTML = `
+          <option value="" selected disabled>--- select type ---</option>
+          ${typesHTML}
+          <option value="type-custom">[type a custom type]</option>
+          <input name="type" style="display:none;" disabled="disabled" onblur="if(this.value==''){toggleField(this,this.previousSibling);}" class="block w-full rounded-md border-0 px-3 py-2 mt-2 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-md sm:text-sm sm:leading-6 text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">
+        `;
+        const selectType = document.getElementById("type");
+        if (selectType) selectType.innerHTML = typeListHTML;
+      } else {
+        typeListHTML = `
+          <option value="" selected disabled>--- select type ---</option>
+          <option value="type-custom">[type a custom type]</option>
+          <input name="type" style="display:none;" disabled="disabled" onblur="if(this.value==''){toggleField(this,this.previousSibling);}" class="block w-full rounded-md border-0 px-3 py-2 mt-2 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-md sm:text-sm sm:leading-6 text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">
+        `;
+        const selectType = document.getElementById("type");
+        if (selectType) selectType.innerHTML = typeListHTML;
+      }
+    }
+
+    // create link category with type
+    // const categoryResponse: LConcept = await GetTheConceptLocal(selectedCategory);
+
+    // const typeNameResponse:LConcept = await GetTheConceptLocal(100475888)
+
+    // await CreateConnectionBetweenEntityLocal(
+    //   categoryResponse,
+    //   typeNameResponse,
+    //   "s_type"
+    // );
+
+    // await LocalSyncData.SyncDataOnline();
+  } else if (selectedCategory === "cat-custom") {
+    typeListHTML = `
+      <option value="" selected disabled>--- select type ---</option>
+      <option value="type-custom">[type a custom type]</option>
+      <input name="type" style="display:none;" disabled="disabled" onblur="if(this.value==''){toggleField(this,this.previousSibling);}" class="block w-full rounded-md border-0 px-3 py-2 mt-2 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-md sm:text-sm sm:leading-6 text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">
+    `;
+    const selectType = document.getElementById("type");
+    if (selectType) selectType.innerHTML = typeListHTML;
+  }
+}
+
+// export async function _updateItemCategory(e: any) {
+//   e.preventDefault();
+
+//   const selectedCategory = e?.target?.value;
+
+//   // if(this.options[this.selectedIndex].value=='cat-custom'){
+//   //   toggleField(this,this.nextSibling); this.selectedIndex='0';
+//   // }
+
+//   if (selectedCategory === "cat-custom") {
+//     const selectParentNode = e?.target?.parentNode;
+
+//     const selectNode = selectParentNode?.querySelector("select");
+//     const selectInput = selectParentNode?.querySelector("input");
+//     // toggleField(this, this.nextSibling)
+
+//     toggleField(selectNode, selectInput);
+//   }
+// }
+
+// export async function updateTypeCategory(e: any) {
+//   // e.preventDefault()
+
+//   const selectedCategory = e?.target?.value;
+
+//   // if(this.options[this.selectedIndex].value=='cat-custom'){
+//   //   toggleField(this,this.nextSibling); this.selectedIndex='0';
+//   // }
+
+//   if (selectedCategory === "type-custom") {
+//     const selectParentNode = e?.target?.parentNode;
+
+//     const selectNode = selectParentNode?.querySelector("select");
+//     const selectInput = selectParentNode?.querySelector("input");
+//     // toggleField(this, this.nextSibling)
+
+//     toggleField(selectNode, selectInput);
+//   }
+// }
+
+// export async function resetUpdateCategory(e: any) {
+//   e.target.value = "";
+//   const selectParentNode = e?.target?.parentNode;
+
+//   const selectNode = selectParentNode?.querySelector("select");
+//   const selectInput = selectParentNode?.querySelector("input");
+
+//   toggleField(selectInput, selectNode);
+// }
+
 export async function getListingAgents() {
   const profileStorageData: any = await getLocalStorageData();
   const token = profileStorageData?.token;
 
   const listingAgentResposne = await getAgents("listingAgent_agent", token);
-  console.log("listingAgentResposne ->", listingAgentResposne);
-
   const listingAgentOptions = listingAgentResposne
     ?.map((listingAgent: any) => {
       return `<option value="${listingAgent?.the_user?.id}">${listingAgent?.the_user?.data?.entity?.data?.person?.data?.first_name} ${listingAgent?.the_user?.data?.entity?.data?.person?.data?.last_name}</option>`;
@@ -58,8 +371,6 @@ export async function getSellerAgents() {
   const token = profileStorageData?.token;
 
   const sellerAgentResposne = await getAgents("sellerAgent_agent", token);
-  console.log("sellerAgentResposne ->", sellerAgentResposne);
-
   const sellerAgentOptions = sellerAgentResposne
     ?.map((sellerAgent: any) => {
       return `<option value="${sellerAgent?.the_user?.id}">${sellerAgent?.the_user?.data?.entity?.data?.person?.data?.first_name} ${sellerAgent?.the_user?.data?.entity?.data?.person?.data?.last_name}</option>`;
@@ -76,6 +387,33 @@ export async function submitAddItemForm(e: any) {
   // output as an object
   const formValues: any = Object.fromEntries(formData);
   console.log("formValues ->", formValues);
+
+  // const typeResponse = await getTypeList();
+
+  console.log('categoryNameList', categoryNameList)
+  console.log('typeNameList', typeNameList)
+  
+  const selectedCategory = formValues?.category
+  const selectedType = formValues?.type
+  console.log('selectedCategory n selectedType ->', selectedCategory, selectedType)
+
+  const filteredCategory = categoryNameList?.filter((category: any) => Number(selectedCategory) === category?.id)
+  console.log('filteredCategory ->', filteredCategory)
+  if (!filteredCategory || !filteredCategory?.length) {
+    console.log('CUSTOM category')
+    // create the_itemcategory and the_itemtype and link each other
+    const customCategoryResponse = await createCustomCategory(selectedCategory, selectedType)
+    console.log('customCategoryResponse ->', customCategoryResponse);
+  }
+
+  const filteredType = typeNameList?.filter((type: any) => Number(selectedType) === type?.id)
+  console.log('filteredType ->', filteredType);
+  if (selectedCategory && filteredCategory?.length && (!filteredType || !filteredType?.length)) {
+    console.log('CUSTOM type')
+    // link the_name with the_itemcategory
+    const itemTypeNameResponse = await createItemType(selectedCategory, selectedType)
+    console.log('itemTypeNameResponse ->', itemTypeNameResponse);
+  }
 
   // return;
 
@@ -161,6 +499,88 @@ export async function submitAddItemForm(e: any) {
 //   }, 5000);
 // }
 
+export async function createCustomCategory(selectedCategory: any, selectedType: any) {
+  const profileStorageData: any = await getLocalStorageData();
+  const token = profileStorageData?.token;
+
+  // create new category name with the_itemcategory
+  let search = new SearchStructure();
+  search.composition = "the_itemcategory";
+  search.inpage = 100;
+
+  let values = await SearchLinkInternal(search, token);
+
+  if (values.length) {
+    const categoryEntityId = values?.[0]?.id;
+
+    const categoryResponse: LConcept = await GetTheConceptLocal(categoryEntityId);
+    const categoryNameConcept: LConcept = await MakeTheInstanceConceptLocal(
+      `name`,
+      selectedCategory,
+      false,
+      999,
+      4,
+      999
+    );
+
+    await CreateConnectionBetweenEntityLocal(
+      categoryResponse,
+      categoryNameConcept,
+      "name"
+    );
+
+    await createItemType(categoryNameConcept?.id, selectedType)
+    // await LocalSyncData.SyncDataOnline();
+    return categoryResponse;
+  }
+}
+
+export async function createItemType(selectedCategory: any, selectedType: any) {
+  const profileStorageData: any = await getLocalStorageData();
+  const token = profileStorageData?.token;
+
+  // create new types with the_itemtype
+  let search = new SearchStructure();
+  search.composition = "the_itemtype";
+  search.inpage = 100;
+
+  let values = await SearchLinkInternal(search, token);
+
+  if (values.length) {
+    const typeEntityId = values?.[0]?.id;
+    console.log("typeEntityId", typeEntityId);
+
+    const typeResponse: LConcept = await GetTheConceptLocal(typeEntityId);
+    const typeNameConcept: LConcept = await MakeTheInstanceConceptLocal(
+      `name`,
+      selectedType,
+      false,
+      999,
+      4,
+      999
+    );
+
+    await CreateConnectionBetweenEntityLocal(
+      typeResponse,
+      typeNameConcept,
+      "name"
+    );
+
+    // Link type name with the category
+    const categoryResponse: LConcept = await GetTheConceptLocal(selectedCategory);
+    await CreateConnectionBetweenEntityLocal(
+      categoryResponse,
+      typeNameConcept,
+      "s_type"
+    );
+
+    await LocalSyncData.SyncDataOnline();
+    // return typeResponse;
+    return typeNameConcept;
+  }
+
+}
+
 export async function createItem(formValues: any) {
   console.log("createItem formValues ->", formValues);
   const itemName = formValues?.name;
@@ -205,18 +625,18 @@ export async function createItem(formValues: any) {
   }
 
   console.log("attachedImageConcepts 2 ->", attachedImageConcepts);
-  await Promise.all(
-    attachedImageConcepts.map(async (imageConcept: LConcept) => {
-      console.log("imageConcept", imageConcept);
-      return await CreateConnectionBetweenEntityLocal(
-        itemEntityConcept,
-        imageConcept,
-        "s_image"
-      );
-    })
-  );
+  if (attachedImageConcepts) {
+    await Promise.all(
+      attachedImageConcepts?.map(async (imageConcept: LConcept) => {
+        return await CreateConnectionBetweenEntityLocal(
+          itemEntityConcept,
+          imageConcept,
+          "s_image"
+        );
+      })
+    );
+  }
 
-  console.log("itemEntityConcept ID ->", itemEntityConcept?.id);
   console.log("item created!");
   return itemEntityConcept;
 }
@@ -252,7 +672,6 @@ export async function updateItem(itemEntityConcept: any) {
   // const output = await SearchLinkInternal(search, token);
 
   const sellerEntityId = Number(Object.keys(output)?.[0]);
-  console.log("sellerEntityId ->", sellerEntityId);
 
   if (sellerEntityId) {
     sellerEntityConcept = await GetTheConceptLocal(sellerEntityId);
@@ -276,8 +695,6 @@ export async function updateItem(itemEntityConcept: any) {
     );
   }
 
-  console.log("sellerEntityConcept ->", sellerEntityConcept);
-
   await CreateConnectionBetweenEntityLocal(
     sellerEntityConcept,
     itemEntityConcept,
@@ -293,7 +710,6 @@ export async function toggleField(hideObj: any, showObj: any) {
   showObj.disabled = false;
   showObj.style.display = "inline";
   showObj.focus();
-  console.log("TOGGLE");
 }
 
 export async function addItemDocument() {
@@ -303,7 +719,6 @@ export async function addItemDocument() {
   attachmentEl.addEventListener("change", (e: any) => {
     // const files = e.target.files[0];
     const files = e.target.files;
-    console.log("files ->", files);
 
     // for (let i = 0; i < files.length; i++) {
     //   const file = files.item(i);
@@ -325,8 +740,6 @@ export async function uploadFile(files: any) {
   for (let i = 0; i < files.length; i++) {
     const file = files.item(i);
     const fileName = file.name;
-    console.log("file", file);
-    console.log("fileName", fileName);
     // this.uploadFile(file, fileName);
     formdata.append("images", file, fileName);
   }
@@ -382,5 +795,4 @@ export async function uploadFile(files: any) {
   //   attachmentValues
   // );
 
-  // console.log('attachmentConcept', attachmentConcept)
 }
