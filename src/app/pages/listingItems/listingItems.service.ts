@@ -77,10 +77,10 @@ export async function getListingItems() {
               </div> -->
               <div class="p-4">
                 <div class="flex items-center justify-between">
-                  <h6 class="font-semibold text-xl leading-8 text-black transition-all duration-500 group-hover:text-indigo-600">${item?.name}</h6>
+                  <h6 class="truncate font-semibold text-xl leading-8 text-black transition-all duration-500 group-hover:text-indigo-600">${item?.name}</h6>
                   <h6 class="font-semibold text-xl leading-8 text-indigo-600">$${item?.price}</h6>
                 </div>
-                <p class="mt-2 font-normal text-sm leading-6 text-gray-500">${item?.category}</p>
+                <!-- <p class="mt-2 font-normal text-sm leading-6 text-gray-500">${item?.category}</p> -->
               </div>
             </router-link>
           `;
