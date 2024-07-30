@@ -3,8 +3,10 @@ import topNavigation from "../../modules/top-nav/top-navigation";
 
 import {
   addItemDocument,
+  getAgentSellers,
   getCategoryList,
   getListingAgents,
+  getMyAgentType,
   getSellerAgents,
   submitAddItemForm,
   toggleField,
@@ -28,9 +30,70 @@ export default class extends mainViewClass {
     // (window as any).updateTypeCategory = updateTypeCategory;
     // (window as any).resetUpdateCategory = resetUpdateCategory;
 
-    const itemCategoryHTML = await getCategoryList()
-    const listingAgentsHTML = await getListingAgents();
-    const sellerAgentsHTML = await getSellerAgents();
+    const itemCategoryHTML = await getCategoryList();
+    const myAgentType = await getMyAgentType();
+
+    let listingAgentsHTML: any;
+    let sellerAgentsHTML: any;
+    let sellersHTML: any;
+    let agentListHTML: any;
+
+    if (myAgentType?.length) {
+      const listingAgent = myAgentType?.filter(
+        (agent: any) =>
+          agent?.data?.agent_request_info?.agentType === "listingAgent" &&
+          agent?.data?.agent_request_info?.isApproved === "True"
+      );
+      // console.log("listingAgent", listingAgent);
+
+      if (listingAgent?.length) {
+        sellersHTML = await getAgentSellers();
+        agentListHTML = `
+        <div class="mt-4">
+          <label for="seller" class="block text-sm font-medium leading-6">Item Seller <span
+            class="text-rose-400">*</span></label>
+          <select id="seller" name="seller" autocomplete="seller-name"
+            class="block w-full rounded-md border-0 mt-2 px-3 py-2 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-md sm:text-sm sm:leading-6 text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">
+            <option value="" selected disabled>-- select seller --</option>
+            ${sellersHTML}
+          </select>
+        </div>
+      `;
+      } else {
+        await getAgents();
+      }
+    } else {
+      await getAgents();
+    }
+
+    async function getAgents() {
+      listingAgentsHTML = await getListingAgents();
+      sellerAgentsHTML = await getSellerAgents();
+      agentListHTML = `
+        <div class="mt-4">
+          <label for="listingagent" class="block text-sm font-medium leading-6">Item listing agent <span
+            class="text-rose-400">*</span></label>
+          <select id="listingagent" name="listingagent" autocomplete="listingagent-name"
+            class="block w-full rounded-md border-0 mt-2 px-3 py-2 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-md sm:text-sm sm:leading-6 text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">
+            <option value="" selected disabled>-- select listing agent --</option>
+            ${listingAgentsHTML}
+          </select>
+        </div>
+
+        <div class="mt-4">
+          <label for="selleragent" class="block text-sm font-medium leading-6">Item seller agent <span
+            class="text-rose-400">*</span></label>
+          <select id="selleragent" name="selleragent" autocomplete="selleragent-name"
+            class="block w-full rounded-md border-0 mt-2 px-3 py-2 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-md sm:text-sm sm:leading-6 text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">
+            <option value="" selected disabled>-- select seller agent --</option>
+            ${sellerAgentsHTML}
+          </select>
+        </div>
+      `;
+    }
+
+    // listingAgentsHTML = await getListingAgents();
+    // const sellerAgentsHTML = await getSellerAgents();
 
     return `
       ${topNavigation}
@@ -141,25 +204,7 @@ export default class extends mainViewClass {
             </div>
           </div> -->
 
-          <div class="mt-4">
-            <label for="listingagent" class="block text-sm font-medium leading-6">Item listing agent <span
-              class="text-rose-400">*</span></label>
-            <select id="listingagent" name="listingagent" autocomplete="listingagent-name"
-              class="block w-full rounded-md border-0 mt-2 px-3 py-2 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-md sm:text-sm sm:leading-6 text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">
-              <option value="" selected disabled>-- select listing agent --</option>
-              ${listingAgentsHTML}
-            </select>
-          </div>
-
-          <div class="mt-4">
-            <label for="selleragent" class="block text-sm font-medium leading-6">Item seller agent <span
-              class="text-rose-400">*</span></label>
-            <select id="selleragent" name="selleragent" autocomplete="selleragent-name"
-              class="block w-full rounded-md border-0 mt-2 px-3 py-2 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-md sm:text-sm sm:leading-6 text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">
-              <option value="" selected disabled>-- select seller agent --</option>
-              ${sellerAgentsHTML}
-            </select>
-          </div>
+          ${agentListHTML}
 
           <div class="my-4">
             <label for="delivery" class="block text-sm font-medium leading-6">Item delivery<span

@@ -1,5 +1,6 @@
 // import { Concept, MakeTheInstanceConcept, SyncData } from "mftsccs-browser";
 import {
+  GetLink,
   GetTheConceptLocal,
   LConcept,
   LocalSyncData,
@@ -24,8 +25,8 @@ let attachedImageConcepts: any;
 let categoryListHTML: any;
 let typeListHTML: any;
 
-let categoryNameList: any
-let typeNameList: any
+let categoryNameList: any;
+let typeNameList: any;
 
 export async function getHTML() {
   try {
@@ -143,10 +144,11 @@ export async function getCategoryList() {
 
   const myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
-  myHeaders.append("Authorization", `Bearer ${token}`);
+  // myHeaders.append("Authorization", `Bearer ${token}`);
 
   const response = await fetch(
-    `${thetaBoommAPI}/api/search-all-with-linker?inpage=100&page=1`,
+    // `${thetaBoommAPI}/api/search-all-with-linker?inpage=100&page=1`,
+    `${thetaBoommAPI}/api/search-all-without-auth-with-linker?inpage=100&page=1`,
     {
       method: "POST",
       headers: myHeaders,
@@ -157,8 +159,7 @@ export async function getCategoryList() {
   const output = await response.json();
   console.log("CATEGORY output ->", output);
 
-  categoryNameList =
-    output?.[0].data?.the_itemcategory?.the_itemcategory_name;
+  categoryNameList = output?.[0]?.data?.the_itemcategory?.the_itemcategory_name;
 
   categoryListHTML = categoryNameList
     ?.map((category: any) => {
@@ -254,7 +255,7 @@ export async function updateItemCategory(e: any) {
     if (output) {
       const categorysType = output?.data?.the_name?.the_name_s_type;
       if (categorysType?.length) {
-        typeNameList = categorysType
+        typeNameList = categorysType;
         const typesHTML = categorysType
           ?.map((type: any) => {
             return `<option value="${type?.id}">${type?.data?.the_name}</option>`;
@@ -352,6 +353,28 @@ export async function updateItemCategory(e: any) {
 //   toggleField(selectInput, selectNode);
 // }
 
+export async function getMyAgentType() {
+  const profileStorageData: any = await getLocalStorageData();
+  const userConceptId = profileStorageData?.userConcept;
+  const agentTypeResonse = await GetLink(userConceptId, "isAgent_s", 10, 1);
+  console.log("agentTypeResonse", agentTypeResonse);
+  return agentTypeResonse;
+}
+
+export async function getAgentSellers() {
+  const profileStorageData: any = await getLocalStorageData();
+  const token = profileStorageData?.token;
+
+  const sellerResposne = await getAgents("seller_agent", token);
+  const sellerOptions = sellerResposne
+    ?.map((agentSeller: any) => {
+      return `<option value="${agentSeller?.the_user?.id}">${agentSeller?.the_user?.data?.entity?.data?.person?.data?.first_name} ${agentSeller?.the_user?.data?.entity?.data?.person?.data?.last_name}</option>`;
+    })
+    .join("");
+
+  return sellerOptions;
+}
+
 export async function getListingAgents() {
   const profileStorageData: any = await getLocalStorageData();
   const token = profileStorageData?.token;
@@ -389,30 +412,47 @@ export async function submitAddItemForm(e: any) {
   console.log("formValues ->", formValues);
 
   // const typeResponse = await getTypeList();
+  console.log("categoryNameList", categoryNameList);
+  console.log("typeNameList", typeNameList);
 
-  console.log('categoryNameList', categoryNameList)
-  console.log('typeNameList', typeNameList)
-  
-  const selectedCategory = formValues?.category
-  const selectedType = formValues?.type
-  console.log('selectedCategory n selectedType ->', selectedCategory, selectedType)
+  const selectedCategory = formValues?.category;
+  const selectedType = formValues?.type;
+  console.log(
+    "selectedCategory n selectedType ->",
+    selectedCategory,
+    selectedType
+  );
 
-  const filteredCategory = categoryNameList?.filter((category: any) => Number(selectedCategory) === category?.id)
-  console.log('filteredCategory ->', filteredCategory)
+  const filteredCategory = categoryNameList?.filter(
+    (category: any) => Number(selectedCategory) === category?.id
+  );
+  console.log("filteredCategory ->", filteredCategory);
   if (!filteredCategory || !filteredCategory?.length) {
-    console.log('CUSTOM category')
+    console.log("CUSTOM category");
     // create the_itemcategory and the_itemtype and link each other
-    const customCategoryResponse = await createCustomCategory(selectedCategory, selectedType)
-    console.log('customCategoryResponse ->', customCategoryResponse);
+    const customCategoryResponse = await createCustomCategory(
+      selectedCategory,
+      selectedType
+    );
+    console.log("customCategoryResponse ->", customCategoryResponse);
   }
 
-  const filteredType = typeNameList?.filter((type: any) => Number(selectedType) === type?.id)
-  console.log('filteredType ->', filteredType);
-  if (selectedCategory && filteredCategory?.length && (!filteredType || !filteredType?.length)) {
-    console.log('CUSTOM type')
+  const filteredType = typeNameList?.filter(
+    (type: any) => Number(selectedType) === type?.id
+  );
+  console.log("filteredType ->", filteredType);
+  if (
+    selectedCategory &&
+    filteredCategory?.length &&
+    (!filteredType || !filteredType?.length)
+  ) {
+    console.log("CUSTOM type");
     // link the_name with the_itemcategory
-    const itemTypeNameResponse = await createItemType(selectedCategory, selectedType)
-    console.log('itemTypeNameResponse ->', itemTypeNameResponse);
+    const itemTypeNameResponse = await createItemType(
+      selectedCategory,
+      selectedType
+    );
+    console.log("itemTypeNameResponse ->", itemTypeNameResponse);
   }
 
   // return;
@@ -499,7 +539,10 @@ export async function submitAddItemForm(e: any) {
 //   }, 5000);
 // }
 
-export async function createCustomCategory(selectedCategory: any, selectedType: any) {
+export async function createCustomCategory(
+  selectedCategory: any,
+  selectedType: any
+) {
   const profileStorageData: any = await getLocalStorageData();
   const token = profileStorageData?.token;
 
@@ -513,7 +556,9 @@ export async function createCustomCategory(selectedCategory: any, selectedType: 
   if (values.length) {
     const categoryEntityId = values?.[0]?.id;
 
-    const categoryResponse: LConcept = await GetTheConceptLocal(categoryEntityId);
+    const categoryResponse: LConcept = await GetTheConceptLocal(
+      categoryEntityId
+    );
     const categoryNameConcept: LConcept = await MakeTheInstanceConceptLocal(
       `name`,
       selectedCategory,
@@ -529,7 +574,7 @@ export async function createCustomCategory(selectedCategory: any, selectedType: 
       "name"
     );
 
-    await createItemType(categoryNameConcept?.id, selectedType)
+    await createItemType(categoryNameConcept?.id, selectedType);
     // await LocalSyncData.SyncDataOnline();
     return categoryResponse;
   }
@@ -567,7 +612,9 @@ export async function createItemType(selectedCategory: any, selectedType: any) {
     );
 
     // Link type name with the category
-    const categoryResponse: LConcept = await GetTheConceptLocal(selectedCategory);
+    const categoryResponse: LConcept = await GetTheConceptLocal(
+      selectedCategory
+    );
     await CreateConnectionBetweenEntityLocal(
       categoryResponse,
       typeNameConcept,
@@ -578,7 +625,6 @@ export async function createItemType(selectedCategory: any, selectedType: any) {
     // return typeResponse;
     return typeNameConcept;
   }
-
 }
 
 export async function createItem(formValues: any) {
@@ -794,5 +840,4 @@ export async function uploadFile(files: any) {
   //   userId,
   //   attachmentValues
   // );
-
 }
