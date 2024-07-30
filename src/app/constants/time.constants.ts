@@ -28,7 +28,7 @@ export const monthAbbreviation: string[] = [
   "Dec",
 ];
 
-export const DAYS: any = [
+export const DAYS: string[] = [
   "Sunday",
   "Monday",
   "Tuesday",

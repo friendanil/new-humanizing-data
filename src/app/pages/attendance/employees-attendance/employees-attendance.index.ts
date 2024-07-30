@@ -5,7 +5,7 @@ export default class extends mainViewClass {
   async getHtml(): Promise<string> {
     (window as any).showDropdownMenuOption = showDropdownMenuOption
 
-    const employeeAttendanceRows = getEmployeesAttendanceList([{id: 123}])
+    const employeeAttendanceRows = getEmployeesAttendanceList([{id: 100144987}])
     
     return `
         <div class="container relative mx-auto my-4 text-gray-800">

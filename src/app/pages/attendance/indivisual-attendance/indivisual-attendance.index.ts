@@ -1,33 +1,50 @@
+import { GetCompositionWithId } from "mftsccs-browser";
 import mainViewClass from "../../../default/mainView.class";
+import { updateContent } from "../../../routes/renderRoute.service";
+import { getLocalStorageData } from "../../../services/helper.service";
 import {
+  formatUserComposition,
   generateMonthOptions,
   generateYearOptions,
+  getUserMonthlyAttendanceRows,
+  searchUserAttendance,
 } from "../attendance.helper";
-import { handleMonthlyDateChange } from "../attendance.service";
+import { handleMonthlyDateChange } from "../user-attendance/attendance.service";
+import editAttendanceModalHTML from "../../../modules/attendance/edit/edit-attendance-modal.index";
+import { showEditAttendanceModal } from "./indivisual-attendance.service";
 
 export default class extends mainViewClass {
+  userConcept!: number;
+
+  constructor(params: { [key: string]: string }) {
+    super(params);
+    this.userConcept = parseInt(params.userConcept);
+    if (isNaN(this.userConcept)) {
+      updateContent("/404");
+    }
+  }
+
   async getHtml(): Promise<string> {
     (window as any).handleMonthlyDateChange = handleMonthlyDateChange;
+    (window as any).showEditAttendanceModal = showEditAttendanceModal;
 
-    const attendanceRowsHTML = `
-        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-            <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-green-400 bg-opacity-25">1</td>
-            <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-green-400 bg-opacity-25">1</td>
-            <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-green-400 bg-opacity-25">1</td>
-            <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-green-400 bg-opacity-25">1</td>
-            <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-green-400 bg-opacity-25">1</td>
-            <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-green-400 bg-opacity-25">1</td>
-            <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-green-400 bg-opacity-25">1</td>
-            <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-green-400 bg-opacity-25">
-                <div class="flex flex-row items-center gap-2">
-                    <a role="button" class="text-gray-700 border border-gray-700 hover:bg-gray-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm p-1 text-center inline-flex items-center dark:border-gray-500 dark:text-gray-500 dark:hover:text-white dark:focus:ring-gray-800 dark:hover:bg-gray-500">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#333"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg>
-                        <span class="sr-only">Icon Edit</span>
-                    </a>
-                </div>
-            </td>
-        </tr>
-    `;
+    const monthlyDate = `${new Date().getFullYear()}-${(
+      "0" +
+      (new Date().getMonth() + 1)
+    ).slice(-2)}`;
+
+    const profileStorageData: any = await getLocalStorageData();
+    const userConceptId = profileStorageData?.userConcept;
+
+    const [monthlyAttendanceList, user] = await Promise.all([
+      searchUserAttendance(userConceptId, monthlyDate),
+      formatUserComposition(await GetCompositionWithId(this.userConcept)),
+    ]);
+
+    const attendanceRowsHTML = await getUserMonthlyAttendanceRows(
+      monthlyAttendanceList,
+      true
+    );
 
     return `
         <div class="container mx-auto my-4 text-gray-800">
@@ -54,12 +71,17 @@ export default class extends mainViewClass {
             <div class="w-full px-6 py-4 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                     <div class="col-span-1 flex justify-center items-center">
-                        <img class="w-24 h-24 rounded-full border boder-gray-300 dark:border-gray-700" src="" alt="" />
+                        <img class="w-24 h-24 rounded-full border boder-gray-300 dark:border-gray-700" src="${
+                          user.profileImg
+                        }" alt="" />
                     </div>
                     <div class="col-span-1 text-lg text-gray-600 dark:text-gray-400">
-                        <p class="mb-1.5"><b>Name: </b>Lorem</p>
-                        <p class="mb-1.5"><b>Email: </b>Lorem</p>
-                        <p class="mb-1.5"><b>Department: </b>Lorem</p>
+                        <p class="mb-1.5">
+                            <b>Name: </b>
+                            ${user.firstName} 
+                            ${user.lastName}
+                        </p>
+                        <p class="mb-1.5"><b>Email: </b>${user.lastName}</p>
                     </div>
                     <div class="col-span-1 text-lg text-gray-600 dark:text-gray-400">
                         <p class="mb-1.5"><b>Total working hour: </b>Lorem</p>
@@ -90,6 +112,8 @@ export default class extends mainViewClass {
                     </table>
                 </div>
             </div>
+
+            ${editAttendanceModalHTML()}
         </div>
     `;
   }

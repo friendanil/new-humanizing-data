@@ -44,7 +44,7 @@ export function getEmployeesAttendanceList(employees: any[]) {
                       </button>
                       <div id="dropdown-menu-${employee.id}" class="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none hidden" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
                           <div class="py-1" role="none">
-                              <router-link href="/employee/attendance/${'123'}"><a role="button" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="menu-item-0">View Attendance</a></router-link>
+                              <router-link href="/employee/attendance/${'100144987'}"><a role="button" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="menu-item-0">View Attendance</a></router-link>
                           </div>
                       </div>
                   </div>
