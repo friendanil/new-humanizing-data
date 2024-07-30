@@ -5,13 +5,17 @@ import {
   GetCompositionWithId,
   GetLink,
   GetTheConcept,
+  GetTheConceptLocal,
   LConcept,
   LocalSyncData,
   MakeTheInstanceConcept,
   MakeTheInstanceConceptLocal,
   PatcherStructure,
+  SearchLinkMultipleAll,
+  SearchQuery,
   SyncData,
   UpdateComposition,
+  DeleteConceptById,
 } from "mftsccs-browser";
 import { IUser } from "../../interfaces/IUser.interface";
 import { getLocalStorageData } from "../../services/helper.service";
@@ -65,16 +69,16 @@ export async function addEducation() {
               </select>
           </div>
           <div>
-              <label for="dobFrom" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date From</label>
-              <input type="date" id="dobFrom"
-                name="dobFrom"
+              <label for="eduDateFrom" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date From</label>
+              <input type="date" id="eduDateFrom"
+                name="eduDateFrom"
                 class="input-field bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="From Date" />
             </div>
           <div>
-              <label for="dobTo" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date To</label>
-              <input type="date" id="dobTo"
-                name="dobTo"
+              <label for="eduDateTo" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date To</label>
+              <input type="date" id="eduDateTo"
+                name="eduDateTo"
                 class="input-field bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="To Date" />
           </div>
@@ -125,15 +129,15 @@ export async function addExperience() {
                 placeholder="Position" />
           </div>
            <div>
-              <label for="address" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Address</label>
-             <input type="text" id="address"
-                name="address"
+              <label for="expAddress" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Address</label>
+             <input type="text" id="expAddress"
+                name="expAddress"
                 class="input-field-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="Address" />
           </div>
           <div>
-              <label for="country" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Country</label>
-              <select id="country" name='country' autocomplete="country-name"
+              <label for="expCountry" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Country</label>
+              <select id="expCountry" name='expCountry' autocomplete="expCountry-name"
                 class="input-field-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="" >
                  <option value="nepal">Nepal</option>
@@ -143,16 +147,16 @@ export async function addExperience() {
               </select>
           </div>
           <div>
-              <label for="dataFrom" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date From</label>
-              <input type="date" id="dateFrom"
-                name="dateFrom"
+              <label for="expDateFrom" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date From</label>
+              <input type="date" id="expDateFrom"
+                name="expDateFrom"
                 class="input-field-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="From Date" />
             </div>
           <div>
-              <label for="dateTo" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date To</label>
-              <input type="date" id="dateTo"
-                name="dateTo"
+              <label for="expDateTo" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date To</label>
+              <input type="date" id="expDateTo"
+                name="expDateTo"
                 class="input-field-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="To Date" />
           </div>
@@ -523,19 +527,19 @@ export async function loadProfileDetails() {
     divEle.style.display = "none";
 
     const inputPosition = <HTMLInputElement>document.getElementById("position");
-    inputPosition.value = data?.position || "dummy";
+    inputPosition.value = data?.position || "";
 
     const inputAddress = <HTMLInputElement>document.getElementById("address");
-    inputAddress.value = data?.address || "dummy";
+    inputAddress.value = data?.address || "";
 
     const inputCountry = <HTMLInputElement>document.getElementById("country");
-    inputCountry.value = data?.country || "nepal";
+    inputCountry.value = data?.country || "";
 
     const inputDateFrom = <HTMLInputElement>document.getElementById("dateFrom");
-    inputDateFrom.value = data?.dateFrom || "dummy";
+    inputDateFrom.value = data?.dateFrom || "";
 
     const inputDateTo = <HTMLInputElement>document.getElementById("dateTo");
-    inputDateTo.value = data?.dateTo || "dummy";
+    inputDateTo.value = data?.dateTo || "";
   }
 
   const inputWebsite = <HTMLInputElement>document.getElementById("website");
@@ -667,14 +671,28 @@ export async function createProfile(formValues: any) {
   let deletedFormValue: any;
   deletedFormValue = delete formValues.education;
   deletedFormValue = delete formValues.experience;
+  deletedFormValue = delete formValues.eduLevel;
+  deletedFormValue = delete formValues.course;
+  deletedFormValue = delete formValues.eduDateFrom;
+  deletedFormValue = delete formValues.eduDateTo;
+  deletedFormValue = delete formValues.institutionName;
+  deletedFormValue = delete formValues.institutionAddress;
+  deletedFormValue = delete formValues.company;
+  deletedFormValue = delete formValues.position;
+  deletedFormValue = delete formValues.expAddress;
+  deletedFormValue = delete formValues.expCountry;
+  deletedFormValue = delete formValues.expDateFrom;
+  deletedFormValue = delete formValues.expDateTo;
 
   profileNameConcept = await createEntityInstance(
     "profile",
     userId,
     formValues
   );
-  console.log(profileNameConcept, "profileNameConcept");
-  eduName?.forEach(async function (items: any) {
+  console.log(profileNameConcept,"profileNameConcept")
+  
+   eduName?.forEach(async function (items: any) {
+    console.log(items,"itms")
     eduNameConcept = await createEntityInstance("education", userId, items);
     await CreateConnectionBetweenEntityLocal(
       profileNameConcept,
@@ -683,6 +701,7 @@ export async function createProfile(formValues: any) {
     );
     console.log("eduNameConcept", eduNameConcept);
   });
+  console.log(">>>>>>>hello")
   expName?.forEach(async function (item: any) {
     expNameConcept = await createEntityInstance("experience", userId, item);
     await CreateConnectionBetweenEntityLocal(
@@ -692,7 +711,190 @@ export async function createProfile(formValues: any) {
     );
     console.log("expNameConcept", expNameConcept);
   });
+  const userConcept:any = await GetTheConceptLocal(profileStorageData.userConcept);
+  await CreateConnectionBetweenEntityLocal(
+    userConcept,
+    profileNameConcept,
+    "profile"
+  );
   await LocalSyncData.SyncDataOnline();
+}
   // console.log("itemEntityConcept ID ->", profileNameConcept?.id);
+  // await getProfileData()
   // return profileNameConcept;
+
+export async function getProfileData() {
+  let dataFromLocalStorage: string = localStorage?.getItem("profile") || "";
+  if (dataFromLocalStorage) {
+    const profileData: IUser = JSON.parse(dataFromLocalStorage);
+    // let userId:any = Number(profileData?.userId);
+    let userConceptId:any = Number(profileData?.userConcept);
+
+    let searchfirst = new SearchQuery();
+    searchfirst.composition = userConceptId;
+    searchfirst.fullLinkers = ["the_user_profile"];
+    searchfirst.inpage = 100;
+
+    
+    let searchsecond:any = new SearchQuery();
+    searchsecond.fullLinkers = [
+      "the_profile_first_name",
+      "the_profile_last_name",
+      "the_profile_email",
+      "the_profile_phone",
+      "the_profile_dob",
+      "the_profile_gender",
+      "the_profile_maritialStatus",
+      "the_profile_educationLevel",
+      "the_profile_department",
+      "the_profile_workExperience",
+      "the_profile_addressType",
+      "the_profile_streetNumber",
+      "the_profile_streetAddress",
+      "the_profile_unit",
+      "the_profile_city",
+      "the_profile_state",
+      "the_profile_zip",
+      "the_profile_country",
+      "the_profile_eduLevel",
+      "the_profile_course",
+      "the_profile_eduDateFrom",
+      "the_profile_eduDateTo",
+      "the_profile_institutionName",
+      "the_profile_institutionAddress",
+      "the_profile_company",
+      "the_profile_position",
+      "the_profile_expAddress",
+      "the_profile_expCountry",
+      "the_profile_expDateFrom",
+      "the_profile_expDateTo",
+      "the_profile_currentSalary",
+      "the_profile_desireSalary",
+    ];
+    searchsecond.inpage = 100;
+    const queryParams = [searchfirst, searchsecond];
+    const output = await SearchLinkMultipleAll(queryParams, profileData?.token);
+    await DeleteConceptById(101209787)
+    const data=output.data.the_user.the_user_profile[6].data.the_profile
+    console.log("output ->", output);
+    const inputFirstName = <HTMLInputElement>(
+      document.getElementById("first_name")
+    );
+    inputFirstName.value = data?.the_profile_first_name[0]?.data?.the_first_name || "";
+  
+    const inputLastName = <HTMLInputElement>document.getElementById("last_name");
+    inputLastName.value = data?.the_profile_last_name[0]?.data?.the_last_name || "";
+  
+    const inputEmail = <HTMLInputElement>document.getElementById("email");
+    inputEmail.value = data?.the_profile_email[0]?.data?.the_email || "";
+  
+    const inputPhone = <HTMLInputElement>document.getElementById("phone");
+    inputPhone.value =  data?.the_profile_phone[0]?.data?.the_phone || "";
+    
+    const inputDob = <HTMLInputElement>document.getElementById("dob");
+    inputDob.value = data?.the_profile_dob[0]?.data?.the_dob  || "";
+    
+    const inputGender = <HTMLInputElement>document.getElementById("gender");
+    inputGender.value = data?.the_profile_gender[0]?.data?.the_gender || "";
+  
+    const inputMaritialStatus = <HTMLInputElement>(
+      document.getElementById("maritialStatus")
+    );
+    
+    inputMaritialStatus.value = data?.the_profile_maritialStatus[0]?.data?.the_maritialStatus || "";
+  
+    const inputEducationLevel = <HTMLInputElement>(
+      document.getElementById("educationLevel")
+    );
+    inputEducationLevel.value = data?.the_profile_educationLevel[0]?.data?.the_educationLevel || "";
+  
+    const inputDepartment = <HTMLInputElement>(
+      document.getElementById("department")
+    );
+    inputDepartment.value = data?.the_profile_department[0]?.data?.the_department || "";
+  
+    const inputWorkExperience = <HTMLInputElement>(
+      document.getElementById("workExperience")
+    );
+    inputWorkExperience.value = data?.the_profile_workExperience[0]?.data?.the_workExperience || "";
+  
+    const inputAddressType = <HTMLInputElement>(
+      document.getElementById("addressType")
+    );
+    inputAddressType.value = data?.the_profile_addressType[0]?.data?.the_addressType || "";
+  
+    const inputStreetNumber = <HTMLInputElement>(
+      document.getElementById("streetNumber")
+    );
+    inputStreetNumber.value = data?.the_profile_streetNumber[0]?.data?.the_streetNumber || "";
+  
+    const inputStreetAddress = <HTMLInputElement>(
+      document.getElementById("streetAddress")
+    );
+    inputStreetAddress.value = data?.the_profile_streetAddress[0]?.data?.the_streetAddress || "";
+  
+    const inputUnit = <HTMLInputElement>document.getElementById("unit");
+    inputUnit.value = data?.the_profile_unit[0]?.data?.the_unit || "";
+
+    const inputCity = <HTMLInputElement>document.getElementById("city");
+    inputCity.value = data?.the_profile_city[0]?.data?.the_city || "";
+
+    const inputState = <HTMLInputElement>document.getElementById("state");
+    inputState.value = data?.the_profile_state[0]?.data?.the_state || "";
+
+    const inputZip = <HTMLInputElement>document.getElementById("zip");
+    inputZip.value = data?.the_profile_zip[0]?.data?.the_zip || "";
+
+    const inputCountry = <HTMLInputElement>document.getElementById("country");
+    inputCountry.value = data?.the_profile_country[0]?.data?.the_country || "";
+
+    const inputCurrentSalary = <HTMLInputElement>document.getElementById("currentSalary");
+    inputCurrentSalary.value = data?.the_profile_currentSalary[0]?.data?.the_currentSalary || "";
+
+    const inputDesireSalary = <HTMLInputElement>document.getElementById("desireSalary");
+    inputDesireSalary.value = data?.the_profile_desireSalary[0]?.data?.the_desireSalary || "";
+    if (data?.the_profile_educationLevel[0]?.data?.the_educationLevel) {
+      await addEducation();
+      const inputEduLevel = <HTMLInputElement>document.getElementById("eduLevel");
+      inputEduLevel.value = data?.the_profile_eduLevel[0]?.data?.the_eduLevel || "";
+
+      const inputCourse = <HTMLInputElement>document.getElementById("course");
+      inputCourse.value = data?.the_profile_course[0]?.data?.the_course || "";
+
+      const inputEduDateFrom = <HTMLInputElement>document.getElementById("eduDateFrom");
+      inputEduDateFrom.value = data?.the_profile_eduDateFrom[0]?.data?.the_eduDateFrom || "";
+
+      const inputEduDateTo = <HTMLInputElement>document.getElementById("eduDateTo");
+      inputEduDateTo.value = data?.the_profile_eduDateTo[0]?.data?.the_eduDateTo || "";
+
+      const inputInstitutionName = <HTMLInputElement>document.getElementById("institutionName");
+      inputInstitutionName.value = data?.the_profile_institutionName[0]?.data?.the_institutionName || "";
+
+      const inputInstitutionAddress = <HTMLInputElement>document.getElementById("institutionAddress");
+      inputInstitutionAddress.value = data?.the_profile_institutionAddress[0]?.data?.the_institutionAddress || "";
+    }
+    if (data?.the_profile_company[0]?.data?.the_company) {
+      await addExperience();
+      const inputCompany = <HTMLInputElement>document.getElementById("company");
+      inputCompany.value = data?.the_profile_company[0]?.data?.the_company || "";
+      const divEle: any = document.getElementById("show");
+      divEle.style.display = "none";
+  
+      const inputPosition = <HTMLInputElement>document.getElementById("position");
+      inputPosition.value = data?.the_profile_company[0]?.data?.the_company || "";
+  
+      const inputAddress = <HTMLInputElement>document.getElementById("expAddress");
+      inputAddress.value = data?.the_profile_expAddress[0]?.data?.the_expAddress || "";
+  
+      const inputExpCountry = <HTMLInputElement>document.getElementById("expCountry");
+      inputExpCountry.value = data?.the_profile_expCountry[0]?.data?.the_expCountry || "";
+  
+      const inputExpDateFrom = <HTMLInputElement>document.getElementById("expDateFrom");
+      inputExpDateFrom.value = data?.the_profile_expDateFrom[0]?.data?.the_expDateFrom || "";
+  
+      const inputExpDateTo = <HTMLInputElement>document.getElementById("expDateTo");
+      inputExpDateTo.value = data?.the_profile_expDateTo[0]?.data?.the_expDateTo || "";
+    }
+    
+  }
 }

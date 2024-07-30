@@ -1,6 +1,6 @@
 import mainViewClass from '../../default/mainView.class.ts';
 import topNavigation from "../../modules/top-nav/top-navigation"
-import { addEducation,addExperience,previewImage, loadProfileDetails } from "./profile.service"
+import { addEducation,addExperience,previewImage, loadProfileDetails, getProfileData } from "./profile.service"
 import { popupAlert, saveProfileDetails, updateProfile,submitAddProfileForm} from "./profile.service"
 
 export default class extends mainViewClass {
@@ -20,7 +20,8 @@ export default class extends mainViewClass {
     // const loadHTML = await getHTML()
 
     // load content
-    loadProfileDetails()
+    // loadProfileDetails()
+    getProfileData()
     
     return `
       ${topNavigation}
@@ -113,7 +114,7 @@ export default class extends mainViewClass {
             <div>
               <label for="workExperience" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Total Years of working experience</label>
               <input type="number" id="workExperience"
-                name="dob"
+                name="workExperience"
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="Total Years" />
             </div>         
@@ -134,8 +135,8 @@ export default class extends mainViewClass {
               </select>
             </div>
             <div>
-              <label for="streetnumber" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Street Number</label>
-              <input type="number" id="streetnumber"
+              <label for="streetNumber" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Street Number</label>
+              <input type="number" id="streetNumber"
                 name="streetNumber"
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="Street Number" />
@@ -170,14 +171,7 @@ export default class extends mainViewClass {
           </div>
           <div>
               <label for="zip" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Zip</label>
-              <input type="text" id="Zip"
-                name="zip"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="zip" />
-          </div>
-           <div>
-              <label for="zip" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Zip</label>
-              <input type="text" id="Zip"
+              <input type="text" id="zip"
                 name="zip"
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="zip" />
@@ -188,6 +182,7 @@ export default class extends mainViewClass {
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="" >
                 <option value="nepal">Nepal</option>
+                <option value="canada">Canada</option>
               </select>
           </div>
           </div>
@@ -239,7 +234,7 @@ export default class extends mainViewClass {
           </div> 
           <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700"> 
         <button type="submit"
-            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
+            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Update</button>
         </form>
       </div>
     `
