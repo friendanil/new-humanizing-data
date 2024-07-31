@@ -9,8 +9,19 @@ import noPageFoundIndex from "../pages/noPageFound/noPageFound.index.ts";
 import addItemIndex from "../pages/addItem/addItem.index.ts";
 import listingItemsIndex from "../pages/listingItems/listingItems.index.ts";
 import rfqIndex from "../pages/rfq/rfq.index.ts";
+import roleClass from "../pages/roles/roles.index.ts";
+import attendanceClass from "../pages/attendance/user-attendance/attendance.index.ts";
+import employeeAttendanceClass from "../pages/attendance/employees-attendance/employees-attendance.index.ts";
+import indivisualAttendanceClass from "../pages/attendance/indivisual-attendance/indivisual-attendance.index.ts";
 
-const routes: any = [
+type RouteParams = {
+  path: any;
+  linkLabel?: string;
+  content: any;
+  isAuthenticated?: boolean;
+};
+
+const routes: RouteParams[] = [
   {
     path: "/",
     linkLabel: "Home",
@@ -76,6 +87,27 @@ const routes: any = [
     path: "/rfq",
     linkLabel: "rfq",
     content: rfqIndex,
+    isAuthenticated: true,
+  },
+  {
+    path: "/roles",
+    content: roleClass,
+    isAuthenticated: true,
+  },
+  // attendance
+  {
+    path: "/attendance",
+    content: attendanceClass,
+    isAuthenticated: true,
+  },
+  {
+    path: "/employee/attendance",
+    content: employeeAttendanceClass,
+    isAuthenticated: true,
+  },
+  {
+    path: "/employee/attendance/:userConcept",
+    content: indivisualAttendanceClass,
     isAuthenticated: true,
   },
 ];
