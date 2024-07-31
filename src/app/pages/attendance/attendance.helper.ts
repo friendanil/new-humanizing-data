@@ -12,6 +12,7 @@ export type Attendance = {
   checkout?: any;
   status: any;
   createdAt?: any;
+  remarks?: any;
 };
 
 export function generateYearOptions() {
@@ -62,22 +63,14 @@ export function getDuration(timeMs: number) {
 }
 
 export function getDateInMonth(year: number, month: number) {
-  const day = new Date(year, month, 0).getDate();
-  console.log("day", day);
-  const startDate = new Date(`${year}-${month}-2`);
-  const endDate = new Date(`${year}-${month}-${day}`);
+  let date = new Date(year, month - 1, 1);
+  let dates = [];
 
-  const arr = [];
-  for (
-    const date = new Date(startDate);
-    date <= new Date(endDate);
-    date.setDate(date.getDate() + 1)
-  ) {
-    arr.push(new Date(date));
+  while (date.getMonth() === month - 1) {
+    dates.push(formatDate(date));
+    date.setDate(date.getDate() + 1);
   }
-  let dateList: string[] = [];
-  arr.map((v) => dateList.push(v.toISOString().slice(0, 10)));
-  return dateList;
+  return dates;
 }
 
 /**
@@ -121,12 +114,18 @@ export async function searchUserAttendance(
     "the_attendance_status",
   ];
   attendanceQuery.filterSearches = [checkInFilter];
+  attendanceQuery.doFilter = true;
 
   console.log(searchQuery);
 
   const user = await SearchLinkMultipleAll(
     [searchQuery, attendanceQuery],
     token
+  );
+  console.log(
+    searchDate,
+    "abcbedaa",
+    user?.data?.["the_user"]?.["the_user_s_attendance"]
   );
 
   // TODO:: filter data to proper form
@@ -180,7 +179,8 @@ export function formatUserComposition(user: any) {
  */
 export async function getUserMonthlyAttendanceRows(
   monthlyAttendance: Attendance[],
-  showActions: boolean = false
+  showActions: boolean = false,
+  userConceptId?: number
 ) {
   if (
     monthlyAttendance.length == 0 ||
@@ -211,7 +211,7 @@ export async function getUserMonthlyAttendanceRows(
       times: -1,
     };
     attendances.map((attendance) => {
-      obj.ids.push(attendance.id)
+      obj.ids.push(attendance.id);
       if (!obj.checkin && attendance.checkin) obj.checkin = attendance.checkin;
       else if (obj.checkin && attendance.checkin) {
         if (
@@ -252,14 +252,10 @@ export async function getUserMonthlyAttendanceRows(
     attendanceRows += `
       <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
         <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-opacity-25 ${
-          obj.workingTime
-            ? "bg-green-400"
-            : obj.status == "Absent" && "bg-red-400"
+          obj.checkin ? "bg-green-400" : obj.status == "Absent" && "bg-red-400"
         }">${obj.currentDate}</td>
         <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-opacity-25 ${
-          obj.workingTime
-            ? "bg-green-400"
-            : obj.status == "Absent" && "bg-red-400"
+          obj.checkin ? "bg-green-400" : obj.status == "Absent" && "bg-red-400"
         }">
             ${
               obj.currentDate
@@ -270,50 +266,42 @@ export async function getUserMonthlyAttendanceRows(
             }
         </td>
         <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-opacity-25 ${
-          obj.workingTime
-            ? "bg-green-400"
-            : obj.status == "Absent" && "bg-red-400"
+          obj.checkin ? "bg-green-400" : obj.status == "Absent" && "bg-red-400"
         }">
             ${obj.checkin ? new Date(obj.checkin).toLocaleTimeString() : ""}
         </td>
         <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-opacity-25 ${
-          obj.workingTime
-            ? "bg-green-400"
-            : obj.status == "Absent" && "bg-red-400"
+          obj.checkin ? "bg-green-400" : obj.status == "Absent" && "bg-red-400"
         }">
             ${obj.times > 0 ? `${obj.times} time(s)` : ""}
         </td>
         <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-opacity-25 ${
-          obj.workingTime
-            ? "bg-green-400"
-            : obj.status == "Absent" && "bg-red-400"
+          obj.checkin ? "bg-green-400" : obj.status == "Absent" && "bg-red-400"
         }">
             ${obj.checkout ? new Date(obj.checkout).toLocaleTimeString() : ""}
         </td>
         <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-opacity-25 ${
-          obj.workingTime
-            ? "bg-green-400"
-            : obj.status == "Absent" && "bg-red-400"
+          obj.checkin ? "bg-green-400" : obj.status == "Absent" && "bg-red-400"
         }">
             ${obj.workingTime ? getDuration(obj.workingTime) : ""}
         </td>
         <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-opacity-25 ${
-          obj.workingTime
-            ? "bg-green-400"
-            : obj.status == "Absent" && "bg-red-400"
+          obj.checkin ? "bg-green-400" : obj.status == "Absent" && "bg-red-400"
         }">
-            ${obj.count > 0 ? `Present` : ""}
+            <!-- ${obj.count > 0 ? `Present` : ""} -->
+            ${obj.checkin ? "Present" : obj?.status || ""}
         </td>
         `;
-    if (showActions) {
+    if (showActions && userConceptId) {
       attendanceRows += `
         <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-opacity-25 ${
-          obj.workingTime
-            ? "bg-green-400"
-            : obj.status == "Absent" && "bg-red-400"
+          obj.checkin ? "bg-green-400" : obj.status == "Absent" && "bg-red-400"
         }">
           <div class="flex flex-row items-center gap-2">
-            <a role="button" onclick="showEditAttendanceModal(${attendances})" class="text-gray-700 border border-gray-700 hover:bg-gray-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm p-1 text-center inline-flex items-center dark:border-gray-500 dark:text-gray-500 dark:hover:text-white dark:focus:ring-gray-800 dark:hover:bg-gray-500">
+            <a role="button" 
+              onclick="showEditAttendanceModal(
+                '${userConceptId}', '${obj.currentDate}')" 
+              class="text-gray-700 border border-gray-700 hover:bg-gray-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm p-1 text-center inline-flex items-center dark:border-gray-500 dark:text-gray-500 dark:hover:text-white dark:focus:ring-gray-800 dark:hover:bg-gray-500">
               <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#333"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg>
               <span class="sr-only">Icon Edit</span>
             </a>
@@ -325,4 +313,12 @@ export async function getUserMonthlyAttendanceRows(
   });
 
   return attendanceRows;
+}
+
+function formatDate(date: any) {
+  let year = date.getFullYear();
+  let month = (date.getMonth() + 1).toString().padStart(2, "0"); // Months are zero-indexed, so add 1
+  let day = date.getDate().toString().padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
 }

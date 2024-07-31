@@ -15,35 +15,12 @@ export default function editAttendanceModalHTML() {
               </div>
           
               <div class="p-6 pt-0">
-                  <form method="post" onsubmit="submitCreateRoleForm(event)" name="createRoleForm" id="createRoleForm">
+                  <form method="post" name="editAttendanceForm" id="editAttendanceForm">
 
                     // TODO:: show user details
 
-                    <div class="my-4">
-                        <label for="checkin1" class="block text-sm font-medium leading-6 text-gray-900">Check In<span
-                            class="text-rose-400">*</span></label>
-                        <div class="mt-2">
-                            <input type="datetime-local" name="checkin1" id="checkin1"
-                            class="block w-full rounded-md border-0 px-3 py-2 text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                        </div>
-                    </div>
-                    <div class="my-4">
-                        <label for="checkout1" class="block text-sm font-medium leading-6 text-gray-900">Check Out<span
-                            class="text-rose-400">*</span></label>
-                        <div class="mt-2">
-                            <input type="datetime-local" name="checkout1" id="checkout1"
-                            class="block w-full rounded-md border-0 px-3 py-2 text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                        </div>
-                    </div>
-
-                    <div class="my-4">
-                        <label for="remarks" class="block text-sm font-medium leading-6 text-gray-900">Remarks<span
-                            class="text-rose-400">*</span></label>
-                        <div class="mt-2">
-                            <textarea name="remarks" id="remarks" required
-                            class="block w-full rounded-md border-0 px-3 py-2 text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                            </textarea>
-                        </div>
+                    <div id="edit-attendance-form-data">
+                        <p class="text-center my-20">Couldn't find any data for the given date</p>
                     </div>
           
                     <div class="text-right">

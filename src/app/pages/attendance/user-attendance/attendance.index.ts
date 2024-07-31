@@ -40,7 +40,7 @@ export default class extends mainViewClass {
       searchUserAttendance(userConceptId, dailyDate),
       searchUserAttendance(userConceptId, monthlyDate),
     ]);
-    console.log(monthlyAttendanceList, "monthlyAttendanceList");
+    console.log(monthlyAttendanceList, "monthlyAttendanceList", dailyAttendanceList, "dailyAttendanceList", dailyDate);
 
     [this.attendanceRowHTML, this.activeAttendanceRowHTML] = await Promise.all([
       getUserMonthlyAttendanceRows(monthlyAttendanceList),

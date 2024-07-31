@@ -43,7 +43,8 @@ export default class extends mainViewClass {
 
     const attendanceRowsHTML = await getUserMonthlyAttendanceRows(
       monthlyAttendanceList,
-      true
+      true,
+      userConceptId
     );
 
     return `
