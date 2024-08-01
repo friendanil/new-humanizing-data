@@ -930,6 +930,14 @@ export async function getProfileData() {
       data?.the_profile_profilePic[0]?.data?.the_profilePic ||
       output.data.the_user.entity.person.profile_img;
 
+      
+      const inputImgInput = <HTMLInputElement>(
+        document.getElementById("fileInput")
+      );
+      inputImgInput.value =
+        data?.the_profile_profilePic[0]?.data?.the_profilePic ||
+        output.data.the_user.entity.person.last_name;  
+
     const inputLastName = <HTMLInputElement>(
       document.getElementById("last_name")
     );
