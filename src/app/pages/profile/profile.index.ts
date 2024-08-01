@@ -1,6 +1,7 @@
 import mainViewClass from '../../default/mainView.class.ts';
 import topNavigation from "../../modules/top-nav/top-navigation"
-import { addEducation,addExperience,previewImage, loadProfileDetails, getProfileData } from "./profile.service"
+import './profile.style.css';
+import { addEducation,addExperience,previewImage, loadProfileDetails, getProfileData, addDoc } from "./profile.service"
 import { popupAlert, saveProfileDetails, updateProfile,submitAddProfileForm} from "./profile.service"
 
 export default class extends mainViewClass {
@@ -16,6 +17,7 @@ export default class extends mainViewClass {
     (window as any).submitAddProfileForm = submitAddProfileForm;
     (window as any).addFn = addEducation;
     (window as any).addExperience=addExperience;
+    (window as any).addDoc=addDoc;
     (window as any).previewImage=previewImage;
     // const loadHTML = await getHTML()
 
@@ -31,34 +33,38 @@ export default class extends mainViewClass {
         <form method="post" onsubmit="submitAddProfileForm(event)" class="mt-10">
         <h2 class="dark:text-white text-2xl">Basic Information:</h2>
           <div class="grid gap-6 mb-6 mt-6 md:grid-cols-3">
-            <div>
-              <label for="first_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">First name</label>
+            <div class="form-control">
+              <label for="first_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">First Name*</label>
               <input type="text" id="first_name"
                  name="first_name"
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="John" />
+                <small></small>
             </div>
             <div>
-              <label for="last_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Last name</label>
+              <label for="last_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Last Name*</label>
               <input type="text" id="last_name"
                 name="last_name"
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="Doe"
-                required />
+                />
+                <small></small>
             </div>
             <div>
-              <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
+              <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email*</label>
               <input type="email" id="email"
                 name="email"
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="xyz@email.com" />
+                <small></small>
             </div>
             <div>
-              <label for="phone" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phone number</label>
+              <label for="phone" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phone Number*</label>
               <input type="tel" id="phone"
                 name="phone"
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="1234567890" />
+                <small></small>
             </div>
             <div>
               <label for="dob" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date of birth</label>
@@ -118,6 +124,19 @@ export default class extends mainViewClass {
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="Total Years" />
             </div>         
+          </div>
+          <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700">
+
+          <h2 class="dark:text-white text-2xl">About You:</h2>
+          <div class="grid gap-6 mb-6 mt-6 md:grid-cols-2">
+          
+          <div class="mb-6">
+              <label for="addressType" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"></label>
+              <textarea 
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              id="aboutYou" name="aboutYou">
+               </textarea>
+            </div>
           </div>
           
           <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700">
@@ -194,7 +213,18 @@ export default class extends mainViewClass {
          <div class="container">
         <button type="button"
             onclick="addFn();"
-            class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"> +  Add Education</button>
+            class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"> + Add Education</button>
+        </div>
+         </div>
+         <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700">
+        <div id="inputFields-2">
+        </div>
+
+        <div class="grid gap-6 mb-6 mt-6 md:grid-cols-6">
+         <div class="container-2">
+        <button type="button"
+            onclick="addDoc();"
+            class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"> + Add Document</button>
         </div>
          </div>
         <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700">
@@ -211,12 +241,22 @@ export default class extends mainViewClass {
          <label for="itemAttachment" class="block text-sm font-medium leading-6">Profile Images<span
                 class="text-rose-400">*</span></label>
             <div class="mt-2">
-              <input id="fileInput" type="file" accept=".png, .jpg, .jpeg" onchange="previewImage(event)" name="profilePic" autocomplete="item-attachment"
+              <input id="file" type="file" accept=".png, .jpg, .jpeg" onchange="previewImage(event)" name="profile" autocomplete="item-attachment"
                 class="block w-full rounded-md border-0 px-3 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-md sm:text-sm sm:leading-6 text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">
-            </div>
-            <img class="mt-5" style="border-radius:50%"; height="100px" width="70px" id="preview" alt="Preview Image">
+                <input id="fileInput" name="profilePic"
+                type="hidden"
+                class="block w-full rounded-md border-0 px-3 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-md sm:text-sm sm:leading-6 text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">
+                </div>
+            <img id="profilePic" class="mt-5" style="border-radius:50%"; height="100px" width="70px" alt="Preview Image">
         <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700">
          <div class="grid gap-6 mb-6 mt-6 md:grid-cols-3">
+         <div>
+              <label for="currentCompany" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Company Name</label>
+              <input type="text" id="currentCompany"
+                 name="currentCompany"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="Present Company Name" />
+            </div>
             <div>
               <label for="currentSalary" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Current Salary</label>
               <input type="text" id="currentSalary"
