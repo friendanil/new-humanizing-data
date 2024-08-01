@@ -53,6 +53,7 @@ export async function getProductDetails(productId: number) {
   try {
     const profileStorageData: any = await getLocalStorageData();
     const token = profileStorageData?.token;
+    const userId = profileStorageData?.userId;
 
     let searchfirst = new SearchQuery();
     searchfirst.composition = productId;
@@ -151,13 +152,16 @@ export async function getProductDetails(productId: number) {
     }
 
     // check if item is listed by me
-    const myListingItems = await getMyListingItems();
+    // const myListingItems = await getMyListingItems();
 
-    if (myListingItems.length) {
-      isItemListedByMe = myListingItems?.some(
-        (item: any) => item?.id === product.id
-      );
-    }
+    // if (myListingItems.length) {
+    //   isItemListedByMe = myListingItems?.some(
+    //     (item: any) => item?.id === product.id
+    //   );
+    // }
+
+    const productDetailsData = await GetTheConceptLocal(productId)
+    isItemListedByMe = userId === productDetailsData?.userId
 
     let productDetails: string = "";
 
@@ -369,12 +373,12 @@ export async function getSkuDetails() {
       const profileStorageData: any = await getLocalStorageData();
       const token = profileStorageData?.token;
 
-      let search = new SearchStructure();
-      search.composition = "the_rfq";
-      search.inpage = 100;
+      // let search = new SearchStructure();
+      // search.composition = "the_rfq";
+      // search.inpage = 100;
 
-      let values = await SearchLinkInternal(search, token);
-      console.log("values the rfq ->", values);
+      // let values = await SearchLinkInternal(search, token);
+      // console.log("values the rfq ->", values);
 
       // let search = new SearchStructure();
       // search.composition = "the_buyeragent";

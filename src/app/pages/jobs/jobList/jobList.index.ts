@@ -10,8 +10,12 @@ export default class extends mainViewClass {
   }
 
   async getHtml() {
-    const jobList = await getJobItems();
-    console.log("jobList ->", jobList);
+    let jobList: any = await getJobItems();
+    if (!jobList?.length) {
+      jobList = `
+        <p class="text-zinc-900 dark:text-white">There is no jobs currently</p>
+      `;
+    }
 
     setTimeout(() => {
       initTopNavigation();

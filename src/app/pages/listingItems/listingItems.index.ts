@@ -1,9 +1,7 @@
-
 import mainViewClass from "../../default/mainView.class";
 import topNavigation from "../../modules/top-nav/top-navigation";
 import { initTopNavigation } from "../../modules/top-nav/top-navigation.service";
 import { getListingItems } from "./listingItems.service";
-
 
 export default class extends mainViewClass {
   constructor(params: any) {
@@ -12,7 +10,12 @@ export default class extends mainViewClass {
   }
 
   async getHtml() {
-    const itemList = await getListingItems()
+    let itemList: any = await getListingItems();
+    if (!itemList?.length) {
+      itemList = `
+        <p class="text-zinc-900 dark:text-white">There is no items currently</p>
+      `;
+    }
 
     setTimeout(() => {
       initTopNavigation();
@@ -36,6 +39,6 @@ export default class extends mainViewClass {
           </div>
         </div>
       </section>
-    `
+    `;
   }
 }

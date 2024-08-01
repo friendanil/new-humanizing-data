@@ -82,6 +82,7 @@ export async function handleAttendanceClick() {
 
   await LocalSyncData.SyncDataOnline();
   processingAttendance = false;
+  location.reload()
 }
 
 export async function handleMonthlyDateChange() {

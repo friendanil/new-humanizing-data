@@ -144,7 +144,7 @@ export async function getRFQ() {
 
   let rfqHTML = `
     <div class="text-center py-8">
-      <p>You do not have any RFQs yet.</p>
+      <p class="text-zinc-900 dark:text-white">You do not have any RFQs yet.</p>
     </div>
   `;
 
@@ -161,7 +161,9 @@ export async function getRFQ() {
         }
 
         let isRFQFileAttached =
-          rfq?.attachment?.name && rfq?.attachment?.name !== "undefined" ? true : false;
+          rfq?.attachment?.name && rfq?.attachment?.name !== "undefined"
+            ? true
+            : false;
         let rfqAttachment = "";
         if (isRFQFileAttached) {
           rfqAttachment = `
