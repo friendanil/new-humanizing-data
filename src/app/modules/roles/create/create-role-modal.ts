@@ -2,14 +2,16 @@ import { getPermissionActionRows, getPermissionRows } from "../../../pages/roles
 import { submitCreateRoleForm } from "./create-role-modal.service";
 
 (window as any).submitCreateRoleForm = submitCreateRoleForm;
+export const createRoleTitle = 'Create New Role'
+export const updateRoleTitle = 'Update Role'
 
 export default async function createRoleModalHTML() {
   return `
     <div id="create-role-modal" class="fixed hidden z-50 inset-0 bg-gray-900 bg-opacity-60 dark:bg-gray-200 dark:bg-opacity-40 overflow-y-auto h-full w-full px-4">
         <div class="relative top-20 mx-auto shadow-xl rounded-md bg-white max-w-3xl text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">
             <div class="flex justify-between px-4 pt-4">
-                <h3 class="text-xl font-normal text-zinc-900 dark:text-white my-0">Create New Role</h3>
-                <button onclick="closeModal('create-role-modal')" type="button"
+                <h3 id="roleTitle" class="text-xl font-normal text-zinc-900 dark:text-white my-0">${createRoleTitle}</h3>
+                <button onclick="closeRoleModal()" type="button"
                 class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center">
                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                     <path fill-rule="evenodd"
@@ -20,7 +22,7 @@ export default async function createRoleModalHTML() {
             </div>
         
             <div class="p-6 pt-0">
-                <form method="post" onsubmit="submitCreateRoleForm(event)" name="createRoleForm" id="createRoleForm">
+                <form method="post" name="createRoleForm" id="createRoleForm">
                 
                     <div class="my-4">
                         <label for="name" class="block text-sm font-medium leading-6">Role Name<span
@@ -49,7 +51,7 @@ export default async function createRoleModalHTML() {
                     </div>
             
                     <div class="text-right">
-                        <button type="button" onclick="closeModal('create-role-modal')"
+                        <button type="button" onclick="closeRoleModal()"
                             class="text-gray-900 bg-white hover:bg-gray-300 focus:ring-4 focus:ring-cyan-200 border border-gray-200 font-medium inline-flex items-center rounded-lg text-base px-3 py-2.5 text-center"
                             data-modal-toggle="delete-user-modal">
                             Cancel

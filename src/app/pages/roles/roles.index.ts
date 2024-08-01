@@ -2,7 +2,7 @@ import mainViewClass from "../../default/mainView.class";
 import initNavigation from "../../modules/home-nav/home-navigation.service";
 import createRoleModalHTML from "../../modules/roles/create/create-role-modal";
 import topNavigation from "../../modules/top-nav/top-navigation";
-import { deleteRole, getRolesList, openCreateRoleModal, showEditRoleModal } from "./roles.service";
+import { closeRoleModal, getRolesList, openCreateRoleModal, showEditRoleModal } from "./roles.service";
 
 export default class extends mainViewClass {
   constructor(params: any) {
@@ -21,7 +21,7 @@ export default class extends mainViewClass {
 
     (window as any).openCreateRoleModal = openCreateRoleModal;
     (window as any).showEditRoleModal = showEditRoleModal;
-    (window as any).deleteRole = deleteRole;
+    (window as any).closeRoleModal = closeRoleModal;
 
     return `
       ${topNavigation}

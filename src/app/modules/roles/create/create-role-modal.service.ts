@@ -1,6 +1,6 @@
-import { closeModal } from "../../../pages/listItem/listItem.service";
 import { addPermission, createRole } from "../../../pages/roles/roles.apis";
 import {
+  closeRoleModal,
   Permission,
   PermissionAction,
 } from "../../../pages/roles/roles.service";
@@ -8,22 +8,8 @@ import {
 export async function submitCreateRoleForm(e: any) {
   e.preventDefault();
   const formData = new FormData(e.target);
-
   const formValues = Object.fromEntries(formData);
-
-  const permissionList: any[] = [];
-  Object.keys(Permission).forEach((permission) => {
-    let permissionActionJSON: any = {};
-
-    permissionActionJSON.module_name = permission;
-
-    Object.keys(PermissionAction).forEach((action) => {
-      permissionActionJSON[action] = formValues?.[`${permission}_${action}`]
-        ? 1
-        : 0;
-    });
-    permissionList.push(permissionActionJSON);
-  });
+  const permissionList = await getPermissionList(formValues);
 
   const addingRoleBody = { name: formValues.name.toString() };
   const body = {
@@ -37,5 +23,38 @@ export async function submitCreateRoleForm(e: any) {
   console.log("adding roles", addingRoleBody, responseRole);
   console.log("adding permission", body, responsePermission);
 
-  closeModal("create-role-modal");
+  closeRoleModal();
+}
+
+export async function submitUpdateRoleForm(e: any) {
+  const formData = new FormData(e.target);
+  const formValues = Object.fromEntries(formData);
+  const permissionList = await getPermissionList(formValues);
+
+  const body = {
+    name: formValues.name.toString(),
+    permissions: permissionList,
+  };
+
+  const responsePermission = await addPermission(body);
+  console.log("updating permission", body, responsePermission);
+
+  closeRoleModal();
+}
+
+function getPermissionList(formValues: any) {
+  const permissionList: any[] = [];
+  Object.keys(Permission).forEach((permission) => {
+    let permissionActionJSON: any = {};
+
+    permissionActionJSON.module_name = permission;
+
+    Object.keys(PermissionAction).forEach((action) => {
+      permissionActionJSON[action] = formValues?.[`${permission}_${action}`]
+        ? 1
+        : 0;
+    });
+    permissionList.push(permissionActionJSON);
+  });
+  return permissionList;
 }
