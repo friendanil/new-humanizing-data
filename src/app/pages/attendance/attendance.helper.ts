@@ -65,10 +65,12 @@ export function getDuration(timeMs: number) {
 export function getDateInMonth(year: number, month: number) {
   let date = new Date(year, month - 1, 1);
   let dates = [];
-  console.log(date, 'date')
+  console.log(date, 'date', year, month - 1, 1)
+  console.log(date.getMonth() === month - 1, date.getMonth() , month - 1)
+  console.log('time', date.getTime() , new Date(new Date().setHours(0,0,0,0)).getTime())
 
   while (date.getMonth() === month - 1) {
-    if (date < new Date())
+    if (date.getTime() > new Date(new Date().setHours(0,0,0,0)).getTime() + 1) break
     if (date) dates.push(formatDate(date));
     date.setDate(date.getDate() + 1);
   }
@@ -182,19 +184,29 @@ export function formatUserComposition(user: any) {
  */
 export async function getUserMonthlyAttendanceRows(
   monthlyAttendance: Attendance[],
+  monthlyDate: string,
   showActions: boolean = false,
   userConceptId?: number
 ) {
-  const dateList = getDateInMonth(
-    new Date(monthlyAttendance?.[0]?.checkin).getFullYear(),
-    new Date(monthlyAttendance?.[0]?.checkin).getMonth() + 1
-  );
-
+  let dateList: string[]
+  if (monthlyAttendance?.[0]?.checkin) {
+    dateList = getDateInMonth(
+      new Date(monthlyAttendance?.[0]?.checkin).getFullYear(),
+      new Date(monthlyAttendance?.[0]?.checkin).getMonth() + 1
+    );
+  } else {
+    dateList = getDateInMonth(
+      new Date(monthlyDate).getFullYear(),
+      new Date(monthlyDate).getMonth() + 1
+    );
+  }
+console.log('date list', dateList)
   if (
-    dateList.length == 0 ||
-    monthlyAttendance.length == 0 ||
-    (monthlyAttendance?.[0]?.checkin?.split(0, 4) < new Date().getFullYear() &&
-      monthlyAttendance?.[0]?.checkin?.split(5, 6) < new Date().getMonth())
+    dateList.length == 0 
+    // ||
+    // monthlyAttendance.length == 0 ||
+    // (monthlyAttendance?.[0]?.checkin?.split(0, 4) < new Date().getFullYear() &&
+    //   monthlyAttendance?.[0]?.checkin?.split(5, 6) < new Date().getMonth())
   ) {
     return `
         <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">

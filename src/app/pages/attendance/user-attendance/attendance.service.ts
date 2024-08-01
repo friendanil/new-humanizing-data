@@ -99,16 +99,18 @@ export async function handleMonthlyDateChange() {
   ) as HTMLSelectElement;
   console.log("monthlyDateChange", `${yearSelect.value}-${monthSelect.value}`);
 
+  const monthlyDate = `${yearSelect.value}-${
+    parseInt(monthSelect.value) + 1 < 9 ? "0" : ""
+  }${parseInt(monthSelect.value) + 1}`;
   const monthlyAttendanceList = await searchUserAttendance(
     userConceptId,
-    `${yearSelect.value}-${parseInt(monthSelect.value) + 1 < 9 ? "0" : ""}${
-      parseInt(monthSelect.value) + 1
-    }`
+    monthlyDate
   );
   console.log("list", monthlyAttendanceList, monthlyTableBody);
 
   const attendanceListHTML = await getUserMonthlyAttendanceRows(
-    monthlyAttendanceList
+    monthlyAttendanceList,
+    monthlyDate
   );
 
   monthlyTableBody.innerHTML = attendanceListHTML;
@@ -188,7 +190,31 @@ export function enableButtons(attendanceList: Attendance[]) {
     "checkout-btn"
   ) as HTMLButtonElement;
 
+  if (attendanceList?.length == 0) {
+    checkInBtn.disabled = false;
+    checkOutBtn.disabled = true;
+    return;
+  }
   // for absent case checkin and checkout value is ''
+  let checkin = true;
+  for (let i = 0; i < attendanceList.length; i++) {
+    const attendance = attendanceList[i];
+    if (!attendance.checkin && !attendance.checkout) {
+      checkin = true;
+      break;
+    } else if (attendance.checkin && !attendance.checkout) {
+      checkin = false;
+      break;
+    }
+  }
+  if (checkin) {
+    checkInBtn.disabled = false;
+    checkOutBtn.disabled = true;
+  } else {
+    checkInBtn.disabled = true;
+    checkOutBtn.disabled = false;
+  }
+  return;
   if (
     attendanceList?.length == 0 ||
     (!attendanceList?.[0]?.checkin && !attendanceList?.[0]?.checkout) ||
@@ -205,6 +231,23 @@ export function enableButtons(attendanceList: Attendance[]) {
 async function haveActiveAttendance(attendanceList: any) {
   if (attendanceList?.length == 0) return;
 
+  let checkin = true;
+  let attendanceId = 0;
+  let ids: any[] = [];
+  for (let i = 0; i < attendanceList.length; i++) {
+    const attendance = attendanceList[i];
+    ids.push(attendance.id);
+    if (!attendance.checkin && !attendance.checkout) {
+      checkin = true;
+      attendanceId = attendance.id;
+    } else if (attendance.checkin && !attendance.checkout) {
+      checkin = false;
+      attendanceId = attendance.id;
+    }
+  }
+  console.log(ids, "ids");
+  if (!checkin) return await GetTheConceptLocal(attendanceId);
+  return;
   if (attendanceList[0]?.checkin && !attendanceList[0]?.checkout)
     return await GetTheConceptLocal(attendanceList[0]?.id);
   return;

@@ -49,7 +49,7 @@ export default class extends mainViewClass {
     );
 
     [this.attendanceRowHTML, this.activeAttendanceRowHTML] = await Promise.all([
-      getUserMonthlyAttendanceRows(monthlyAttendanceList),
+      getUserMonthlyAttendanceRows(monthlyAttendanceList, monthlyDate),
       getActiveAttendanceRows(dailyAttendanceList),
     ]);
 
