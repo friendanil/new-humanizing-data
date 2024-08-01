@@ -65,9 +65,11 @@ export function getDuration(timeMs: number) {
 export function getDateInMonth(year: number, month: number) {
   let date = new Date(year, month - 1, 1);
   let dates = [];
+  console.log(date, 'date')
 
   while (date.getMonth() === month - 1) {
-    dates.push(formatDate(date));
+    if (date < new Date())
+    if (date) dates.push(formatDate(date));
     date.setDate(date.getDate() + 1);
   }
   return dates;
@@ -183,7 +185,13 @@ export async function getUserMonthlyAttendanceRows(
   showActions: boolean = false,
   userConceptId?: number
 ) {
+  const dateList = getDateInMonth(
+    new Date(monthlyAttendance?.[0]?.checkin).getFullYear(),
+    new Date(monthlyAttendance?.[0]?.checkin).getMonth() + 1
+  );
+
   if (
+    dateList.length == 0 ||
     monthlyAttendance.length == 0 ||
     (monthlyAttendance?.[0]?.checkin?.split(0, 4) < new Date().getFullYear() &&
       monthlyAttendance?.[0]?.checkin?.split(5, 6) < new Date().getMonth())
@@ -196,10 +204,6 @@ export async function getUserMonthlyAttendanceRows(
 
   let attendanceRows = "";
 
-  const dateList = getDateInMonth(
-    new Date(monthlyAttendance?.[0]?.checkin).getFullYear(),
-    new Date(monthlyAttendance?.[0]?.checkin).getMonth() + 1
-  );
   dateList.forEach((date: string) => {
     const attendances = monthlyAttendance.filter(
       (attendance) =>

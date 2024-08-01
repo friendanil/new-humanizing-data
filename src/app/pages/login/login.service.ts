@@ -117,6 +117,7 @@ export async function submitLoginForm(e: any) {
   const signinData = {
     email: emailValue,
     password: passwordValue,
+    application: 'humanizing'
   };
 
   const signinResponse = await signin(signinData);
@@ -146,8 +147,12 @@ export async function saveTolocalStorage(signinResponse: any) {
     email: signinResponse?.data?.email,
     userId: signinResponse?.data?.entity?.[0]?.userId,
     userConcept: signinResponse?.data?.userConcept,
-    entityId: userEntity?.entity
+    entityId: userEntity?.entity,
+    amcode: btoa(signinResponse?.data?.roles)
   };
+  btoa('Hey')
+'SGV5'
+atob('SGV5')
   updateAccessToken(userProfile.token);
 
   localStorage.setItem("profile", JSON.stringify(userProfile));
