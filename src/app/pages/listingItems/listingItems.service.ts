@@ -11,7 +11,7 @@ export async function getListingItems() {
       const profileStorageData: any = await getLocalStorageData();
       const userId = profileStorageData?.userId;
       const token = profileStorageData?.token;
-      
+
       const boomconsoleData = await MakeTheInstanceConcept(
         "the_listing",
         "Boomconsole",
@@ -31,12 +31,18 @@ export async function getListingItems() {
         "the_item_name",
         "the_item_price",
         "the_item_category",
-        "the_item_image",
+        "the_item_s_image",
       ];
       searchsecond.inpage = 100;
 
-      const queryParams = [searchfirst, searchsecond];
-      console.log("queryParams ->", queryParams);
+      let searchthird = new SearchQuery();
+      searchthird.fullLinkers = [
+        // "the_attachment",
+        "the_attachment_url",
+      ];
+      searchthird.inpage = 100;
+
+      const queryParams = [searchfirst, searchsecond, searchthird];
       const output = await SearchLinkMultipleAll(queryParams, token);
       console.log("output ->", output);
 
@@ -50,7 +56,10 @@ export async function getListingItems() {
           name: itemDetails?.the_item_name?.[0]?.data?.the_name,
           price: itemDetails?.the_item_price?.[0]?.data?.the_price,
           category: itemDetails?.the_item_category?.[0]?.data?.the_category,
-          image: itemDetails?.the_item_image?.[0]?.data?.the_image,
+          // image: itemDetails?.the_item_image?.[0]?.data?.the_image,
+          image:
+            itemDetails?.the_item_s_image?.[0]?.data?.the_attachment
+              ?.the_attachment_url?.[0]?.data?.the_url,
         };
       });
 
@@ -68,10 +77,10 @@ export async function getListingItems() {
               </div> -->
               <div class="p-4">
                 <div class="flex items-center justify-between">
-                  <h6 class="font-semibold text-xl leading-8 text-black transition-all duration-500 group-hover:text-indigo-600">${item?.name}</h6>
+                  <h6 class="truncate font-semibold text-xl leading-8 text-black transition-all duration-500 group-hover:text-indigo-600">${item?.name}</h6>
                   <h6 class="font-semibold text-xl leading-8 text-indigo-600">$${item?.price}</h6>
                 </div>
-                <p class="mt-2 font-normal text-sm leading-6 text-gray-500">${item?.category}</p>
+                <!-- <p class="mt-2 font-normal text-sm leading-6 text-gray-500">${item?.category}</p> -->
               </div>
             </router-link>
           `;
