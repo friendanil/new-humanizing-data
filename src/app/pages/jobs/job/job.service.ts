@@ -11,23 +11,24 @@ import {
 } from "mftsccs-browser";
 import {
   itemSkuLinker,
-  rfqAttachmentLinker,
-  s_item_linker,
-} from "../../constants/type.constants";
-import { environment } from "../../environments/environment.dev";
-import { createEntityInstance } from "../../services/createEntityInstance.service";
-import { CreateConnectionBetweenEntityLocal } from "../../services/entity.service";
+  // rfqAttachmentLinker,
+  // s_item_linker,
+} from "../../../constants/type.constants";
+import { createEntityInstance } from "../../../services/createEntityInstance.service";
+import { CreateConnectionBetweenEntityLocal } from "../../../services/entity.service";
 import {
   getEntityByUserconceptId,
   getLocalStorageData,
-} from "../../services/helper.service";
+} from "../../../services/helper.service";
 
-import rfqModalHTML from "../../modules/rfq-modal/rfq-modal";
-import listModalHTML from "../../modules/list-modal/list-modal";
-import { showToast } from "../../modules/toast-bar/toast-bar.index";
+import rfqModalHTML from "../../../modules/rfq-modal/rfq-modal";
+import listModalHTML from "../../../modules/list-modal/list-modal";
+// import { showToast } from "../../../modules/toast-bar/toast-bar.index";
+import { environment } from "../../../environments/environment.dev";
+import { closeModal } from "../../../services/modal.service";
 
 const thetaBoommAPI = environment?.boomURL;
-let attachmentConcept: LConcept;
+// let attachmentConcept: LConcept;
 let rfqModalHTMLCode = `
   <h1>Hey</h1>
 `;
@@ -49,7 +50,7 @@ export async function getMyListingItems() {
   return values;
 }
 
-export async function getProductDetails(productId: number) {
+export async function getJobDetails(productId: number) {
   try {
     const profileStorageData: any = await getLocalStorageData();
     const token = profileStorageData?.token;
@@ -71,7 +72,6 @@ export async function getProductDetails(productId: number) {
       "the_item_country",
       "the_item_quantity",
       "the_item_quality",
-      "the_item_s_image",
       "the_item_s_image",
       "the_item_s_listing",
     ];
@@ -109,23 +109,13 @@ export async function getProductDetails(productId: number) {
         quantity: item?.the_item_quantity?.[0]?.data?.the_quantity,
         quality: item?.the_item_quality?.[0]?.data?.the_quality,
         imageList: itemImageList,
-        // image: itemImageList?.[0],
-        // attachment: item?.the_item_attachment?.[0]?.data?.the_attachment,
-        listing: item?.the_item_s_listing?.[0]?.data?.the_listing
+        listing: item?.the_item_s_listing?.[0]?.data?.the_listing,
       },
     };
 
-    // const productList = await ViewInternalData([productId]);
-    // const product = productList[0];
     console.log("product", product);
-
     listingItem = product;
-
-    // if (!product?.data?.image || product?.data?.image === "undefined")
-    //   product.data.image = "https://placehold.co/600x600";
-
     let imagesHTML: string = "";
-
     if (!product?.data?.imageList?.length) {
       imagesHTML = `<img class="w-full border" src="https://placehold.co/600x600" alt="item image" />`;
     } else {
@@ -170,15 +160,24 @@ export async function getProductDetails(productId: number) {
     } else {
       const skuData: any = await getSkuDetails();
       let listedInfoEl = "";
-      if (product?.data?.listing) {
-        listedInfoEl = `
-          <hr class="my-6 md:my-8 border-gray-200 dark:border-gray-800" />
-          <p>Listed at: ${product?.data?.listing}</p>
-        `;
-      }
+
+      console.log("product?.data?.listing", product?.data?.listing);
+
+      // if (product?.data?.listing) {
+      //   listedInfoEl = `
+      //     <hr class="my-6 md:my-8 border-gray-200 dark:border-gray-800" />
+      //     <p>Listed at: ${product?.data?.listing}</p>
+      //   `;
+      // }
 
       let accessibleButtons = "";
       if (isItemListedByMe) {
+        if (product?.data?.listing) {
+          listedInfoEl = `
+            <hr class="my-6 md:my-8 border-gray-200 dark:border-gray-800" />
+            <p>Listed at: ${product?.data?.listing}</p>
+          `;
+        }
         accessibleButtons = `
           <button class="bg-green-500 text-white rounded-md px-4 py-2 hover:bg-green-700 transition" onclick="openModal('list-modal')">
             List this Item
@@ -191,8 +190,8 @@ export async function getProductDetails(productId: number) {
         `;
       } else {
         accessibleButtons = `
-          <button class="bg-green-500 text-white rounded-md px-4 py-2 hover:bg-green-700 transition" onclick="openModal('rfq-modal')">
-            Add Request for Quote
+          <button class="bg-green-500 text-white rounded-md px-4 py-2 hover:bg-green-700 transition" onclick="alert('Applied!')">
+            Apply Job
           </button>
         `;
       }
@@ -200,10 +199,6 @@ export async function getProductDetails(productId: number) {
       productDetails = `
         <div class="lg:grid lg:grid-cols-2 lg:gap-8 xl:gap-16" id="list-item">
           <div class="shrink-0 max-w-md lg:max-w-lg mx-auto">
-            <!-- <img class="w-full" src="https://placehold.co/600x600" alt="" /> -->
-            <!-- <img class="w-full border" src="${
-              product?.data?.imageList?.[0]
-            }" alt="item image" /> -->
             ${imagesHTML}
           </div>
 
@@ -216,30 +211,6 @@ export async function getProductDetails(productId: number) {
                 $${product?.data?.price}
               </p>
             </div>
-
-            <!-- <div class="mt-6 sm:gap-4 sm:items-center sm:flex sm:mt-8">
-              <router-link title=""
-                class="flex items-center justify-center py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-green-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                role="button">
-                <svg class="w-5 h-5 -ms-2 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                  fill="none" viewBox="0 0 24 24">
-                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z" />
-                </svg>
-                Add to favorites
-              </router-link>
-
-              <router-link title=""
-                class="text-white hover:text-white mt-4 sm:mt-0 bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800 flex items-center justify-center"
-                role="button">
-                <svg class="w-5 h-5 -ms-2 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                  fill="none" viewBox="0 0 24 24">
-                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M4 4h1.5L8 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm.75-3H7.5M11 7H6.312M17 4v6m-3-3h6" />
-                </svg>
-                Add to cart
-              </router-link>
-            </div> -->
 
             <hr class="my-6 md:my-8 border-gray-200 dark:border-gray-800" />
 
@@ -256,19 +227,6 @@ export async function getProductDetails(productId: number) {
             ${listedInfoEl}
 
             <div class="max-w-screen-xl px-4 mx-auto 2xl:px-0 text-center py-8">
-              <!-- <button class="bg-green-500 text-white rounded-md px-4 py-2 hover:bg-green-700 transition" onclick="openModal('list-modal')">
-                List this Item
-              </button>
-
-              <button class="bg-green-500 text-white rounded-md px-4 py-2 hover:bg-green-700 transition" onclick="openModal('rfq-modal')">
-                Add Request for Quote
-              </button>
-
-              <button class="bg-rose-500 text-white rounded-md px-4 py-2 hover:bg-rose-700 transition"
-                onclick="openModal('modelConfirm')">
-                Update Item SKU
-              </button> -->
-
               ${accessibleButtons}
             </div>
 
@@ -279,12 +237,6 @@ export async function getProductDetails(productId: number) {
             <div id="rfq-modal" class="fixed hidden z-50 inset-0 bg-gray-900 bg-opacity-60 dark:bg-gray-200 dark:bg-opacity-40 overflow-y-auto h-full w-full px-4">
               ${rfqModalHTMLCode}
             </div>
-
-            <!-- <button class="bg-rose-500 text-white rounded-md px-4 py-2 hover:bg-rose-700 transition" onclick="openModal('modelConfirm')">
-                Click to Open modal
-              </button> -->
-
-            <!-- https://tailwindflex.com/@lukas-muller/modal-popup -->
 
             <div id="modelConfirm"
               class="fixed hidden z-50 inset-0 bg-gray-900 bg-opacity-60 dark:bg-gray-200 dark:bg-opacity-40 overflow-y-auto h-full w-full px-4 ">
@@ -302,7 +254,7 @@ export async function getProductDetails(productId: number) {
                 </div>
 
                 <div class="p-6 pt-0">
-                  <form method="post" action="/" onsubmit="submitUpdateSKUForm(event)" name="updateSKUForm"
+                  <form method="post" onsubmit="submitUpdateSKUForm(event)" name="updateSKUForm"
                     id="update-sku-form">
                     <div class="my-4">
                       <label for="stockIn" class="block text-sm font-medium leading-6">Stock In<span
@@ -364,7 +316,7 @@ export async function getSkuDetails() {
   return new Promise(async (resolve: any, reject: any) => {
     try {
       let urlPath = location.pathname;
-      let itemId = Number(urlPath.substring(10));
+      let itemId = Number(urlPath.substring(5));
 
       const profileStorageData: any = await getLocalStorageData();
       const token = profileStorageData?.token;
@@ -444,6 +396,8 @@ export async function getSkuDetails() {
 }
 
 export async function submitUpdateSKUForm(e: any) {
+  alert('Namaslte')
+  console.log('submitUpdateSKUForm job')
   e.preventDefault();
   const formData: any = new FormData(e.target);
   const formValues: any = Object.fromEntries(formData); // output as an object
@@ -453,7 +407,7 @@ export async function submitUpdateSKUForm(e: any) {
 export async function createItemSKU(formValues: any) {
   console.log("formValues SKU ->", formValues);
   let urlPath = location.pathname;
-  let itemId = Number(urlPath.substring(10));
+  let itemId = Number(urlPath.substring(5));
 
   const itemEntityConcept: LConcept = await GetTheConceptLocal(itemId);
 
@@ -478,19 +432,19 @@ export async function createItemSKU(formValues: any) {
 }
 
 // for modal
-export async function openModal(modalId: string) {
-  const check = document.getElementById(modalId);
-  if (check) check.style.display = "block";
-  document.getElementsByTagName("body")[0].classList.add("overflow-y-hidden");
+// export async function openModal(modalId: string) {
+//   const check = document.getElementById(modalId);
+//   if (check) check.style.display = "block";
+//   document.getElementsByTagName("body")[0].classList.add("overflow-y-hidden");
 
-  // Close all modals when press ESC
-  document.onkeydown = function (event: any) {
-    if (event.code === "Escape" || event.key === "Escape") {
-      // if (check) check.style.display = "none";
-      closeModal(modalId);
-    }
-  };
-}
+//   // Close all modals when press ESC
+//   document.onkeydown = function (event: any) {
+//     if (event.code === "Escape" || event.key === "Escape") {
+//       // if (check) check.style.display = "none";
+//       closeModal(modalId);
+//     }
+//   };
+// }
 
 export async function createListingPlatform() {
   const listingInstanceConcept: LConcept = await MakeTheInstanceConceptLocal(
@@ -506,127 +460,127 @@ export async function createListingPlatform() {
   console.log("listingInstanceConcept ->", listingInstanceConcept);
 }
 
-export async function closeModal(modalId: string) {
-  const modal: any = document.getElementById(modalId);
+// export async function closeModal(modalId: string) {
+//   const modal: any = document.getElementById(modalId);
 
-  const modalFormEl = modal.querySelector("form");
-  modalFormEl.reset();
+//   const modalFormEl = modal.querySelector("form");
+//   modalFormEl.reset();
 
-  if (modal) modal.style.display = "none";
-  document
-    .getElementsByTagName("body")[0]
-    .classList.remove("overflow-y-hidden");
-  // Close all modals when press ESC
-  // document.onkeydown = function (event) {
-  //   event = event || window.event;
-  //   if (event.keyCode === 27) {
-  //     document
-  //       .getElementsByTagName("body")[0]
-  //       .classList.remove("overflow-y-hidden");
-  //     let modals = document.getElementsByClassName("modal");
-  //     Array.prototype.slice.call(modals).forEach((i) => {
-  //       i.style.display = "none";
-  //     });
-  //   }
-  // };
-}
+//   if (modal) modal.style.display = "none";
+//   document
+//     .getElementsByTagName("body")[0]
+//     .classList.remove("overflow-y-hidden");
+//   // Close all modals when press ESC
+//   // document.onkeydown = function (event) {
+//   //   event = event || window.event;
+//   //   if (event.keyCode === 27) {
+//   //     document
+//   //       .getElementsByTagName("body")[0]
+//   //       .classList.remove("overflow-y-hidden");
+//   //     let modals = document.getElementsByClassName("modal");
+//   //     Array.prototype.slice.call(modals).forEach((i) => {
+//   //       i.style.display = "none";
+//   //     });
+//   //   }
+//   // };
+// }
 
-export async function submitRFQForm(e: any) {
-  e.preventDefault();
+// export async function submitRFQForm(e: any) {
+//   e.preventDefault();
 
-  const formData: any = new FormData(e.target);
-  // output as an object
-  const formValues: any = Object.fromEntries(formData);
+//   const formData: any = new FormData(e.target);
+//   // output as an object
+//   const formValues: any = Object.fromEntries(formData);
 
-  const rfqResponse = await createItemRFQ(formValues);
-  console.log("rfqResponse", rfqResponse);
-}
+//   const rfqResponse = await createItemRFQ(formValues);
+//   console.log("rfqResponse", rfqResponse);
+// }
 
-export async function createItemRFQ(formValues: any) {
-  console.log("createItem formValues ->", formValues);
+// export async function createItemRFQ(formValues: any) {
+//   console.log("createItem formValues ->", formValues);
 
-  // let urlPath = location.pathname;
-  // let itemId = Number(urlPath.substring(10));
+//   // let urlPath = location.pathname;
+//   // let itemId = Number(urlPath.substring(10));
 
-  // // const itemEntityConcept: Concept = await GetTheConcept(itemId);
-  // const itemEntityConcept = await GetTheConceptLocal(itemId);
+//   // // const itemEntityConcept: Concept = await GetTheConcept(itemId);
+//   // const itemEntityConcept = await GetTheConceptLocal(itemId);
 
-  const profileStorageData: any = await getLocalStorageData();
-  const userId = profileStorageData?.userId;
-  const token = profileStorageData?.token;
+//   const profileStorageData: any = await getLocalStorageData();
+//   const userId = profileStorageData?.userId;
+//   const token = profileStorageData?.token;
 
-  // buyerAgentEntity
-  const buyAgentEntityDetails = await getBuyerAgentData(
-    Number(formValues?.buyeragent),
-    userId,
-    token
-  );
+//   // buyerAgentEntity
+//   const buyAgentEntityDetails = await getBuyerAgentData(
+//     Number(formValues?.buyeragent),
+//     userId,
+//     token
+//   );
 
-  delete formValues.attachment;
-  delete formValues.buyeragent;
-  delete formValues.buyer;
+//   delete formValues.attachment;
+//   delete formValues.buyeragent;
+//   delete formValues.buyer;
 
-  // formValues.buyer = profileStorageData?.entityId;
-  formValues.timestamp = new Date().toISOString();
+//   // formValues.buyer = profileStorageData?.entityId;
+//   formValues.timestamp = new Date().toISOString();
 
-  const rfqEntityConcept = await createEntityInstance(
-    "rfq",
-    userId,
-    formValues
-  );
+//   const rfqEntityConcept = await createEntityInstance(
+//     "rfq",
+//     userId,
+//     formValues
+//   );
 
-  // the_rfq_buyer
-  const buyerConcept: LConcept = await GetTheConceptLocal(
-    profileStorageData?.entityId
-  );
-  await CreateConnectionBetweenEntityLocal(
-    rfqEntityConcept,
-    buyerConcept,
-    "buyer"
-  );
+//   // the_rfq_buyer
+//   const buyerConcept: LConcept = await GetTheConceptLocal(
+//     profileStorageData?.entityId
+//   );
+//   await CreateConnectionBetweenEntityLocal(
+//     rfqEntityConcept,
+//     buyerConcept,
+//     "buyer"
+//   );
 
-  // the_rfq_buyeragent
-  await CreateConnectionBetweenEntityLocal(
-    rfqEntityConcept,
-    buyAgentEntityDetails,
-    "buyeragent"
-  );
+//   // the_rfq_buyeragent
+//   await CreateConnectionBetweenEntityLocal(
+//     rfqEntityConcept,
+//     buyAgentEntityDetails,
+//     "buyeragent"
+//   );
 
-  // the_rfq_s_attachment
-  await CreateConnectionBetweenEntityLocal(
-    rfqEntityConcept,
-    attachmentConcept,
-    rfqAttachmentLinker
-  );
+//   // the_rfq_s_attachment
+//   await CreateConnectionBetweenEntityLocal(
+//     rfqEntityConcept,
+//     attachmentConcept,
+//     rfqAttachmentLinker
+//   );
 
-  // the_rfq_s_item
-  let urlPath = location.pathname;
-  let itemId = Number(urlPath.substring(10));
+//   // the_rfq_s_item
+//   let urlPath = location.pathname;
+//   let itemId = Number(urlPath.substring(10));
 
-  if (itemId > 0) {
-    const itemEntityConcept = await GetTheConceptLocal(itemId);
-    // the_rfq_s_item
-    await CreateConnectionBetweenEntityLocal(
-      rfqEntityConcept,
-      itemEntityConcept,
-      s_item_linker
-    );
-  }
+//   if (itemId > 0) {
+//     const itemEntityConcept = await GetTheConceptLocal(itemId);
+//     // the_rfq_s_item
+//     await CreateConnectionBetweenEntityLocal(
+//       rfqEntityConcept,
+//       itemEntityConcept,
+//       s_item_linker
+//     );
+//   }
 
-  await LocalSyncData.SyncDataOnline();
+//   await LocalSyncData.SyncDataOnline();
 
-  console.log("rfq completed");
-  closeModal("rfq-modal");
-  setTimeout(async () => {
-    await showToast(
-      "success",
-      "RFQ sent successfully!",
-      "Your RFQs can view in RFQ page.",
-      "top-right",
-      5000
-    );
-  }, 100);
-}
+//   console.log("rfq completed");
+//   closeModal("rfq-modal");
+//   setTimeout(async () => {
+//     await showToast(
+//       "success",
+//       "RFQ sent successfully!",
+//       "Your RFQs can view in RFQ page.",
+//       "top-right",
+//       5000
+//     );
+//   }, 100);
+// }
 
 export async function getBuyerAgentData(
   buyerAgentConceptId: number,
@@ -725,7 +679,7 @@ export async function uploadFile(files: any) {
   formdata.append("file", files);
 
   const profileStorageData: any = await getLocalStorageData();
-  const userId = profileStorageData?.userId;
+  // const userId = profileStorageData?.userId;
   const token = profileStorageData?.token;
 
   const myHeaders = new Headers();
@@ -743,19 +697,18 @@ export async function uploadFile(files: any) {
     console.error(`${response.status} ${errorData}`);
     return null;
   }
-  const output = await response.json();
+  // const output = await response.json();
 
-  const attachmentValues = {
-    name: files?.name,
-    size: files?.size,
-    type: files?.type,
-    url: output?.data,
-  };
+  // const attachmentValues = {
+  //   name: files?.name,
+  //   size: files?.size,
+  //   type: files?.type,
+  //   url: output?.data,
+  // };
 
-  attachmentConcept = await createEntityInstance(
-    "attachment",
-    userId,
-    attachmentValues
-  );
-
+  // attachmentConcept = await createEntityInstance(
+  //   "attachment",
+  //   userId,
+  //   attachmentValues
+  // );
 }

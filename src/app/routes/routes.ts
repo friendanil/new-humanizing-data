@@ -13,6 +13,8 @@ import roleClass from "../pages/roles/roles.index.ts";
 import attendanceClass from "../pages/attendance/user-attendance/attendance.index.ts";
 import employeeAttendanceClass from "../pages/attendance/employees-attendance/employees-attendance.index.ts";
 import indivisualAttendanceClass from "../pages/attendance/indivisual-attendance/indivisual-attendance.index.ts";
+import jobListIndex from "../pages/jobs/jobList/jobList.index.ts";
+import jobIndex from "../pages/jobs/job/job.index.ts";
 
 type RouteParams = {
   path: any;
@@ -108,6 +110,16 @@ const routes: RouteParams[] = [
   {
     path: "/employee/attendance/:userConcept",
     content: indivisualAttendanceClass,
+    isAuthenticated: true,
+  },
+  {
+    path: "/jobs",
+    content: jobListIndex,
+    isAuthenticated: true,
+  },
+  {
+    path: "/job/:id",
+    content: jobIndex,
     isAuthenticated: true,
   },
 ];

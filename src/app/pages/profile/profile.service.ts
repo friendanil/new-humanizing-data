@@ -92,12 +92,12 @@ export async function popupAlert() {
 }
 
 export async function loadProfileDetails() {
-  let userId!: number
+  // let userId!: number
   let userConceptId!: number
   let dataFromLocalStorage: string = localStorage?.getItem("profile") || ''
   if (dataFromLocalStorage) {
     const profileData: IUser = JSON.parse(dataFromLocalStorage)
-    userId = Number(profileData?.userId)
+    // userId = Number(profileData?.userId)
     userConceptId = Number(profileData?.userConcept)
   }
 
@@ -127,12 +127,12 @@ export async function loadProfileDetails() {
 export async function updateProfile(e: Event) {
   e.preventDefault()
 
-  let userId!: number
+  // let userId!: number
   let userConceptId!: number
   let dataFromLocalStorage: string = localStorage?.getItem("profile") || ''
   if (dataFromLocalStorage) {
     const profileData: IUser = JSON.parse(dataFromLocalStorage)
-    userId = Number(profileData?.userId)
+    // userId = Number(profileData?.userId)
     userConceptId = Number(profileData?.userConcept)
   }
 
