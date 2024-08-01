@@ -125,7 +125,8 @@ export async function searchUserAttendance(
   console.log(
     searchDate,
     "abcbedaa",
-    user?.data?.["the_user"]?.["the_user_s_attendance"]
+    //user?.data?.["the_user"]?.["the_user_s_attendance"]
+    user
   );
 
   // TODO:: filter data to proper form

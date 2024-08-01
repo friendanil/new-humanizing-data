@@ -27,7 +27,7 @@ export default class extends mainViewClass {
     const dailyDate = `${new Date().getFullYear()}-${(
       "0" +
       (new Date().getMonth() + 1)
-    ).slice(-2)}-${new Date().getDate()}`;
+    ).slice(-2)}-0${new Date().getDate()}`;
     const monthlyDate = `${new Date().getFullYear()}-${(
       "0" +
       (new Date().getMonth() + 1)
@@ -40,7 +40,13 @@ export default class extends mainViewClass {
       searchUserAttendance(userConceptId, dailyDate),
       searchUserAttendance(userConceptId, monthlyDate),
     ]);
-    console.log(monthlyAttendanceList, "monthlyAttendanceList", dailyAttendanceList, "dailyAttendanceList", dailyDate);
+    console.log(
+      monthlyAttendanceList,
+      "monthlyAttendanceList",
+      dailyAttendanceList,
+      "dailyAttendanceList",
+      dailyDate
+    );
 
     [this.attendanceRowHTML, this.activeAttendanceRowHTML] = await Promise.all([
       getUserMonthlyAttendanceRows(monthlyAttendanceList),

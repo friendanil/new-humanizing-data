@@ -1,7 +1,6 @@
-import { closeModal } from "../../../pages/listItem/listItem.service";
+import { getPermissionActionRows, getPermissionRows } from "../../../pages/roles/roles.service";
 import { submitCreateRoleForm } from "./create-role-modal.service";
 
-(window as any).closeModal = closeModal;
 (window as any).submitCreateRoleForm = submitCreateRoleForm;
 
 export default async function createRoleModalHTML() {
@@ -23,81 +22,44 @@ export default async function createRoleModalHTML() {
             <div class="p-6 pt-0">
                 <form method="post" onsubmit="submitCreateRoleForm(event)" name="createRoleForm" id="createRoleForm">
                 
-                <div class="my-4">
-                    <label for="name" class="block text-sm font-medium leading-6">Role Name<span
-                        class="text-rose-400">*</span></label>
-                    <div class="mt-2">
-                        <input type="text" name="name" id="name"
-                        class="block w-full rounded-md border-0 px-3 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-md sm:text-sm sm:leading-6 text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">
+                    <div class="my-4">
+                        <label for="name" class="block text-sm font-medium leading-6">Role Name<span
+                            class="text-rose-400">*</span></label>
+                        <div class="mt-2">
+                            <input type="text" name="name" id="name" required
+                            class="block w-full rounded-md border-0 px-3 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-md sm:text-sm sm:leading-6 text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">
+                        </div>
                     </div>
-                </div>
-                <div class="relative overflow-x-auto my-4">
-                    <h6>Permission</h6>
-                    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                        <thead class="text-xs text-gray-700 uppercase bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
-                            <tr>
-                                <th scope="col" rowspan="2" class="px-6 py-3 border border-gray-300">Module</th>
-                                <th scope="col" colspan="5" class="px-6 py-3 border border-gray-300">Permissions</th>
-                            </tr>
-                            <tr>
-                                <th scope="col" class="px-6 py-3 border border-gray-300">View</th>
-                                <th scope="col" class="px-6 py-3 border border-gray-300">Create</th>
-                                <th scope="col" class="px-6 py-3 border border-gray-300">Update</th>
-                                <th scope="col" class="px-6 py-3 border border-gray-300">Delete</th>
-                                <th scope="col" class="px-6 py-3 border border-gray-300">Show In Menu</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">ROLE_EMPLOYEE</td>
-                                <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    <div class="flex items-center">
-                                        <input checked id="module_create" type="checkbox" checked="false" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                        <!-- <label for="checked-checkbox" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Create</label> -->
-                                    </div>
-                                </td>
-                                <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    <div class="flex items-center">
-                                        <input checked id="module_create" type="checkbox" checked="false" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                        <!-- <label for="checked-checkbox" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Create</label> -->
-                                    </div>
-                                </td>
-                                <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    <div class="flex items-center">
-                                        <input checked id="module_create" type="checkbox" checked="false" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                        <!-- <label for="checked-checkbox" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Create</label> -->
-                                    </div>
-                                </td>
-                                <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    <div class="flex items-center">
-                                        <input checked id="module_create" type="checkbox" checked="false" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                        <!-- <label for="checked-checkbox" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Create</label> -->
-                                    </div>
-                                </td>
-                                <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                    <div class="flex items-center">
-                                        <input checked id="module_create" type="checkbox" checked="false" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                        <!-- <label for="checked-checkbox" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Create</label> -->
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-        
-                <div class="text-right">
-                    <button type="button" onclick="closeModal('create-role-modal')"
-                        class="text-gray-900 bg-white hover:bg-gray-300 focus:ring-4 focus:ring-cyan-200 border border-gray-200 font-medium inline-flex items-center rounded-lg text-base px-3 py-2.5 text-center"
-                        data-modal-toggle="delete-user-modal">
-                        Cancel
-                    </button>
-                    <button type="submit"
-                        class="text-white bg-green-600 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-base inline-flex items-center px-3 py-2.5 text-center mr-2">
-                        Create Role
-                    </button>
-                </div>
+                    <div class="relative overflow-x-auto my-4">
+                        <h6>Permission</h6>
+                        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                            <thead class="text-xs text-gray-700 uppercase bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
+                                <tr>
+                                    <th scope="col" rowspan="2" class="px-6 py-3 border border-gray-300">Module</th>
+                                    <th scope="col" colspan="5" class="px-6 py-3 border border-gray-300 text-center">Permissions</th>
+                                </tr>
+                                <tr>
+                                    ${getPermissionActionRows()}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${getPermissionRows()}
+                            </tbody>
+                        </table>
+                    </div>
+            
+                    <div class="text-right">
+                        <button type="button" onclick="closeModal('create-role-modal')"
+                            class="text-gray-900 bg-white hover:bg-gray-300 focus:ring-4 focus:ring-cyan-200 border border-gray-200 font-medium inline-flex items-center rounded-lg text-base px-3 py-2.5 text-center"
+                            data-modal-toggle="delete-user-modal">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                            class="text-white bg-green-600 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-base inline-flex items-center px-3 py-2.5 text-center mr-2">
+                            Create Role
+                        </button>
+                    </div>
                 </form>
-        
             </div>
         </div>
     </div>
