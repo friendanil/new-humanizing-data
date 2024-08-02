@@ -14,7 +14,7 @@ export default class extends mainViewClass {
     return `
       <!-- <link rel="stylesheet" href="src/app/pages/login/login.style.css"> -->
       <div class="grid grid-cols-1 md:grid-cols-2 overflow-y-auto text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">
-        <div class="grid bg-green-900 h-screen place-content-center">
+        <div class="hidden md:grid bg-green-900 h-screen place-content-center">
           <router-link href="/" class="cursor-pointer">
             <img alt="humanzing logo" src="/images/humanizing-data-icon.png">
           </router-link>
@@ -36,6 +36,12 @@ export default class extends mainViewClass {
             </div>
             
           </form>
+
+          <div class="py-8 block w-full md:w-1/2 text-center">
+            <router-link href="/" class="cursor-pointer">
+              &larr; Back to Home
+            </router-link>
+          </div>
         </div>
       </div>
     `;

@@ -1,6 +1,7 @@
 import { DAYS } from "../../../constants/time.constants";
 import mainViewClass from "../../../default/mainView.class";
 import topNavigation from "../../../modules/top-nav/top-navigation";
+import { initTopNavigation } from "../../../modules/top-nav/top-navigation.service";
 import { getLocalStorageData } from "../../../services/helper.service";
 import {
   generateMonthOptions,
@@ -24,7 +25,7 @@ export default class extends mainViewClass {
     const dailyDate = `${new Date().getFullYear()}-${(
       "0" +
       (new Date().getMonth() + 1)
-    ).slice(-2)}-${("0" + new Date().getDate()).slice(-2)}`;
+    ).slice(-2)}-0${new Date().getDate()}`;
     const monthlyDate = `${new Date().getFullYear()}-${(
       "0" +
       (new Date().getMonth() + 1)
@@ -54,6 +55,10 @@ export default class extends mainViewClass {
       enableButtons(dailyAttendanceList);
       tickTimer();
     }, 1000);
+
+    setTimeout(() => {
+      initTopNavigation();
+    }, 500);
 
     return `
         ${topNavigation}

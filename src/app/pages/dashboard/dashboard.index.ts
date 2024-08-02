@@ -1,4 +1,5 @@
 import mainViewClass from "../../default/mainView.class.ts";
+import { initTopNavigation } from "../../modules/top-nav/top-navigation.service.ts";
 import topNavigation from "../../modules/top-nav/top-navigation.ts";
 
 export default class extends mainViewClass {
@@ -8,6 +9,10 @@ export default class extends mainViewClass {
   }
 
   async getHtml() {
+    setTimeout(() => {
+      initTopNavigation();
+    }, 500);
+
     return `
       ${topNavigation}
 

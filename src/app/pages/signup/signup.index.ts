@@ -12,15 +12,15 @@ export default class extends mainViewClass {
     (window as any).submitSignupForm = submitSignupForm;
 
     return `
-      <div class="grid grid-cols-1 md:grid-cols-2 overflow-y-auto text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">
-        <div class="grid bg-green-900 h-screen place-content-center">
+      <div class="grid grid-cols-1 md:grid-cols-2 h-screen overflow-y-auto text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">
+        <div class="hidden md:grid bg-green-900 h-screen place-content-center">
           <img alt="humanzing logo" src="/images/humanizing-data-icon.png" />
         </div>
 
-        <div class="h-screen p-10">
+        <div class="min-h-screen overflow-y-auto p-10">
           <h2 class="text-2xl mb-4">Sign Up</h2>
           <p>
-            Don't have an accountcha? <router-link class="cursor-pointer text-sky-500 hover:text-sky-700" href="/login">Sign in</router-link>
+            Don't have an account? <router-link class="cursor-pointer text-sky-500 hover:text-sky-700" href="/login">Sign in</router-link>
           </p>
 
           <form method="post" action="/" onsubmit="submitSignupForm(event)">
@@ -76,6 +76,12 @@ export default class extends mainViewClass {
 
             <button class="bg-green-600 cursor-pointer hover:bg-green-900 text-white text-sm leading-6 font-medium py-3 px-6 m-2 rounded-lg" type="submit">Submit</button>
           </form>
+
+          <div class="py-8 block w-full md:w-1/2 text-center">
+            <router-link href="/" class="cursor-pointer">
+              &larr; Back to Home
+            </router-link>
+          </div>
           
         </div>
       </div>
