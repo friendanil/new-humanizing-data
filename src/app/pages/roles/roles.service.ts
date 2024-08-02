@@ -154,6 +154,6 @@ function hasPermissionChecked(
   return false;
 }
 
-export function openAssignUserRoleModal(id: number) {
+export function openAssignUserRoleModal() {
   openModal("assign-user-role-modal");
 }
