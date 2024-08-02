@@ -1,8 +1,9 @@
 import mainViewClass from '../../default/mainView.class.ts';
 import topNavigation from "../../modules/top-nav/top-navigation"
 import './profile.style.css';
-import { addEducation,addExperience,previewImage, loadProfileDetails, getProfileData, addDoc } from "./profile.service"
+import { addEducation,addExperience,previewImage, loadProfileDetails, getProfileData, addDoc,openProfileModal } from "./profile.service"
 import { popupAlert, saveProfileDetails, updateProfile,submitAddProfileForm} from "./profile.service"
+import createProfileModalHTML from '../../modules/profile-modal/create-profile-modal.ts';
 
 export default class extends mainViewClass {
   constructor(params: any) {
@@ -19,16 +20,27 @@ export default class extends mainViewClass {
     (window as any).addExperience=addExperience;
     (window as any).addDoc=addDoc;
     (window as any).previewImage=previewImage;
+    (window as any).openProfileModal=openProfileModal;
+   
     // const loadHTML = await getHTML()
 
     // load content
     // loadProfileDetails()
+    // const profileData=await 
+    // console.log(profileData,"profileData")
     getProfileData()
-    
+    const profileModal = await createProfileModalHTML()
+
     return `
       ${topNavigation}
+      ${profileModal}
       <div class="w-4/5 mx-auto my-8">
-        <h1 class="dark:text-white">Your Profile</h1>
+      <h1 class="dark:text-white">Your Profile</h1>
+      <button class="float-right bg-green-500 text-white rounded-md px-4 py-2 hover:bg-green-700 transition"
+      onclick="openProfileModal()"
+      >
+      View Profile
+      </button>
 
         <form method="post" onsubmit="submitAddProfileForm(event)" class="mt-10">
         <h2 class="dark:text-white text-2xl">Basic Information:</h2>
@@ -230,6 +242,7 @@ export default class extends mainViewClass {
         <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700">
         <div id="inputFields-1">
         </div>
+
          <div class="grid gap-6 mb-6 mt-6 md:grid-cols-6">
          <div class="container-1">
         <button type="button"
@@ -243,7 +256,7 @@ export default class extends mainViewClass {
             <div class="mt-2">
               <input id="file" type="file" accept=".png, .jpg, .jpeg" onchange="previewImage(event)" name="profile" autocomplete="item-attachment"
                 class="block w-full rounded-md border-0 px-3 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-md sm:text-sm sm:leading-6 text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">
-                <input id="fileInput" name="profilePic"
+                <input id="imgInput" name="profilePic"
                 type="hidden"
                 class="block w-full rounded-md border-0 px-3 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-md sm:text-sm sm:leading-6 text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">
                 </div>

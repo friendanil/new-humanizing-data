@@ -22,12 +22,13 @@ import { createEntityInstance } from "../../services/createEntityInstance.servic
 import { environment } from "../../environments/environment.dev";
 import { showToast } from "../../modules/toast-bar/toast-bar.index";
 import { CreateConnectionBetweenEntityLocal } from "../../services/entity.service";
-import './profile.style.css';
+import "./profile.style.css";
 
 const thetaBoommAPI = environment?.boomURL;
 let attachmentValues: any;
 let attachmentConcept: any;
 let output: any;
+let profileList: any;
 let profilePicUrl: any;
 
 (window as any).deleteFn = deleteFn;
@@ -38,6 +39,38 @@ let profilePicUrl: any;
 const EducationFieldsArray: any = [];
 const ExperienceFieldsArray: any = [];
 const DocumentFieldsArray: any = [];
+
+// for modal
+export async function closeProfileModal(modalId: string) {
+  console.log(modalId, "modal");
+  const modal: any = document.getElementById(modalId);
+
+  // const modalFormEl = modal.querySelector("form");
+  // modalFormEl.reset();
+
+  if (modal) modal.style.display = "none";
+  document
+    .getElementsByTagName("body")[0]
+    .classList.remove("overflow-y-hidden");
+}
+
+export async function openModal(modalId: string) {
+  const check = document.getElementById(modalId);
+  if (check) check.style.display = "block";
+  document.getElementsByTagName("body")[0].classList.add("overflow-y-hidden");
+
+  // Close all modals when press ESC
+  document.onkeydown = function (event: any) {
+    if (event.code === "Escape" || event.key === "Escape") {
+      // if (check) check.style.display = "none";
+      closeProfileModal(modalId);
+    }
+  };
+}
+
+export async function openProfileModal() {
+  await openModal("create-profile-modal");
+}
 
 // Function to add addEducation fields
 export async function addEducation(param: any) {
@@ -104,7 +137,6 @@ export async function addEducation(param: any) {
            class="delete-button text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
           onclick="deleteFn(this)">Delete</button>
       <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700">
-
       `;
   divEle.appendChild(container);
 }
@@ -114,11 +146,10 @@ export async function addExperience(param: any) {
   const divEle: any = document.getElementById("inputFields-1");
   const container = document.createElement("div-1");
   container.classList.add("input-container-1");
-
   // Add HTML for input fields and delete button
   container.innerHTML = `
-          <div id="input-container-1" class="grid gap-6 mb-6 mt-6 md:grid-cols-3">
-          <div>
+        <div id="input-container-1" class="grid gap-6 mb-6 mt-6 md:grid-cols-3">
+           <div>
             <label for="company" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Company</label>
              <input type="text" id="company${param}"
                 name="company"
@@ -139,7 +170,7 @@ export async function addExperience(param: any) {
                 class="input-field-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="Address" />
           </div>
-          <div>
+         <div>
               <label for="expCountry" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Country</label>
               <select id="expCountry${param}" name='expCountry' autocomplete="expCountry-name"
                 class="input-field-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -164,13 +195,11 @@ export async function addExperience(param: any) {
                 class="input-field-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="To Date" />
           </div>
-          <div>
-          <button 
+        </div> 
+        <button 
           class="delete-button-1 text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
           onclick="deleteFnExperience(this)">Delete</button>
-          </div>
-          </div>
-          <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700">
+      <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700">
       `;
   divEle.appendChild(container);
 }
@@ -198,8 +227,19 @@ export async function addDoc(param: any) {
               <input id="docUpload${param}" type="file" accept=".pdf" onchange="previewImage(event)" name="profilePic" autocomplete="item-attachment"
                 class="input-field-2 block w-full rounded-md border-0 px-3 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-md sm:text-sm sm:leading-6 text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">
           </div>
+          <div id="pdfField${param}" class="mt-6 hidden">
+              <label for="docUpload" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"></label>
+              <a href=""
+              target="_blank"
+              id="viewPdf${param}"
+              >Download PDF</a>
+          </div>
            <div>
-              <input id="pdfFile${param}" type="hidden" accept=".pdf" onchange="previewImage(event)" name="profilePic" autocomplete="item-attachment"
+              <input id="pdfFile" type="hidden" accept=".pdf" name="profilePic" autocomplete="item-attachment"
+                class="input-field-2 block w-full rounded-md border-0 px-3 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-md sm:text-sm sm:leading-6 text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">
+          </div>
+            <div>
+              <input id="pdfFromDb${param}" type="hidden" accept=".pdf" name="profilePic" autocomplete="item-attachment"
                 class="input-field-2 block w-full rounded-md border-0 px-3 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-md sm:text-sm sm:leading-6 text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">
           </div>
         </div>
@@ -244,7 +284,6 @@ export async function deleteDocFn(button: any) {
   // console.log("Updated array:", EducationFieldsArray);
 }
 
-
 // function is to preview image
 export async function previewImage(event: any) {
   var input: any = event.target;
@@ -252,16 +291,16 @@ export async function previewImage(event: any) {
   if (input.files && input.files[0]) {
     const files = input.files[0];
 
-    if(files.type==="image/jpeg" || files.type==="image/png"){
-      await uploadImageFile(files);
+    if (files.type === "image/jpeg" || files.type === "image/png") {
       var reader = new FileReader();
       reader.onload = function (e: any) {
         image.src = e.target.result;
       };
+      await uploadImageFile(files);
       reader.readAsDataURL(input.files[0]);
-    }else if(files.type==="application/pdf"){
+    } else if (files.type === "application/pdf") {
       await uploadPdfFile(files);
-    }else{
+    } else {
       setTimeout(async () => {
         await showToast(
           "error",
@@ -277,9 +316,9 @@ export async function previewImage(event: any) {
 
 // function is to upload files
 export async function uploadImageFile(files: any) {
-  const loader:any=document?.querySelector("#loader")
-  if(loader){
-    loader.style.display = "block"
+  const loader: any = document?.querySelector("#loader");
+  if (loader) {
+    loader.style.display = "block";
     // body.style.visibility="hidden"
   }
   let formdata = new FormData();
@@ -304,9 +343,8 @@ export async function uploadImageFile(files: any) {
     return null;
   }
   const output = await response.json();
-  const inputPdf = <HTMLInputElement>document.getElementById("fileInput");
-  inputPdf.value=output.data
-
+  const inputImg = <HTMLInputElement>document.getElementById("imgInput");
+  inputImg.value = output.data;
 
   // attachmentValues = {
   //   name: files?.name,
@@ -320,30 +358,30 @@ export async function uploadImageFile(files: any) {
   //   userId,
   //   attachmentValues
   // );
-  if(output.data){
-      if(loader){
-        // body.style.visibility = "visible";
-        loader.style.display = "none"
-      }
-  setTimeout(async () => {
-    await showToast(
-      "success",
-      "Profile pic added successfully!",
-      "",
-      "top-right",
-      5000
-    );
-  }, 100);
-}
+  if (output.data) {
+    if (loader) {
+      // body.style.visibility = "visible";
+      loader.style.display = "none";
+    }
+    setTimeout(async () => {
+      await showToast(
+        "success",
+        "Profile Image uploaded successfully!",
+        "",
+        "top-right",
+        5000
+      );
+    }, 100);
+  }
   // console.log("attachmentConcept", attachmentConcept);
 }
 
 // function is to upload files
 export async function uploadPdfFile(files: any) {
   // const body:any=document?.querySelector("body")
-  const loader:any=document?.querySelector("#loader")
-  if(loader){
-    loader.style.display = "block"
+  const loader: any = document?.querySelector("#loader");
+  if (loader) {
+    loader.style.display = "block";
     // body.style.visibility="hidden"
   }
   let formdata = new FormData();
@@ -369,9 +407,9 @@ export async function uploadPdfFile(files: any) {
     return null;
   }
   const output = await response.json();
-
-  const inputImg = <HTMLInputElement>document.getElementById("fileInput");
-  inputImg.value=output.data
+  console.log(output,"output")
+  const inputPdf = <HTMLInputElement>document?.getElementById("pdfFile");
+  inputPdf.value = output?.data;
   // attachmentValues = {
   //   name: files?.name,
   //   size: files?.size,
@@ -384,22 +422,58 @@ export async function uploadPdfFile(files: any) {
   //   userId,
   //   attachmentValues
   // );
-  if(output){
-    if(loader){
+  if (output) {
+    if (loader) {
       // body.style.visibility = "visible";
-      loader.style.display = "none"
+      loader.style.display = "none";
     }
-  setTimeout(async () => {
-    await showToast(
-      "success",
-      "Profile pic added successfully!",
-      "",
-      "top-right",
-      5000
-    );
-  }, 100);
-}
+    setTimeout(async () => {
+      await showToast(
+        "success",
+        "PDF added successfully!",
+        "",
+        "top-right",
+        5000
+      );
+    }, 100);
+  }
   // console.log("attachmentConcept", attachmentConcept);
+}
+
+//function to add experience
+export async function experience(data: any) {
+  const divEle: any = document.getElementById(`experience`);
+  data?.map(async (opt: any, index: any) => {
+    console.log(opt?.data.the_experience,"data")
+  const container = document.createElement(`div${index}`);
+  container.innerHTML = `
+            <div class="experience-item">
+                <h3>${opt?.data.the_experience?.the_experience_position?.[0]?.data?.the_position}</h3>
+                <p>${opt?.data.the_experience?.the_experience_company?.[0]?.data?.the_company}, ${opt?.data.the_experience?.the_experience_expdobFrom?.[0]?.data?.the_expdobFrom} - ${opt?.data.the_experience?.the_experience_expdobTo?.[0]?.data?.the_expdobTo}</p>
+                <ul>
+                    <li>Developed and maintained web applications using React and Node.js.</li>
+                    <li>Led a team of 5 developers in project planning and execution.</li>
+                    <li>Implemented RESTful APIs and integrated third-party services.</li>
+                </ul>
+            </div>`
+  divEle?.appendChild(container);
+  })
+}
+
+//function to add experience
+export async function education(data: any) {
+  const divEle: any = document.getElementById(`education`);
+  data?.map(async (opt: any, index: any) => {
+    console.log(opt?.data?.the_education.the_education_eduLevel[0].data.the_eduLevel
+      ,"data")
+  const container = document.createElement(`div${index}`);
+  container.innerHTML = `
+            <div class="education-item">
+                <h3>${opt?.data?.the_education.the_education_eduLevel[0].data.the_eduLevel} in ${opt?.data?.the_education.the_education_course[0].data.the_course}</h3>
+                <p>${opt?.data?.the_education.the_education_institutionName[0].data.the_institutionName}, ${opt?.data?.the_education.the_education_dobFrom[0].data.the_dobFrom} - ${opt?.data?.the_education.the_education_dobTo[0].data.the_dobTo}</p>
+            </div>`
+  divEle?.appendChild(container);
+  })
 }
 
 // Save profile details
@@ -775,8 +849,8 @@ export async function submitAddProfileForm(e: any) {
   const expContainers = document.querySelectorAll(".input-container-1");
   ExperienceFieldsArray.length = 0; // Clear the array
 
-  expContainers.forEach(async(container1, index) => {
-    const inputs: any = container1.querySelectorAll(".input-field-1");
+  expContainers.forEach(async (container, index) => {
+    const inputs: any = container.querySelectorAll(".input-field-1");
     ExperienceFieldsArray.push({
       company: inputs[0].value,
       position: inputs[1].value,
@@ -788,7 +862,7 @@ export async function submitAddProfileForm(e: any) {
   });
 
   const docContainers = document.querySelectorAll(".input-container-2");
-  ExperienceFieldsArray.length = 0; // Clear the array
+  DocumentFieldsArray.length = 0; // Clear the array
 
   docContainers.forEach((container2, index) => {
     const inputs: any = container2.querySelectorAll(".input-field-2");
@@ -809,7 +883,9 @@ export async function submitAddProfileForm(e: any) {
   formData.image = attachmentValues?.url;
   // output as an object
   const formValues: any = Object.fromEntries(formData);
-  const inputFirstName = <HTMLInputElement>document.getElementById("first_name");
+  const inputFirstName = <HTMLInputElement>(
+    document.getElementById("first_name")
+  );
   const inputLastName = <HTMLInputElement>document.getElementById("last_name");
   const inputEmail = <HTMLInputElement>document.getElementById("email");
   const inputPhone = <HTMLInputElement>document.getElementById("phone");
@@ -823,20 +899,28 @@ export async function submitAddProfileForm(e: any) {
   if (formValues.first_name === "") {
     inputFirstName.focus();
     setErrorFor(inputFirstName, "First Name cannot be empty");
-  } if (formValues.last_name === "") {
+  }
+  if (formValues.last_name === "") {
     inputLastName.focus();
     setErrorFor(inputLastName, "Last Name cannot be empty");
-  } if (formValues.email === "") {
+  }
+  if (formValues.email === "") {
     inputEmail.focus();
     setErrorFor(inputEmail, "Email cannot be empty");
-  } if (formValues.phone === "") {
+  }
+  if (formValues.phone === "") {
     setErrorFor(inputPhone, "Phone no cannot be empty");
-  }if(formValues.first_name && formValues.last_name && formValues.email && formValues.phone)
-  {
+  }
+  if (
+    formValues.first_name &&
+    formValues.last_name &&
+    formValues.email &&
+    formValues.phone
+  ) {
     await createProfile(formValues);
   }
-  
 }
+
 export async function getProfileData() {
   let dataFromLocalStorage: string = localStorage?.getItem("profile") || "";
   if (dataFromLocalStorage) {
@@ -911,136 +995,129 @@ export async function getProfileData() {
     searchthird.inpage = 100;
     searchsecond.inpage = 100;
     const queryParams = [searchfirst, searchsecond, searchthird];
-    output = await SearchLinkMultipleAll(queryParams, profileData?.token);
-    console.log("output ->", output.data);
+    profileList = await SearchLinkMultipleAll(queryParams, profileData?.token);
     const data =
-      output?.data?.the_user?.the_user_profile[0]?.data?.the_profile ?? "";
-
+      profileList?.data?.the_user?.the_user_profile?.[0]?.data?.the_profile ||
+      "";
     const inputFirstName = <HTMLInputElement>(
       document.getElementById("first_name")
     );
+    console.log("output ->", data);
+
     inputFirstName.value =
-      data?.the_profile_first_name[0]?.data?.the_first_name ||
-      output.data.the_user.entity.person.first_name;
+      data?.the_profile_first_name?.[0]?.data?.the_first_name ||
+      profileList?.data?.the_user.entity.person.first_name;
 
     const inputProfilePic = <HTMLInputElement>(
       document.getElementById("profilePic")
     );
     inputProfilePic.src =
-      data?.the_profile_profilePic[0]?.data?.the_profilePic ||
-      output.data.the_user.entity.person.profile_img;
+      data?.the_profile_profilePic?.[0]?.data?.the_profilePic ||
+      profileList.data.the_user.entity.person.profile_img;
 
-      
-      const inputImgInput = <HTMLInputElement>(
-        document.getElementById("fileInput")
-      );
-      inputImgInput.value =
-        data?.the_profile_profilePic[0]?.data?.the_profilePic ||
-        output.data.the_user.entity.person.last_name;  
+    const inputImgInput = <HTMLInputElement>document.getElementById("imgInput");
+    inputImgInput.value =
+      data?.the_profile_profilePic?.[0]?.data?.the_profilePic ||
+      profileList.data.the_user.entity.person.profile_img;
 
     const inputLastName = <HTMLInputElement>(
       document.getElementById("last_name")
     );
     inputLastName.value =
-      data?.the_profile_last_name[0]?.data?.the_last_name ||
-      output.data.the_user.entity.person.last_name;
+      data?.the_profile_last_name?.[0]?.data?.the_last_name ||
+      profileList.data.the_user.entity.person.last_name;
 
     const inputEmail = <HTMLInputElement>document.getElementById("email");
     inputEmail.value =
-      data?.the_profile_email[0]?.data?.the_email ||
-      output.data.the_user.entity.person.email;
+      data?.the_profile_email?.[0]?.data?.the_email ||
+      profileList.data.the_user.entity.person.email;
 
     const inputPhone = <HTMLInputElement>document.getElementById("phone");
     inputPhone.value =
-      data?.the_profile_phone[0]?.data?.the_phone ||
-      output.data.the_user.entity.person.phone;
+      data?.the_profile_phone?.[0]?.data?.the_phone ||
+      profileList.data.the_user.entity.person.phone;
 
     const inputDob = <HTMLInputElement>document.getElementById("dob");
-    inputDob.value = data?.the_profile_dob[0]?.data?.the_dob || "";
+    inputDob.value = data?.the_profile_dob?.[0]?.data?.the_dob || "";
 
     const inputGender = <HTMLInputElement>document.getElementById("gender");
-    inputGender.value = data?.the_profile_gender[0]?.data?.the_gender || "";
+    inputGender.value = data?.the_profile_gender?.[0]?.data?.the_gender || "";
 
     const inputMaritialStatus = <HTMLInputElement>(
       document.getElementById("maritialStatus")
     );
-    inputMaritialStatus.value =
-      data?.the_profile_maritialStatus[0]?.data?.the_maritialStatus || "";
+    inputMaritialStatus.value =data?.the_profile_maritialStatus?.[0]
+        ?.data?.the_maritialStatus || "";
 
     const inputEducationLevel = <HTMLInputElement>(
       document.getElementById("educationLevel")
     );
-    inputEducationLevel.value =
-      data?.the_profile_educationLevel[0]?.data?.the_educationLevel || "";
+    inputEducationLevel.value =data?.the_profile_educationLevel?.[0]
+        ?.data?.the_educationLevel || "";
 
     const inputDepartment = <HTMLInputElement>(
       document.getElementById("department")
     );
-    inputDepartment.value =
-      data?.the_profile_department[0]?.data?.the_department || "";
+    inputDepartment.value =data?.the_profile_department?.[0]?.data
+        ?.the_department || "";
 
     const inputWorkExperience = <HTMLInputElement>(
       document.getElementById("workExperience")
     );
-    inputWorkExperience.value =
-      data?.the_profile_workExperience[0]?.data?.the_workExperience || "";
+    inputWorkExperience.value =data?.the_profile_workExperience?.[0]
+        ?.data?.the_workExperience || "";
 
-     const inputAboutYou = <HTMLInputElement>(
-      document.getElementById("aboutYou")
-    );
-    inputAboutYou.value =
-      data?.the_profile_aboutYou[0]?.data?.the_aboutYou || "";  
+    const inputAboutYou = <HTMLInputElement>document.getElementById("aboutYou");
+    inputAboutYou.value =data?.the_profile_aboutYou?.[0]?.data
+        ?.the_aboutYou || "";
 
     const inputAddressType = <HTMLInputElement>(
       document.getElementById("addressType")
     );
-    inputAddressType.value =
-      data?.the_profile_addressType[0]?.data?.the_addressType || "";
+    inputAddressType.value =data?.the_profile_addressType?.[0]?.data
+        ?.the_addressType || "";
 
     const inputStreetNumber = <HTMLInputElement>(
       document.getElementById("streetNumber")
     );
-    inputStreetNumber.value =
-      data?.the_profile_streetNumber[0]?.data?.the_streetNumber || "";
+    inputStreetNumber.value =data?.the_profile_streetNumber?.[0]?.data
+        ?.the_streetNumber || "";
 
     const inputStreetAddress = <HTMLInputElement>(
       document.getElementById("streetAddress")
     );
-    inputStreetAddress.value =
-      data?.the_profile_streetAddress[0]?.data?.the_streetAddress || "";
+    inputStreetAddress.value =data?.the_profile_streetAddress?.[0]?.data
+        ?.the_streetAddress || "";
 
     const inputUnit = <HTMLInputElement>document.getElementById("unit");
-    inputUnit.value = data?.the_profile_unit[0]?.data?.the_unit || "";
+    inputUnit.value =data?.the_profile_unit?.[0]?.data?.the_unit || "";
 
     const inputCity = <HTMLInputElement>document.getElementById("city");
-    inputCity.value = data?.the_profile_city[0]?.data?.the_city || "";
+    inputCity.value =data?.the_profile_city?.[0]?.data?.the_city || "";
 
     const inputState = <HTMLInputElement>document.getElementById("state");
-    inputState.value = data?.the_profile_state[0]?.data?.the_state || "";
+    inputState.value =data?.the_profile_state?.[0]?.data?.the_state || "";
 
     const inputZip = <HTMLInputElement>document.getElementById("zip");
-    inputZip.value = data?.the_profile_zip[0]?.data?.the_zip || "";
+    inputZip.value =data?.the_profile_zip?.[0]?.data?.the_zip || "";
 
     const inputCountry = <HTMLInputElement>document.getElementById("country");
-    inputCountry.value = data?.the_profile_country[0]?.data?.the_country || "";
+    inputCountry.value =data?.the_profile_country?.[0]?.data?.the_country || "";
 
     const inputCurrentCompany = <HTMLInputElement>(
       document.getElementById("currentCompany")
     );
-    inputCurrentCompany.value =
-      data?.the_profile_currentCompany[0]?.data?.the_currentCompany || "";
+    inputCurrentCompany.value =data?.the_profile_currentCompany?.[0]?.data?.the_currentCompany || "";
 
     const inputCurrentSalary = <HTMLInputElement>(
       document.getElementById("currentSalary")
     );
-    inputCurrentSalary.value =
-      data?.the_profile_currentSalary[0]?.data?.the_currentSalary || "";
+    inputCurrentSalary.value =data?.the_profile_currentSalary?.[0]?.data?.the_currentSalary || "";
 
     const inputDesireSalary = <HTMLInputElement>(
       document.getElementById("desireSalary")
     );
-    inputDesireSalary.value =
-      data?.the_profile_desireSalary[0]?.data?.the_desireSalary || "";
+    inputDesireSalary.value =data?.the_profile_desireSalary?.[0]?.data?.the_desireSalary || "";
 
     data?.the_profile_s_education?.map(async (data: any, index: any) => {
       await addEducation(index);
@@ -1048,42 +1125,42 @@ export async function getProfileData() {
         document.getElementById(`eduLevel${index}`)
       );
       inputEduLevel.value =
-        data?.data?.the_education?.the_education_eduLevel[0]?.data
+        data?.data?.the_education?.the_education_eduLevel?.[0]?.data
           ?.the_eduLevel || "";
 
       const inputCourse = <HTMLInputElement>(
         document.getElementById(`course${index}`)
       );
       inputCourse.value =
-        data?.data?.the_education?.the_education_course[0]?.data?.the_course ||
+        data?.data?.the_education?.the_education_course?.[0]?.data?.the_course ||
         "";
 
       const inputEduDateFrom = <HTMLInputElement>(
         document.getElementById(`eduDateFrom${index}`)
       );
       inputEduDateFrom.value =
-        data?.data?.the_education?.the_education_dobFrom[0]?.data
+        data?.data?.the_education?.the_education_dobFrom?.[0]?.data
           ?.the_dobFrom || "";
 
       const inputEduDateTo = <HTMLInputElement>(
         document.getElementById(`eduDateTo${index}`)
       );
       inputEduDateTo.value =
-        data?.data?.the_education?.the_education_dobTo[0]?.data?.the_dobTo ||
+        data?.data?.the_education?.the_education_dobTo?.[0]?.data?.the_dobTo ||
         "";
 
       const inputInstitutionName = <HTMLInputElement>(
         document.getElementById(`institutionName${index}`)
       );
       inputInstitutionName.value =
-        data?.data?.the_education?.the_education_institutionName[0]?.data
+        data?.data?.the_education?.the_education_institutionName?.[0]?.data
           ?.the_institutionName || "";
 
       const inputInstitutionAddress = <HTMLInputElement>(
         document.getElementById(`institutionAddress${index}`)
       );
       inputInstitutionAddress.value =
-        data?.data?.the_education?.the_education_institutionAddress[0]?.data
+        data?.data?.the_education?.the_education_institutionAddress?.[0]?.data
           ?.the_institutionAddress || "";
     });
 
@@ -1093,59 +1170,81 @@ export async function getProfileData() {
         document.getElementById(`company${index}`)
       );
       inputCompany.value =
-        data?.data?.the_experience?.the_experience_company[0]?.data
+        data?.data?.the_experience?.the_experience_company?.[0]?.data
           ?.the_company || "";
 
       const inputPosition = <HTMLInputElement>(
         document.getElementById(`position${index}`)
       );
       inputPosition.value =
-        data?.data?.the_experience?.the_experience_position[0]?.data
+        data?.data?.the_experience?.the_experience_position?.[0]?.data
           ?.the_position || "";
 
       const inputExpAddress = <HTMLInputElement>(
         document.getElementById(`expAddress${index}`)
       );
       inputExpAddress.value =
-        data?.data?.the_experience?.the_experience_address[0]?.data
+        data?.data?.the_experience?.the_experience_address?.[0]?.data
           ?.the_address || "";
 
       const inputExpCountry = <HTMLInputElement>(
         document.getElementById(`expCountry${index}`)
       );
       inputExpCountry.value =
-        data?.data?.the_experience?.the_experience_country[0]?.data
+        data?.data?.the_experience?.the_experience_country?.[0]?.data
           ?.the_country || "";
 
       const inputExpDateFrom = <HTMLInputElement>(
         document.getElementById(`expDateFrom${index}`)
       );
       inputExpDateFrom.value =
-        data?.data?.the_experience?.the_experience_expdobFrom[0]?.data
+        data?.data?.the_experience?.the_experience_expdobFrom?.[0]?.data
           ?.the_expdobFrom || "";
 
       const inputExpDateTo = <HTMLInputElement>(
         document.getElementById(`expDateTo${index}`)
       );
       inputExpDateTo.value =
-        data?.data?.the_experience?.the_experience_expdobTo[0]?.data
+        data?.data?.the_experience?.the_experience_expdobTo?.[0]?.data
           ?.the_expdobTo || "";
     });
 
     data?.the_profile_s_documents?.map(async (data: any, index: any) => {
-      console.log(data.data.the_documents.the_documents_docName[0].data.the_docName,"data")
       await addDoc(index);
       const inputDocName = <HTMLInputElement>(
         document.getElementById(`docName${index}`)
       );
-      inputDocName.value =data?.data?.the_documents?.the_documents_docName[0]?.data?.the_docName
-    })
+      inputDocName.value =
+        data?.data?.the_documents?.the_documents_docName?.[0]?.data?.the_docName;
+        
+        const inputViewPDF:any=document.getElementById(`viewPdf${index}`)
+        inputViewPDF.href =data?.data?.the_documents?.the_documents_docUrl?.[0]?.data?.the_docUrl;
+        
+        if(data?.data?.the_documents?.the_documents_docUrl){
+        const inputPdfValue:any=document.getElementById(`pdfFromDb${index}`)
+        inputPdfValue.value =data?.data?.the_documents?.the_documents_docUrl?.[0]?.data?.the_docUrl;
+        const pdfFl:any=document.getElementById(`pdfField${index}`)
+        pdfFl.classList.remove("hidden");
+        pdfFl.classList.add("block")
+        }
+
+     
+    });
+    const inputFullName = <HTMLInputElement>document.getElementById("fullName");
+    inputFullName.innerHTML =data?.the_profile_first_name?.[0]?.data?.the_first_name +" " +data?.the_profile_last_name?.[0]?.data?.the_last_name;
+
+    const inputContact = <HTMLInputElement>document.getElementById("contact");
+    inputContact.innerHTML =data?.the_profile_email?.[0]?.data?.the_email + "||" + data?.the_profile_phone?.[0]?.data?.the_phone;
+    const inputAbout = <HTMLInputElement>document.getElementById("about");
+    inputAbout.innerHTML =data?.the_profile_aboutYou?.[0]?.data?.the_aboutYou;
+    await experience(data?.the_profile_s_experience);
+    await education(data?.the_profile_s_education);
   }
 }
 
 export async function createProfile(formValues: any) {
   let profileId: any;
-  profileId = output?.data?.the_user?.the_user_profile[0]?.id || "";
+  profileId = profileList?.data?.the_user?.the_user_profile?.[0]?.id || "";
   if (profileId) {
     await DeleteConceptById(profileId);
     // console.log(deleteProfile, "deleteProfile");
@@ -1154,7 +1253,6 @@ export async function createProfile(formValues: any) {
   const eduName = JSON.parse(formValues?.education as string);
   const expName = JSON.parse(formValues?.experience as string);
   const documents = JSON.parse(formValues?.documents as string);
-
   const profileStorageData: any = await getLocalStorageData();
   const userId = profileStorageData?.userId;
   let profileNameConcept: any;
@@ -1162,8 +1260,8 @@ export async function createProfile(formValues: any) {
   let expNameConcept: any;
   let docConcept: any;
   let deletedFormValue: any;
-  console.log(profilePicUrl,"profilePicUrl")
-  Object.assign(formValues, { profilePicUrl: profilePicUrl });
+  // console.log(profilePicUrl, "profilePicUrl");
+  // Object.assign(formValues, { profilePicUrl: profilePicUrl });
   
   deletedFormValue = delete formValues.education;
   deletedFormValue = delete formValues.experience;
@@ -1181,6 +1279,8 @@ export async function createProfile(formValues: any) {
   deletedFormValue = delete formValues.expDateFrom;
   deletedFormValue = delete formValues.expDateTo;
   
+  // console.log(expName, "expName", eduName, "eduName", documents,"formValues",formValues);
+  // return;
   profileNameConcept = await createEntityInstance(
     "profile",
     userId,
