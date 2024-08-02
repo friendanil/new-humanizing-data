@@ -5,4 +5,5 @@ export interface IUser {
   userId: string;
   userConcept: string;
   entityId?: string;
+  amcode?: string;
 }

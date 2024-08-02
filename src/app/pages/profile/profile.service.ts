@@ -666,113 +666,113 @@ export async function popupAlert() {
   alert("ABCDE");
 }
 
-export async function loadProfileDetails() {
-  let userId!: number;
-  let userConceptId!: number;
-  let dataFromLocalStorage: string = localStorage?.getItem("profile") || "";
-  if (dataFromLocalStorage) {
-    const profileData: IUser = JSON.parse(dataFromLocalStorage);
-    userId = Number(profileData?.userId);
-    userConceptId = Number(profileData?.userConcept);
-  }
+// export async function loadProfileDetails() {
+//   let userId!: number;
+//   let userConceptId!: number;
+//   let dataFromLocalStorage: string = localStorage?.getItem("profile") || "";
+//   if (dataFromLocalStorage) {
+//     const profileData: IUser = JSON.parse(dataFromLocalStorage);
+//     userId = Number(profileData?.userId);
+//     userConceptId = Number(profileData?.userConcept);
+//   }
 
-  const linkResponse = await GetLink(userConceptId, "hd_profile_s", 10, 1);
-  const data = linkResponse?.[0]?.data?.["test-profile"];
+//   const linkResponse = await GetLink(userConceptId, "hd_profile_s", 10, 1);
+//   const data = linkResponse?.[0]?.data?.["test-profile"];
 
-  const inputFirstName = <HTMLInputElement>(
-    document.getElementById("first_name")
-  );
-  inputFirstName.value = data?.firstName || "";
+//   const inputFirstName = <HTMLInputElement>(
+//     document.getElementById("first_name")
+//   );
+//   inputFirstName.value = data?.firstName || "";
 
-  const inputLastName = <HTMLInputElement>document.getElementById("last_name");
-  inputLastName.value = data?.lastName || "";
+//   const inputLastName = <HTMLInputElement>document.getElementById("last_name");
+//   inputLastName.value = data?.lastName || "";
 
-  const inputEmail = <HTMLInputElement>document.getElementById("email");
-  inputEmail.value = data?.email || "";
+//   const inputEmail = <HTMLInputElement>document.getElementById("email");
+//   inputEmail.value = data?.email || "";
 
-  const inputPhone = <HTMLInputElement>document.getElementById("phone");
-  inputPhone.value = data?.phone || "";
+//   const inputPhone = <HTMLInputElement>document.getElementById("phone");
+//   inputPhone.value = data?.phone || "";
 
-  const inputDob = <HTMLInputElement>document.getElementById("dob");
-  inputDob.value = data?.dob || "dummy";
+//   const inputDob = <HTMLInputElement>document.getElementById("dob");
+//   inputDob.value = data?.dob || "dummy";
 
-  const inputGender = <HTMLInputElement>document.getElementById("gender");
-  inputGender.value = data?.gender || "dummy";
+//   const inputGender = <HTMLInputElement>document.getElementById("gender");
+//   inputGender.value = data?.gender || "dummy";
 
-  const inputMaritialStatus = <HTMLInputElement>(
-    document.getElementById("maritialStatus")
-  );
-  inputMaritialStatus.value = data?.maritialStatus || "dummy";
+//   const inputMaritialStatus = <HTMLInputElement>(
+//     document.getElementById("maritialStatus")
+//   );
+//   inputMaritialStatus.value = data?.maritialStatus || "dummy";
 
-  const inputEducationLevel = <HTMLInputElement>(
-    document.getElementById("educationLevel")
-  );
-  inputEducationLevel.value = data?.educationLevel || "educationLevel";
+//   const inputEducationLevel = <HTMLInputElement>(
+//     document.getElementById("educationLevel")
+//   );
+//   inputEducationLevel.value = data?.educationLevel || "educationLevel";
 
-  const inputDepartment = <HTMLInputElement>(
-    document.getElementById("department")
-  );
-  inputDepartment.value = data?.department || "educationLevel";
+//   const inputDepartment = <HTMLInputElement>(
+//     document.getElementById("department")
+//   );
+//   inputDepartment.value = data?.department || "educationLevel";
 
-  const inputWorkExperience = <HTMLInputElement>(
-    document.getElementById("workExperience")
-  );
-  inputWorkExperience.value = data?.workExperience || "workExperience";
+//   const inputWorkExperience = <HTMLInputElement>(
+//     document.getElementById("workExperience")
+//   );
+//   inputWorkExperience.value = data?.workExperience || "workExperience";
 
-  const inputAddressType = <HTMLInputElement>(
-    document.getElementById("addressType")
-  );
-  inputAddressType.value = data?.addressType || "addressType";
+//   const inputAddressType = <HTMLInputElement>(
+//     document.getElementById("addressType")
+//   );
+//   inputAddressType.value = data?.addressType || "addressType";
 
-  const inputStreetnumber = <HTMLInputElement>(
-    document.getElementById("streetnumber")
-  );
-  inputStreetnumber.value = data?.streetnumber || "streetnumber";
+//   const inputStreetnumber = <HTMLInputElement>(
+//     document.getElementById("streetnumber")
+//   );
+//   inputStreetnumber.value = data?.streetnumber || "streetnumber";
 
-  const inputStreetAddress = <HTMLInputElement>(
-    document.getElementById("streetAddress")
-  );
-  inputStreetAddress.value = data?.streetAddress || "streetAddress";
+//   const inputStreetAddress = <HTMLInputElement>(
+//     document.getElementById("streetAddress")
+//   );
+//   inputStreetAddress.value = data?.streetAddress || "streetAddress";
 
-  const inputUnit = <HTMLInputElement>document.getElementById("unit");
-  inputUnit.value = data?.unit || "unit";
-  // if (data?.company) {
-  //   await addExperience();
-  //   const inputCompany = <HTMLInputElement>document.getElementById("company");
-  //   inputCompany.value = data?.company || "";
-  //   const divEle: any = document.getElementById("show");
-  //   divEle.style.display = "none";
+//   const inputUnit = <HTMLInputElement>document.getElementById("unit");
+//   inputUnit.value = data?.unit || "unit";
+//   // if (data?.company) {
+//   //   await addExperience();
+//   //   const inputCompany = <HTMLInputElement>document.getElementById("company");
+//   //   inputCompany.value = data?.company || "";
+//   //   const divEle: any = document.getElementById("show");
+//   //   divEle.style.display = "none";
 
-  //   const inputPosition = <HTMLInputElement>document.getElementById("position");
-  //   inputPosition.value = data?.position || "";
+//   //   const inputPosition = <HTMLInputElement>document.getElementById("position");
+//   //   inputPosition.value = data?.position || "";
 
-  //   const inputAddress = <HTMLInputElement>document.getElementById("address");
-  //   inputAddress.value = data?.address || "";
+//   //   const inputAddress = <HTMLInputElement>document.getElementById("address");
+//   //   inputAddress.value = data?.address || "";
 
-  //   const inputCountry = <HTMLInputElement>document.getElementById("country");
-  //   inputCountry.value = data?.country || "";
+//   //   const inputCountry = <HTMLInputElement>document.getElementById("country");
+//   //   inputCountry.value = data?.country || "";
 
-  //   const inputDateFrom = <HTMLInputElement>document.getElementById("dateFrom");
-  //   inputDateFrom.value = data?.dateFrom || "";
+//   //   const inputDateFrom = <HTMLInputElement>document.getElementById("dateFrom");
+//   //   inputDateFrom.value = data?.dateFrom || "";
 
-  //   const inputDateTo = <HTMLInputElement>document.getElementById("dateTo");
-  //   inputDateTo.value = data?.dateTo || "";
-  // }
+//   //   const inputDateTo = <HTMLInputElement>document.getElementById("dateTo");
+//   //   inputDateTo.value = data?.dateTo || "";
+//   // }
 
-  const inputWebsite = <HTMLInputElement>document.getElementById("website");
-  inputWebsite.value = data?.website || "";
-}
+//   const inputWebsite = <HTMLInputElement>document.getElementById("website");
+//   inputWebsite.value = data?.website || "";
+// }
 
 export async function updateProfile(e: Event) {
   e.preventDefault();
 
-  let userId!: number;
-  let userConceptId!: number;
-  let dataFromLocalStorage: string = localStorage?.getItem("profile") || "";
+  // let userId!: number
+  let userConceptId!: number
+  let dataFromLocalStorage: string = localStorage?.getItem("profile") || ''
   if (dataFromLocalStorage) {
-    const profileData: IUser = JSON.parse(dataFromLocalStorage);
-    userId = Number(profileData?.userId);
-    userConceptId = Number(profileData?.userConcept);
+    const profileData: IUser = JSON.parse(dataFromLocalStorage)
+    // userId = Number(profileData?.userId)
+    userConceptId = Number(profileData?.userConcept)
   }
 
   const linkResponse = await GetLink(userConceptId, "profile", 10, 1);

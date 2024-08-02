@@ -38,7 +38,7 @@ export default function initNavigation() {
 
   
   // Burger menus
-  document.addEventListener("DOMContentLoaded", function () {
+  // document.addEventListener("DOMContentLoaded", function () {
     // open
     const burger = document.querySelectorAll(".navbar-burger");
     const menu = document.querySelectorAll(".navbar-menu");
@@ -76,7 +76,7 @@ export default function initNavigation() {
         });
       }
     }
-  });
+  // });
 }
 
 export async function checkLogIn() {

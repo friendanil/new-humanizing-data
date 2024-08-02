@@ -1,9 +1,10 @@
 import mainViewClass from '../../default/mainView.class.ts';
 import topNavigation from "../../modules/top-nav/top-navigation"
 import './profile.style.css';
-import { addEducation,addExperience,previewImage, loadProfileDetails, getProfileData, addDoc,openProfileModal } from "./profile.service"
-import { popupAlert, saveProfileDetails, updateProfile,submitAddProfileForm} from "./profile.service"
+import { addEducation,addExperience,previewImage, getProfileData, addDoc,openProfileModal } from "./profile.service"
 import createProfileModalHTML from '../../modules/profile-modal/create-profile-modal.ts';
+import { initTopNavigation } from '../../modules/top-nav/top-navigation.service.ts';
+import { submitAddProfileForm} from "./profile.service"
 
 export default class extends mainViewClass {
   constructor(params: any) {
@@ -31,6 +32,12 @@ export default class extends mainViewClass {
     getProfileData()
     const profileModal = await createProfileModalHTML()
 
+    // loadProfileDetails()
+
+    setTimeout(() => {
+      initTopNavigation();
+    }, 500);
+    
     return `
       ${topNavigation}
       ${profileModal}

@@ -4,7 +4,7 @@ import { IUser } from "../../interfaces/IUser.interface";
 import { updateContent } from "../../routes/renderRoute.service";
 import { getEntityByUserconceptId } from "../../services/helper.service";
 
-const baseURL = environment?.baseURL
+const baseURL = environment?.baseURL;
 // const boomconsoleURL = environment?.boomURL
 
 const signin = async (signinData: any) => {
@@ -59,7 +59,6 @@ const signin = async (signinData: any) => {
 export function initiateLogin() {
   // export const initiateLogin = () => {
   // initListeners();
-
   // const loginButton = document.getElementById("login-btn");
   // loginButton?.addEventListener("click", async (e) => {
   //   e.preventDefault();
@@ -69,7 +68,6 @@ export function initiateLogin() {
   //     updateContent("/dashboard", e);
   //   }
   // });
-
   // const loginForm = document.getElementById("login-form");
   // loginForm?.addEventListener("submit", async (e) => {
   //   e.preventDefault();
@@ -78,7 +76,6 @@ export function initiateLogin() {
   //     updateContent("/dashboard", e);
   //   }
   // });
-
   // const path = window.location.pathname;
   // if (path.indexOf("/login") !== -1) {
   //   // load css file
@@ -98,7 +95,7 @@ export async function submitLoginForm(e: any) {
     elements[i].disabled = true;
   }
 
-  const submitWrapper = <HTMLDivElement>document.getElementById('login-submit')
+  const submitWrapper = <HTMLDivElement>document.getElementById("login-submit");
   submitWrapper.innerHTML = `
     <button type="button" class="inline-flex items-center justify-center px-4 py-2 shadow rounded-md text-white bg-green-700 w-full" disabled="">
       <svg class="motion-reduce:hidden animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
@@ -107,7 +104,7 @@ export async function submitLoginForm(e: any) {
       </svg>
       Submitting...
     </button>
-  `
+  `;
   const inputEmail = <HTMLInputElement>document.getElementById("email");
   const emailValue = inputEmail?.value;
 
@@ -117,10 +114,11 @@ export async function submitLoginForm(e: any) {
   const signinData = {
     email: emailValue,
     password: passwordValue,
+    application: "humanizing",
   };
 
   const signinResponse = await signin(signinData);
-  
+
   if (signinResponse?.statusCode === 200) {
     await saveTolocalStorage(signinResponse);
     updateContent("/dashboard");
@@ -130,7 +128,7 @@ export async function submitLoginForm(e: any) {
         Submit
       </button>
       <p class="text-red-500 mt-2">${signinResponse?.message}</p>
-    `
+    `;
     for (let i = 0, len = elements.length; i < len; ++i) {
       elements[i].disabled = false;
     }
@@ -138,7 +136,10 @@ export async function submitLoginForm(e: any) {
 }
 
 export async function saveTolocalStorage(signinResponse: any) {
-  const userEntity = await getEntityByUserconceptId(signinResponse?.data?.userConcept, signinResponse?.data?.token)
+  const userEntity = await getEntityByUserconceptId(
+    signinResponse?.data?.userConcept,
+    signinResponse?.data?.token
+  );
 
   let userProfile: IUser = {
     token: signinResponse?.data?.token,
@@ -146,11 +147,12 @@ export async function saveTolocalStorage(signinResponse: any) {
     email: signinResponse?.data?.email,
     userId: signinResponse?.data?.entity?.[0]?.userId,
     userConcept: signinResponse?.data?.userConcept,
-    entityId: userEntity?.entity
+    entityId: userEntity?.entity,
+    amcode: btoa(JSON.stringify(signinResponse?.data?.roles)),
   };
   updateAccessToken(userProfile.token);
 
   localStorage.setItem("profile", JSON.stringify(userProfile));
 
-  return true
+  return true;
 }

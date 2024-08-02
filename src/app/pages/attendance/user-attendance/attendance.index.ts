@@ -1,6 +1,7 @@
 import { DAYS } from "../../../constants/time.constants";
 import mainViewClass from "../../../default/mainView.class";
 import topNavigation from "../../../modules/top-nav/top-navigation";
+import { initTopNavigation } from "../../../modules/top-nav/top-navigation.service";
 import { getLocalStorageData } from "../../../services/helper.service";
 import {
   generateMonthOptions,
@@ -17,9 +18,6 @@ import {
 } from "./attendance.service";
 
 export default class extends mainViewClass {
-  attendanceRowHTML = "";
-  activeAttendanceRowHTML = "";
-
   async getHtml(): Promise<string> {
     (window as any).handleAttendanceClick = handleAttendanceClick;
     (window as any).handleMonthlyDateChange = handleMonthlyDateChange;
@@ -27,7 +25,7 @@ export default class extends mainViewClass {
     const dailyDate = `${new Date().getFullYear()}-${(
       "0" +
       (new Date().getMonth() + 1)
-    ).slice(-2)}-${new Date().getDate()}`;
+    ).slice(-2)}-0${new Date().getDate()}`;
     const monthlyDate = `${new Date().getFullYear()}-${(
       "0" +
       (new Date().getMonth() + 1)
@@ -40,10 +38,16 @@ export default class extends mainViewClass {
       searchUserAttendance(userConceptId, dailyDate),
       searchUserAttendance(userConceptId, monthlyDate),
     ]);
-    console.log(monthlyAttendanceList, "monthlyAttendanceList", dailyAttendanceList, "dailyAttendanceList", dailyDate);
+    console.log(
+      monthlyAttendanceList,
+      "monthlyAttendanceList",
+      dailyAttendanceList,
+      "dailyAttendanceList",
+      dailyDate
+    );
 
-    [this.attendanceRowHTML, this.activeAttendanceRowHTML] = await Promise.all([
-      getUserMonthlyAttendanceRows(monthlyAttendanceList),
+    const [attendanceRowHTML, activeAttendanceRowHTML] = await Promise.all([
+      getUserMonthlyAttendanceRows(monthlyAttendanceList, monthlyDate),
       getActiveAttendanceRows(dailyAttendanceList),
     ]);
 
@@ -51,6 +55,10 @@ export default class extends mainViewClass {
       enableButtons(dailyAttendanceList);
       tickTimer();
     }, 1000);
+
+    setTimeout(() => {
+      initTopNavigation();
+    }, 500);
 
     return `
         ${topNavigation}
@@ -80,7 +88,7 @@ export default class extends mainViewClass {
                                 </tr>
                             </thead>
                             <tbody id="daily-attendance">
-                                ${this.activeAttendanceRowHTML}
+                                ${activeAttendanceRowHTML}
                             </tbody>
                         </table>
                     </div>
@@ -122,7 +130,7 @@ export default class extends mainViewClass {
                             </tr>
                         </thead>
                         <tbody id="monthly-attendance">
-                            ${this.attendanceRowHTML}
+                            ${attendanceRowHTML}
                         </tbody>
                     </table>
                 </div>

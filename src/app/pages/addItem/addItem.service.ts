@@ -577,6 +577,33 @@ export async function createCustomCategory(
     await createItemType(categoryNameConcept?.id, selectedType);
     // await LocalSyncData.SyncDataOnline();
     return categoryResponse;
+  } else {
+    const categoryEntityConcept: LConcept = await MakeTheInstanceConceptLocal(
+      `the_itemcategory`,
+      "",
+      true,
+      999,
+      4,
+      999
+    );
+
+    const categoryNameConcept: LConcept = await MakeTheInstanceConceptLocal(
+      `name`,
+      selectedCategory,
+      false,
+      999,
+      4,
+      999
+    );
+
+    await CreateConnectionBetweenEntityLocal(
+      categoryEntityConcept,
+      categoryNameConcept,
+      "name"
+    );
+
+    await createItemType(categoryNameConcept?.id, selectedType);
+    return categoryEntityConcept;
   }
 }
 
@@ -622,7 +649,43 @@ export async function createItemType(selectedCategory: any, selectedType: any) {
     );
 
     await LocalSyncData.SyncDataOnline();
-    // return typeResponse;
+  } else {
+    // create the_itemtype
+    const itemTypeConcept: LConcept = await MakeTheInstanceConceptLocal(
+      `the_itemtype`,
+      "",
+      true,
+      999,
+      4,
+      999
+    );
+
+    const typeNameConcept: LConcept = await MakeTheInstanceConceptLocal(
+      `name`,
+      selectedType,
+      false,
+      999,
+      4,
+      999
+    );
+
+    await CreateConnectionBetweenEntityLocal(
+      itemTypeConcept,
+      typeNameConcept,
+      "name"
+    );
+
+    // Link type name with the category
+    const categoryResponse: LConcept = await GetTheConceptLocal(
+      selectedCategory
+    );
+    await CreateConnectionBetweenEntityLocal(
+      categoryResponse,
+      typeNameConcept,
+      "s_type"
+    );
+
+    await LocalSyncData.SyncDataOnline();
     return typeNameConcept;
   }
 }
