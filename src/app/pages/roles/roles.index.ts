@@ -1,8 +1,9 @@
 import mainViewClass from "../../default/mainView.class";
 import initNavigation from "../../modules/home-nav/home-navigation.service";
+import assignUserRoleModalHTML from "../../modules/roles/assign-user/assign-user-modal";
 import createRoleModalHTML from "../../modules/roles/create/create-role-modal";
 import topNavigation from "../../modules/top-nav/top-navigation";
-import { closeRoleModal, getRolesList, openCreateRoleModal, showEditRoleModal } from "./roles.service";
+import { closeRoleModal, getRolesList, openAssignUserRoleModal, openCreateRoleModal, showEditRoleModal } from "./roles.service";
 
 export default class extends mainViewClass {
   constructor(params: any) {
@@ -22,6 +23,7 @@ export default class extends mainViewClass {
     (window as any).openCreateRoleModal = openCreateRoleModal;
     (window as any).showEditRoleModal = showEditRoleModal;
     (window as any).closeRoleModal = closeRoleModal;
+    (window as any).openAssignUserRoleModal = openAssignUserRoleModal;
 
     return `
       ${topNavigation}
@@ -46,6 +48,7 @@ export default class extends mainViewClass {
         </div>
 
         ${createRoleModalHTMLCode}
+        ${await assignUserRoleModalHTML()}
         
         `;
   }

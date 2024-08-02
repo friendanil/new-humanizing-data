@@ -1,9 +1,8 @@
 import { GetCompositionWithId } from "mftsccs-browser";
 import mainViewClass from "../../../default/mainView.class";
 import { updateContent } from "../../../routes/renderRoute.service";
-import { getLocalStorageData } from "../../../services/helper.service";
+import { formatUserComposition, getLocalStorageData } from "../../../services/helper.service";
 import {
-  formatUserComposition,
   generateMonthOptions,
   generateYearOptions,
   getUserMonthlyAttendanceRows,

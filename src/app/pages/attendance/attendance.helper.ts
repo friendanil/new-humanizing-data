@@ -165,19 +165,6 @@ async function formatUserAttendance(attendanceList: any[]) {
   );
 }
 
-export function formatUserComposition(user: any) {
-  console.log(user);
-  return {
-    id: user.id,
-    email: user?.data?.the_user?.user_data?.primary_email,
-    firstName: user?.data?.the_user?.entity?.person?.first_name,
-    lastName: user?.data?.the_user?.entity?.person?.last_name,
-    profileImg:
-      user?.data?.the_user?.entity?.person?.profile_img ||
-      "https://apitest.boomconcole.com/uploads/f5542452-47ea-4c1d-9a30-6e0305961a17.png",
-  };
-}
-
 /**
  * Method to fetch the monthly attendance which returns table rows
  * @returns string
