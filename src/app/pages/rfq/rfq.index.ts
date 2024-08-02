@@ -34,7 +34,7 @@ export default class extends mainViewClass {
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" id="items-list-container">
           <div class="flex justify-between items-center mb-8">
             <h2 class="font-manrope font-bold text-4xl text-black max-lg:text-center dark:text-white">
-              Your request for quotes
+              My Request For Quotes
             </h2>
             <!-- <router-link href="/" class="inlin-block cursor-pointer px-4 py-3 mb-2 leading-loose text-xs text-center text-white font-semibold bg-green-600 hover:bg-green-700 rounded-xl">Add RFQ</router-link> -->
 

@@ -1,7 +1,7 @@
 import mainViewClass from "../../../default/mainView.class";
 import topNavigation from "../../../modules/top-nav/top-navigation";
 import { closeModal, openModal } from "../../../services/modal.service";
-import { getJobDetails, submitUpdateSKUForm } from "./job.service";
+import { applyJob, getJobDetails, submitUpdateSKUForm } from "./job.service";
 
 export default class extends mainViewClass {
   constructor(params: any) {
@@ -13,6 +13,7 @@ export default class extends mainViewClass {
     (window as any).openModal = openModal;
     (window as any).closeModal = closeModal;
     (window as any).submitUpdateSKUForm = submitUpdateSKUForm;
+    (window as any).applyJob = applyJob;
     
     const jobDetails = await getJobDetails(this.params?.id);
     return `

@@ -37,6 +37,7 @@ let listModalHTMLCode = `
 `;
 let listingItem: any;
 let isItemListedByMe: boolean = false;
+let jobId!: number
 
 export async function getMyListingItems() {
   let search = new SearchStructure();
@@ -50,11 +51,29 @@ export async function getMyListingItems() {
   return values;
 }
 
+export async function applyJob(itemId: number) {
+  alert('Applied!')
+
+  const profileStorageData: any = await getLocalStorageData();
+  const userEntityId = profileStorageData?.entityId
+  console.log('userEntityId', userEntityId);
+  
+  console.log('itemId', itemId);
+  console.log('jobId', jobId);
+
+  // the_entity
+  // the_entity_appliedJob
+  // the_item
+
+}
+
 export async function getJobDetails(productId: number) {
   try {
     const profileStorageData: any = await getLocalStorageData();
     const token = profileStorageData?.token;
     const userId = profileStorageData?.userId;
+
+    jobId = productId
 
     let searchfirst = new SearchQuery();
     searchfirst.composition = productId;
@@ -194,7 +213,7 @@ export async function getJobDetails(productId: number) {
         `;
       } else {
         accessibleButtons = `
-          <button class="bg-green-500 text-white rounded-md px-4 py-2 hover:bg-green-700 transition" onclick="alert('Applied!')">
+          <button class="bg-green-500 text-white rounded-md px-4 py-2 hover:bg-green-700 transition" onclick="applyJob()">
             Apply Job
           </button>
         `;
