@@ -1,5 +1,6 @@
 import mainViewClass from '../../default/mainView.class.ts';
 import topNavigation from "../../modules/top-nav/top-navigation"
+import { initTopNavigation } from '../../modules/top-nav/top-navigation.service.ts';
 import { loadProfileDetails } from "./profile.service"
 import { popupAlert, saveProfileDetails, updateProfile } from "./profile.service"
 
@@ -18,6 +19,10 @@ export default class extends mainViewClass {
 
     // load content
     loadProfileDetails()
+
+    setTimeout(() => {
+      initTopNavigation();
+    }, 500);
     
     return `
       ${topNavigation}

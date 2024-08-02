@@ -4,7 +4,7 @@ import { getRFQ, openRFQModal } from "./rfq.service";
 // import { openModal } from "../listItem/listItem.service";
 
 import rfqModalHTML from "../../modules/rfq-modal/rfq-modal";
-
+import { initTopNavigation } from "../../modules/top-nav/top-navigation.service";
 
 export default class extends mainViewClass {
   constructor(params: any) {
@@ -15,11 +15,15 @@ export default class extends mainViewClass {
   async getHtml() {
     (window as any).openRFQModal = openRFQModal;
 
-    const rfqList = await getRFQ()
+    const rfqList = await getRFQ();
     // console.log('rfqList ->', rfqList)
 
-    const rfqModalHTMLCode = await rfqModalHTML()
+    const rfqModalHTMLCode = await rfqModalHTML();
     // console.log('rfqModalHTMLCode', rfqModalHTMLCode)
+
+    setTimeout(() => {
+      initTopNavigation();
+    }, 500);
 
     return `
       ${topNavigation}

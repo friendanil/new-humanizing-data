@@ -76,7 +76,7 @@ export async function getProducts() {
         }
       );
       const output = await response.json();
-      console.log("ITEM output ->", output);
+      // console.log("ITEM output ->", output);
 
       const productList = output.map((productItem: any) => {
         // const productItem = output;
@@ -111,7 +111,7 @@ export async function getProducts() {
         return itemData;
       });
 
-      console.log('productList new ->', productList)
+      // console.log('productList new ->', productList)
 
       let listingItems = `
         <div class="py-8 text-center">

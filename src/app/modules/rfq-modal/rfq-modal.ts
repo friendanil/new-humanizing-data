@@ -8,7 +8,7 @@ export default async function rfqModalHTML() {
   const buyAgentsEl = await getBuyerAgents()
 
   return `
-    <div class="relative top-20 mx-auto shadow-xl rounded-md bg-white max-w-md text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">
+    <div class="relative top-40 mx-auto shadow-xl rounded-md bg-white max-w-md text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">
     <div class="flex justify-between px-4 pt-4">
       <h3 class="text-xl font-normal text-zinc-900 dark:text-white my-0">Request for Quote</h3>
       <button onclick="closeModal('rfq-modal')" type="button"

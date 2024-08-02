@@ -1,4 +1,5 @@
 import mainViewClass from "../../default/mainView.class.ts";
+import { initTopNavigation } from "../../modules/top-nav/top-navigation.service.ts";
 import topNavigation from "../../modules/top-nav/top-navigation.ts";
 import {
   closeModal,
@@ -23,6 +24,10 @@ export default class extends mainViewClass {
     console.log("hey productId ->", productId, typeof productId);
     // if (!(Number(productId) > 0)) productId = 1;
     const productDetails = await getProductDetails(Number(productId));
+
+    setTimeout(() => {
+      initTopNavigation();
+    }, 100);
 
     return `
       ${topNavigation}

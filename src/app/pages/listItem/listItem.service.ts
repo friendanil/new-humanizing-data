@@ -55,6 +55,8 @@ export async function getProductDetails(productId: number) {
     const token = profileStorageData?.token;
     const userId = profileStorageData?.userId;
 
+    // await createListingPlatformLocal()
+
     let searchfirst = new SearchQuery();
     searchfirst.composition = productId;
     searchfirst.fullLinkers = [
@@ -112,7 +114,7 @@ export async function getProductDetails(productId: number) {
         imageList: itemImageList,
         // image: itemImageList?.[0],
         // attachment: item?.the_item_attachment?.[0]?.data?.the_attachment,
-        listing: item?.the_item_s_listing?.[0]?.data?.the_listing
+        listing: item?.the_item_s_listing?.[0]?.data?.the_listing,
       },
     };
 
@@ -160,8 +162,8 @@ export async function getProductDetails(productId: number) {
     //   );
     // }
 
-    const productDetailsData = await GetTheConceptLocal(productId)
-    isItemListedByMe = userId === productDetailsData?.userId
+    const productDetailsData = await GetTheConceptLocal(productId);
+    isItemListedByMe = userId === productDetailsData?.userId;
 
     let productDetails: string = "";
 
@@ -496,10 +498,24 @@ export async function openModal(modalId: string) {
   };
 }
 
-export async function createListingPlatform() {
+// export async function createListingPlatform() {
+//   const listingInstanceConcept: Concept = await MakeTheInstanceConcept(
+//     `the_listing`,
+//     "Nepal CRE",
+//     true,
+//     999,
+//     4,
+//     999
+//   );
+
+//   await SyncData.SyncDataOnline();
+//   console.log("listingInstanceConcept ->", listingInstanceConcept);
+// }
+
+export async function createListingPlatformLocal() {
   const listingInstanceConcept: LConcept = await MakeTheInstanceConceptLocal(
     `the_listing`,
-    "Nepal CRE",
+    "Boomconsole",
     true,
     999,
     4,
@@ -761,5 +777,4 @@ export async function uploadFile(files: any) {
     userId,
     attachmentValues
   );
-
 }

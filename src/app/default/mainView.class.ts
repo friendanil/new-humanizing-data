@@ -9,7 +9,7 @@ export default class {
     document.title = title;
   }
 
-  async getHtml(): Promise<string> {
+  async getHtml(): Promise<string> {    
     return '';
   }
 }

@@ -1,11 +1,12 @@
-import mainViewClass from '../../default/mainView.class.ts';
-import topNavigation from '../../modules/top-nav/top-navigation.ts';
-import { getProducts } from './listing.service.ts';
+import mainViewClass from "../../default/mainView.class.ts";
+import { initTopNavigation } from "../../modules/top-nav/top-navigation.service.ts";
+import topNavigation from "../../modules/top-nav/top-navigation.ts";
+import { getProducts } from "./listing.service.ts";
 
 export default class extends mainViewClass {
   constructor(params: any) {
     super(params);
-    this.setTitle('Listing Item');
+    this.setTitle("Listing Item");
   }
 
   async getHtml() {
@@ -16,8 +17,12 @@ export default class extends mainViewClass {
     // const prouductList = await getProducts()
 
     setTimeout(async () => {
-      await getProducts()
+      await getProducts();
     }, 100);
+
+    setTimeout(() => {
+      initTopNavigation();
+    }, 500);
 
     return `
       ${topNavigation}
@@ -37,7 +42,6 @@ export default class extends mainViewClass {
           </div>
         </div>
       </section>
-    `
+    `;
   }
 }
-

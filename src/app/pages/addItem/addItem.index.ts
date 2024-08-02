@@ -1,5 +1,6 @@
 import mainViewClass from "../../default/mainView.class";
 import topNavigation from "../../modules/top-nav/top-navigation";
+import { initTopNavigation } from "../../modules/top-nav/top-navigation.service";
 
 import {
   addItemDocument,
@@ -94,6 +95,10 @@ export default class extends mainViewClass {
 
     // listingAgentsHTML = await getListingAgents();
     // const sellerAgentsHTML = await getSellerAgents();
+
+    setTimeout(() => {
+      initTopNavigation();
+    }, 500);
 
     return `
       ${topNavigation}

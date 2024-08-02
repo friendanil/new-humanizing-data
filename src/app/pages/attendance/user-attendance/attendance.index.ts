@@ -1,6 +1,7 @@
 import { DAYS } from "../../../constants/time.constants";
 import mainViewClass from "../../../default/mainView.class";
 import topNavigation from "../../../modules/top-nav/top-navigation";
+import { initTopNavigation } from "../../../modules/top-nav/top-navigation.service";
 import { getLocalStorageData } from "../../../services/helper.service";
 import {
   generateMonthOptions,
@@ -40,7 +41,13 @@ export default class extends mainViewClass {
       searchUserAttendance(userConceptId, dailyDate),
       searchUserAttendance(userConceptId, monthlyDate),
     ]);
-    console.log(monthlyAttendanceList, "monthlyAttendanceList", dailyAttendanceList, "dailyAttendanceList", dailyDate);
+    console.log(
+      monthlyAttendanceList,
+      "monthlyAttendanceList",
+      dailyAttendanceList,
+      "dailyAttendanceList",
+      dailyDate
+    );
 
     [this.attendanceRowHTML, this.activeAttendanceRowHTML] = await Promise.all([
       getUserMonthlyAttendanceRows(monthlyAttendanceList),
@@ -51,6 +58,10 @@ export default class extends mainViewClass {
       enableButtons(dailyAttendanceList);
       tickTimer();
     }, 1000);
+
+    setTimeout(() => {
+      initTopNavigation();
+    }, 500);
 
     return `
         ${topNavigation}
