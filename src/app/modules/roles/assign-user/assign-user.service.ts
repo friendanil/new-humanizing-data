@@ -63,7 +63,8 @@ export async function getSelectedUserRoles(userConceptId: number) {
   if (userRolesList) userRolesList.innerHTML = "";
   if (searchUserList) searchUserList.innerHTML = "";
 
-  const userRoles = await GetLink(userConceptId, "humanizing_data_has_role_s");
+  const userRoles = await GetLink(userConceptId, "has_humanizing_data_role_s");
+  // const userRoles = await GetLink(userConceptId, "humanizing_data_has_role_s");
   const user = await formatUserComposition(
     await GetCompositionWithId(userConceptId)
   );
@@ -111,7 +112,7 @@ export async function handleAssignRoleToUser(
   userConceptId: number,
   roleName: string
 ) {
-  console.log("assign");
+  console.log("assign", { userConceptId, roleName });
   await addRoleToUser({ userConceptId, roleName });
   await getSelectedUserRoles(userConceptId);
 }

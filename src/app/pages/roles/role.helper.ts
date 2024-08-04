@@ -15,7 +15,7 @@ export async function hasPermission(
   permission: Permission,
   action: PermissionAction | PermissionAction[]
 ) {
-    // get user roles
+  // get user roles
   const roles = await getLocalRoles();
 
   for (let i = 0; i < roles.length; i++) {
@@ -28,7 +28,7 @@ export async function hasPermission(
         if (
           permissionItem?.internal_permission?.data?.module_name == permission
         ) {
-            // if not array check if has access
+          // if not array check if has access
           if (
             !Array.isArray(action) &&
             (permissionItem?.internal_permission?.data?.[action] == "1" ||
@@ -57,7 +57,7 @@ export async function hasPermission(
 
 async function getLocalRoles() {
   const profileStorageData: any = await getLocalStorageData();
-  const roles = JSON.parse(atob(profileStorageData?.roles));
+  const roles = JSON.parse(atob(profileStorageData?.amcode));
 
   return roles;
 }
