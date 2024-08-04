@@ -2,13 +2,6 @@ import mainViewClass from "../../default/mainView.class.ts";
 import { dailyAttendanceHTML } from "../../modules/attendance/daily-attendance/daily-attendance.index.ts";
 import { initTopNavigation } from "../../modules/top-nav/top-navigation.service.ts";
 import topNavigation from "../../modules/top-nav/top-navigation.ts";
-import { getLocalStorageData } from "../../services/helper.service.ts";
-import { searchUserAttendance } from "../attendance/attendance.helper.ts";
-import {
-  enableButtons,
-  getActiveAttendanceRows,
-  tickTimer,
-} from "../attendance/user-attendance/attendance.service.ts";
 
 export default class extends mainViewClass {
   constructor(params: any) {
@@ -21,26 +14,6 @@ export default class extends mainViewClass {
       initTopNavigation();
     }, 500);
 
-    setTimeout(() => {
-      enableButtons(dailyAttendanceList);
-      tickTimer();
-    }, 1000);
-
-    const profileStorageData: any = await getLocalStorageData();
-    const userConceptId = profileStorageData?.userConcept;
-
-    const dailyDate = `${new Date().getFullYear()}-${(
-      "0" +
-      (new Date().getMonth() + 1)
-    ).slice(-2)}-0${new Date().getDate()}`;
-    const dailyAttendanceList = await searchUserAttendance(
-      userConceptId,
-      dailyDate
-    );
-    const activeAttendanceRowHTML = await getActiveAttendanceRows(
-      dailyAttendanceList
-    );
-
     return `
       ${topNavigation}
 
@@ -52,7 +25,7 @@ export default class extends mainViewClass {
           </div>
         </div>
         <div class="w-full px-6 py-4 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-            ${dailyAttendanceHTML(activeAttendanceRowHTML)}
+            ${await dailyAttendanceHTML()}
         </div>
       </div>
     `;
