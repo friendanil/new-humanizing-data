@@ -9,12 +9,7 @@ import {
   getUserMonthlyAttendanceRows,
   searchUserAttendance,
 } from "../attendance.helper";
-import {
-  enableButtons,
-  getActiveAttendanceRows,
-  handleMonthlyDateChange,
-  tickTimer,
-} from "./attendance.service";
+import { handleMonthlyDateChange } from "./attendance.service";
 
 export default class extends mainViewClass {
   async getHtml(): Promise<string> {
@@ -44,15 +39,10 @@ export default class extends mainViewClass {
       dailyDate
     );
 
-    const [attendanceRowHTML, activeAttendanceRowHTML] = await Promise.all([
-      getUserMonthlyAttendanceRows(monthlyAttendanceList, monthlyDate),
-      getActiveAttendanceRows(dailyAttendanceList),
-    ]);
-
-    setTimeout(() => {
-      enableButtons(dailyAttendanceList);
-      tickTimer();
-    }, 1000);
+    const attendanceRowHTML = await getUserMonthlyAttendanceRows(
+      monthlyAttendanceList,
+      monthlyDate
+    );
 
     setTimeout(() => {
       initTopNavigation();
@@ -62,7 +52,7 @@ export default class extends mainViewClass {
         ${topNavigation}
 
         <div class="container mx-auto my-4 text-gray-800">
-          ${dailyAttendanceHTML(activeAttendanceRowHTML)}
+          ${await dailyAttendanceHTML()}
 
           <div class="w-full px-6 py-4 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
               <div class="flex flex-row items-center justify-between mb-4">

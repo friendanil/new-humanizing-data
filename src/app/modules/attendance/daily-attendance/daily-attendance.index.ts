@@ -1,8 +1,31 @@
 import { DAYS } from "../../../constants/time.constants";
+import { searchUserAttendance } from "../../../pages/attendance/attendance.helper";
+import { enableButtons, getActiveAttendanceRows, tickTimer } from "../../../pages/attendance/user-attendance/attendance.service";
+import { getLocalStorageData } from "../../../services/helper.service";
 import { handleAttendanceClick } from "./daily-attendance.service";
 
-export function dailyAttendanceHTML(activeAttendanceRowHTML: string) {
+export async function dailyAttendanceHTML() {
   (window as any).handleAttendanceClick = handleAttendanceClick;
+
+  const profileStorageData: any = await getLocalStorageData();
+  const userConceptId = profileStorageData?.userConcept;
+
+  const dailyDate = `${new Date().getFullYear()}-${(
+    "0" +
+    (new Date().getMonth() + 1)
+  ).slice(-2)}-0${new Date().getDate()}`;
+  const dailyAttendanceList = await searchUserAttendance(
+    userConceptId,
+    dailyDate
+  );
+  const activeAttendanceRowHTML = await getActiveAttendanceRows(
+    dailyAttendanceList
+  );
+
+  setTimeout(() => {
+    enableButtons(dailyAttendanceList);
+    tickTimer();
+  }, 1000);
 
   return `
     <div class="flex flex-wrap items-center justify-center gap-4 mb-6">
