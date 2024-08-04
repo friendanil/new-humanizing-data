@@ -144,7 +144,7 @@ export async function searchUserAttendance(
  * @param attendanceList any[]
  * @returns Promise<Attendance[]>
  */
-async function formatUserAttendance(attendanceList: any[]) {
+export async function formatUserAttendance(attendanceList: any[]) {
   if (attendanceList?.length == 0) return [];
   return Promise.all(
     attendanceList?.map((attendance: any) => {
