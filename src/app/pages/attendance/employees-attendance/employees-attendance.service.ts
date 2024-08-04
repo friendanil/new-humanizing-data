@@ -8,7 +8,11 @@ import {
   formatUserComposition,
   getLocalStorageData,
 } from "../../../services/helper.service";
-import { formatUserAttendance, getDuration } from "../attendance.helper";
+import {
+  calculateAttendance,
+  formatUserAttendance,
+  getDuration,
+} from "../attendance.helper";
 
 export function showDropdownMenuOption(id: string) {
   const dropdown = document.getElementById(id);
@@ -117,60 +121,14 @@ export function getEmployeesAttendanceList(employees: any[]) {
 
   for (let i = 0; i < employees.length; i++) {
     const employee = employees[i];
-    console.log(employee, "emplouee");
+
     const dailyDate = `${new Date().getFullYear()}-${(
       "0" +
       (new Date().getMonth() + 1)
     ).slice(-2)}-0${new Date().getDate()}`;
     console.log(dailyDate);
 
-    const attendances = employee.attendances.filter(
-      (attendance: any) =>
-        attendance?.checkin?.includes(dailyDate) ||
-        attendance?.checkout?.includes(dailyDate)
-    );
-    console.log(i, attendances, " atten");
-    const obj: any = {
-      ids: [],
-      currentDate: dailyDate,
-      times: -1,
-    };
-    attendances.map((attendance: any) => {
-      obj.ids.push(attendance.id);
-      if (!obj.checkin && attendance.checkin) obj.checkin = attendance.checkin;
-      else if (obj.checkin && attendance.checkin) {
-        if (
-          new Date(attendance.checkin).getTime() -
-            new Date(obj.checkin).getTime() <=
-          0
-        ) {
-          obj.checkin = attendance.checkin;
-        }
-      }
-
-      if (!obj.checkout && attendance.checkout)
-        obj.checkout = attendance.checkout;
-      else if (obj.checkout && attendance.checkout) {
-        if (
-          new Date(attendance.checkout).getTime() -
-            new Date(obj.checkout).getTime() >=
-          0
-        ) {
-          obj.checkout = attendance.checkout;
-        }
-      }
-      if (attendance.checkin && attendance.checkout) {
-        if (!obj.workingTime)
-          obj.workingTime =
-            new Date(attendance.checkout).getTime() -
-            new Date(attendance.checkin).getTime();
-        else
-          obj.workingTime +=
-            new Date(attendance.checkout).getTime() -
-            new Date(attendance.checkin).getTime();
-      }
-      obj.times += 1;
-    });
+    const obj = calculateAttendance(employee.attendances || [], dailyDate);
 
     employeesAttendanceRows += `
           <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
