@@ -688,7 +688,7 @@ export async function saveProfileDetails(e: Event) {
     true
   );
   await SyncData.SyncDataOnline();
-  loadProfileDetails();
+  // loadProfileDetails();
 }
 
 export async function getHTML() {
