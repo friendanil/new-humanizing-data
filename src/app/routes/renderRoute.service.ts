@@ -63,14 +63,14 @@ export async function checkRouting() {
     };
   } else {
     // check route authentication
-    const routeInfo = match?.route
+    const routeInfo = match?.route;
     if (routeInfo?.isAuthenticated) {
       const isAuthenticationValid = checkAuthentication();
       if (!isAuthenticationValid) {
         const loginURL = routes.find((route: any) => route.path === "/login");
         match = {
           route: loginURL,
-          result: loginURL?.path
+          result: loginURL?.path,
         };
         history.pushState(null, "", loginURL?.path);
       }
@@ -139,7 +139,7 @@ const initRouterLinks = () => {
 
         const href = this.getAttribute("href");
         // updateContent(href);
-        renderContent(href);
+        if (href) renderContent(href);
         // checkRouting()
         // Simulate navigation using History API (replace with your routing logic)
         // history.pushState({}, '', href);
