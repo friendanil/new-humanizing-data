@@ -530,7 +530,7 @@ export async function closeModal(modalId: string) {
   const modal: any = document.getElementById(modalId);
 
   const modalFormEl = modal.querySelector("form");
-  modalFormEl.reset();
+  modalFormEl?.reset();
 
   if (modal) modal.style.display = "none";
   document
