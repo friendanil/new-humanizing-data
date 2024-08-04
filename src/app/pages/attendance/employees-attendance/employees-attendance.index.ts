@@ -1,13 +1,22 @@
 import mainViewClass from "../../../default/mainView.class";
-import { getEmployeesAttendanceList, showDropdownMenuOption } from "./employees-attendance.service";
+import { sidebarHTML, sidebarMenu } from "../../../services/sidebar.service";
+import {
+  getEmployeesAttendanceList,
+  showDropdownMenuOption,
+} from "./employees-attendance.service";
 
 export default class extends mainViewClass {
   async getHtml(): Promise<string> {
-    (window as any).showDropdownMenuOption = showDropdownMenuOption
+    (window as any).showDropdownMenuOption = showDropdownMenuOption;
 
-    const employeeAttendanceRows = getEmployeesAttendanceList([{id: 100144987}])
-    
+    const employeeAttendanceRows = getEmployeesAttendanceList([
+      { id: 100144987 },
+    ]);
+
     return `
+        ${sidebarHTML()}
+        <div class="flex flex-row justify-end">${sidebarMenu()}</div>
+
         <div class="container relative mx-auto my-4 text-gray-800">
             <h3 class="text-3xl font-bold">Today's Attendance</h3>
             <p class="text-gray-500 mb-6">${new Date().toLocaleString("en-US", {
