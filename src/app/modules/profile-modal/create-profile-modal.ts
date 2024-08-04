@@ -41,12 +41,8 @@ export default async function createProfileModalHTML() {
         </section>
         <section>
             <h2>Skills</h2>
-            <ul>
-                <li>JavaScript</li>
-                <li>HTML & CSS</li>
-                <li>React</li>
-                <li>Node.js</li>
-                <li>RESTful APIs</li>
+            <ul style="color:black">
+            <div id="skills"></div>
             </ul>
         </section>
     </div>

@@ -26,10 +26,10 @@ import "./profile.style.css";
 
 const thetaBoommAPI = environment?.boomURL;
 let attachmentValues: any;
-let attachmentConcept: any;
-let output: any;
+// let attachmentConcept: any;
+// let output: any;
 let profileList: any;
-let profilePicUrl: any;
+// let profilePicUrl: any;
 
 (window as any).deleteFn = deleteFn;
 (window as any).deleteFnExperience = deleteFnExperience;
@@ -39,10 +39,10 @@ let profilePicUrl: any;
 const EducationFieldsArray: any = [];
 const ExperienceFieldsArray: any = [];
 const DocumentFieldsArray: any = [];
+const SkillsFieldsArray:any=[];
 
 // for modal
 export async function closeProfileModal(modalId: string) {
-  console.log(modalId, "modal");
   const modal: any = document.getElementById(modalId);
 
   // const modalFormEl = modal.querySelector("form");
@@ -251,6 +251,56 @@ export async function addDoc(param: any) {
   divEle.appendChild(container);
 }
 
+// Function to add Documents fields
+export async function addSkills(param: any) {
+  const divEle: any = document.getElementById("inputFields-3");
+  const container = document.createElement("div-3");
+  container.classList.add("input-container-3");
+
+  // Add HTML for input fields and delete button
+  container.innerHTML = `
+          <div id="input-container-3" class="grid gap-6 mb-6 mt-6 md:grid-cols-3">
+           <div class="mb-6">
+              <label for="language" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Language</label>
+              <select id="language${param}" name="language" autocomplete="language-name"
+                class="input-field-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="">
+                <option value="html">Html/Css</option>
+                <option value="bootstrap">Bootstrap</option>
+                <option value="php">Php</option>
+                <option value="javascript">Javascript</option>
+                <option value="nodejs">Node Js</option>
+                <option value="reactjs">React JS</option>
+                <option value="angular">Angular</option>
+                <option value="typescript">Typescript</option>
+                <option value="python">Python</option>
+                <option value="c#">C#</option>
+                <option value="c++">C++</option>
+                <option value="ruby">Ruby</option>
+                <option value="perl">Perl</option>
+                <option value="laravel">Laravel</option>
+                <option value="reactnative">React Native</option>
+                <option value="flutter">Flutter</option>
+                <option value="nextjs">NextJS</option>
+              </select>
+          </div> 
+
+            <div>
+              <label for="yearOfExperience" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Years</label>
+               <input type="number" id="yearOfExperience${param}"
+                name="yearOfExperience"
+                class="input-field-3 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                placeholder="years" />
+            </div>
+        </div>
+        <button 
+           class="delete-button text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
+          onclick="deleteDocFn(this)">Delete</button>
+      <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700">
+      `;
+  divEle.appendChild(container);
+}
+
 // Function to delete Education fields
 export async function deleteFn(button: any) {
   const container = button.parentElement;
@@ -259,7 +309,6 @@ export async function deleteFn(button: any) {
 
   // Remove from array
   EducationFieldsArray.splice(index, 1);
-  // console.log("Updated array:", EducationFieldsArray);
 }
 
 // Function to delete Education fields
@@ -270,7 +319,6 @@ export async function deleteFnExperience(button: any) {
 
   // Remove from array
   EducationFieldsArray.splice(index, 1);
-  // console.log("Updated array:", EducationFieldsArray);
 }
 
 // Function to delete Documents fields
@@ -281,7 +329,6 @@ export async function deleteDocFn(button: any) {
 
   // Remove from array
   EducationFieldsArray.splice(index, 1);
-  // console.log("Updated array:", EducationFieldsArray);
 }
 
 // function is to preview image
@@ -339,7 +386,7 @@ export async function uploadImageFile(files: any) {
   });
   if (!response.ok) {
     const errorData = await response.text();
-    console.error(`${response.status} ${errorData}`);
+    console.warn(`${response.status} ${errorData}`);
     return null;
   }
   const output = await response.json();
@@ -373,7 +420,6 @@ export async function uploadImageFile(files: any) {
       );
     }, 100);
   }
-  // console.log("attachmentConcept", attachmentConcept);
 }
 
 // function is to upload files
@@ -437,14 +483,12 @@ export async function uploadPdfFile(files: any) {
       );
     }, 100);
   }
-  // console.log("attachmentConcept", attachmentConcept);
 }
 
 //function to add experience
 export async function experience(data: any) {
   const divEle: any = document.getElementById(`experience`);
   data?.map(async (opt: any, index: any) => {
-    console.log(opt?.data.the_experience,"data")
   const container = document.createElement(`div${index}`);
   container.innerHTML = `
             <div class="experience-item">
@@ -464,8 +508,6 @@ export async function experience(data: any) {
 export async function education(data: any) {
   const divEle: any = document.getElementById(`education`);
   data?.map(async (opt: any, index: any) => {
-    console.log(opt?.data?.the_education.the_education_eduLevel[0].data.the_eduLevel
-      ,"data")
   const container = document.createElement(`div${index}`);
   container.innerHTML = `
             <div class="education-item">
@@ -475,6 +517,18 @@ export async function education(data: any) {
   divEle?.appendChild(container);
   })
 }
+
+//function to add experience
+export async function skills(data: any) {
+  const divEle: any = document.getElementById(`skills`);
+
+  data?.map(async (opt: any, index: any) => {
+  const container = document.createElement(`div${index}`);
+  container.innerHTML = `<li>${opt?.data?.the_skills.the_skills_language[0].data.the_language}</li>`
+  divEle?.appendChild(container);
+  })
+}
+
 
 // Save profile details
 export async function saveProfileDetails(e: Event) {
@@ -827,10 +881,11 @@ export async function submitUpdateProfile(linkProfileData: any) {
     email: emailValue,
   };
   await UpdateComposition(patcherStructure);
-  loadProfileDetails();
+  // loadProfileDetails();
 }
 
 export async function submitAddProfileForm(e: any) {
+  e.preventDefault();
   const eduContainers = document.querySelectorAll(".input-container");
   EducationFieldsArray.length = 0; // Clear the array
 
@@ -873,12 +928,23 @@ export async function submitAddProfileForm(e: any) {
     });
   });
 
-  e.preventDefault();
+  const skillsContainers = document.querySelectorAll(".input-container-3");
+  SkillsFieldsArray.length = 0; // Clear the array
+  
+  skillsContainers.forEach((container, index) => {
+    const inputs: any = container.querySelectorAll(".input-field-3");
+    SkillsFieldsArray.push({
+      language: inputs[0].value,
+      yearOfExperience: inputs[1].value,
+      // docUrl: inputs[2].value,
+    });
+  });
 
   const formData: any = new FormData(e.target);
   formData.append("education", JSON.stringify(EducationFieldsArray));
   formData.append("experience", JSON.stringify(ExperienceFieldsArray));
   formData.append("documents", JSON.stringify(DocumentFieldsArray));
+  formData.append("skills", JSON.stringify(SkillsFieldsArray));
   delete formData?.profilePic;
   formData.image = attachmentValues?.url;
   // output as an object
@@ -973,6 +1039,7 @@ export async function getProfileData() {
       "the_profile_s_education",
       "the_profile_s_experience",
       "the_profile_s_documents",
+      "the_profile_s_skills"
     ];
 
     let searchthird = new SearchQuery();
@@ -991,6 +1058,8 @@ export async function getProfileData() {
       "the_experience_expdobTo",
       "the_documents_docName",
       "the_documents_docUrl",
+      "the_skills_language",
+      "the_skills_yearOfExperience",
     ];
     searchthird.inpage = 100;
     searchsecond.inpage = 100;
@@ -1230,6 +1299,24 @@ export async function getProfileData() {
 
      
     });
+
+    data?.the_profile_s_skills?.map(async (data: any, index: any) => {
+      await addSkills(index);
+      const inputlanguage = <HTMLInputElement>(
+        document.getElementById(`language${index}`)
+      );
+      inputlanguage.value =
+        data?.data?.the_skills?.the_skills_language?.[0]?.data
+          ?.the_language || "";
+
+          const inputYearOfExperience = <HTMLInputElement>(
+            document.getElementById(`yearOfExperience${index}`)
+          );
+          inputYearOfExperience.value =
+            data?.data?.the_skills?.the_skills_yearOfExperience?.[0]?.data
+              ?.the_yearOfExperience || "";      
+
+    })     
     const inputFullName = <HTMLInputElement>document.getElementById("fullName");
     inputFullName.innerHTML =data?.the_profile_first_name?.[0]?.data?.the_first_name +" " +data?.the_profile_last_name?.[0]?.data?.the_last_name;
 
@@ -1239,6 +1326,7 @@ export async function getProfileData() {
     inputAbout.innerHTML =data?.the_profile_aboutYou?.[0]?.data?.the_aboutYou;
     await experience(data?.the_profile_s_experience);
     await education(data?.the_profile_s_education);
+    await skills(data?.the_profile_s_skills)
   }
 }
 
@@ -1247,12 +1335,13 @@ export async function createProfile(formValues: any) {
   profileId = profileList?.data?.the_user?.the_user_profile?.[0]?.id || "";
   if (profileId) {
     await DeleteConceptById(profileId);
-    // console.log(deleteProfile, "deleteProfile");
   }
 
   const eduName = JSON.parse(formValues?.education as string);
   const expName = JSON.parse(formValues?.experience as string);
   const documents = JSON.parse(formValues?.documents as string);
+  const skills = JSON.parse(formValues?.skills as string);
+
   const profileStorageData: any = await getLocalStorageData();
   const userId = profileStorageData?.userId;
   let profileNameConcept: any;
@@ -1266,6 +1355,7 @@ export async function createProfile(formValues: any) {
   deletedFormValue = delete formValues.education;
   deletedFormValue = delete formValues.experience;
   deletedFormValue = delete formValues.documents;
+  deletedFormValue = delete formValues.skills;
   deletedFormValue = delete formValues.eduLevel;
   deletedFormValue = delete formValues.course;
   deletedFormValue = delete formValues.eduDateFrom;
@@ -1279,8 +1369,6 @@ export async function createProfile(formValues: any) {
   deletedFormValue = delete formValues.expDateFrom;
   deletedFormValue = delete formValues.expDateTo;
   
-  // console.log(expName, "expName", eduName, "eduName", documents,"formValues",formValues);
-  // return;
   profileNameConcept = await createEntityInstance(
     "profile",
     userId,
@@ -1315,6 +1403,16 @@ export async function createProfile(formValues: any) {
         profileNameConcept,
         docConcept,
         "s_documents"
+      );
+    })
+  );
+  await Promise.all(
+    skills?.map(async function (item: any) {
+      docConcept = await createEntityInstance("skills", userId, item);
+      await CreateConnectionBetweenEntityLocal(
+        profileNameConcept,
+        docConcept,
+        "s_skills"
       );
     })
   );

@@ -1,7 +1,7 @@
 import mainViewClass from '../../default/mainView.class.ts';
 import topNavigation from "../../modules/top-nav/top-navigation"
 import './profile.style.css';
-import { addEducation,addExperience,previewImage, getProfileData, addDoc,openProfileModal } from "./profile.service"
+import { addEducation,addExperience,previewImage, getProfileData, addDoc,addSkills,openProfileModal } from "./profile.service"
 import createProfileModalHTML from '../../modules/profile-modal/create-profile-modal.ts';
 import { initTopNavigation } from '../../modules/top-nav/top-navigation.service.ts';
 import { submitAddProfileForm} from "./profile.service"
@@ -20,6 +20,7 @@ export default class extends mainViewClass {
     (window as any).addFn = addEducation;
     (window as any).addExperience=addExperience;
     (window as any).addDoc=addDoc;
+    (window as any).addSkills=addSkills;
     (window as any).previewImage=previewImage;
     (window as any).openProfileModal=openProfileModal;
    
@@ -235,28 +236,41 @@ export default class extends mainViewClass {
             class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"> + Add Education</button>
         </div>
          </div>
-         <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700">
-        <div id="inputFields-2">
-        </div>
 
-        <div class="grid gap-6 mb-6 mt-6 md:grid-cols-6">
-         <div class="container-2">
-        <button type="button"
-            onclick="addDoc();"
-            class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"> + Add Document</button>
-        </div>
-         </div>
         <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700">
         <div id="inputFields-1">
         </div>
-
-         <div class="grid gap-6 mb-6 mt-6 md:grid-cols-6">
+        <div class="grid gap-6 mb-6 mt-6 md:grid-cols-6">
          <div class="container-1">
-        <button type="button"
+          <button type="button"
             onclick="addExperience();"
             class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"> +  Add Experience</button>
-        </div>
          </div>
+        </div>
+
+      <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700">
+        <div id="inputFields-3">
+        </div>
+        <div class="grid gap-6 mb-6 mt-6 md:grid-cols-6">
+         <div class="container-3">
+          <button type="button"
+            onclick="addSkills();"
+            class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"> +  Add Skills</button>
+         </div>
+        </div>
+
+         <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700">
+        <div id="inputFields-2">
+        </div>
+        <div class="grid gap-6 mb-6 mt-6 md:grid-cols-6">
+         <div class="container-2">
+          <button type="button"
+            onclick="addDoc();"
+            class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"> + Add Document</button>
+         </div>
+        </div>
+
+      
         <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700">
          <label for="itemAttachment" class="block text-sm font-medium leading-6">Profile Images<span
                 class="text-rose-400">*</span></label>
