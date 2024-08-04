@@ -37,7 +37,7 @@ let listModalHTMLCode = `
 `;
 let listingItem: any;
 let isItemListedByMe: boolean = false;
-let jobId!: number
+let jobId!: number;
 
 export async function getMyListingItems() {
   let search = new SearchStructure();
@@ -51,20 +51,189 @@ export async function getMyListingItems() {
   return values;
 }
 
+export async function _getMyAppliedJob() {
+  const profileStorageData: any = await getLocalStorageData();
+  const token = profileStorageData?.token;
+  const userEntityId = profileStorageData?.entityId;
+
+  let searchfirst = new SearchQuery();
+  searchfirst.composition = userEntityId;
+  searchfirst.fullLinkers = ["the_entity", "the_entity_s_appliedJob"];
+  searchfirst.inpage = 100;
+
+  const queryParams = [searchfirst];
+  const output = await SearchLinkMultipleAll(queryParams, token);
+  console.log("output getMyAppliedJob ->", output);
+
+  return output;
+}
+
+export async function getJobApplicants(jobProductId: number) {
+  const profileStorageData: any = await getLocalStorageData();
+  const token = profileStorageData?.token;
+  // const userEntityId = profileStorageData?.entityId;
+
+  let searchfirst = new SearchQuery();
+  searchfirst.composition = jobProductId;
+  searchfirst.fullLinkers = ["the_entity_s_appliedJob"];
+  searchfirst.reverse = true;
+  searchfirst.inpage = 100;
+
+  let searchSecond = new SearchQuery();
+  searchSecond.fullLinkers = [
+    "the_entity",
+    "the_entity_firstname",
+    "the_entity_lastname",
+    "the_entity_email",
+    "the_entity_user",
+  ];
+  searchSecond.inpage = 100;
+
+  const queryParams = [searchfirst, searchSecond];
+  const output = await SearchLinkMultipleAll(queryParams, token);
+  console.log("output getJobApplicants ->", output);
+
+  let applicantData = output?.data?.the_item?.the_entity_s_appliedJob_reverse;
+  let applicantHTML: any;
+  if (applicantData?.length) {
+    const applicantList = applicantData?.map((applicant: any) => {
+      const applicantUserData =
+        applicant?.data?.the_entity?.the_entity_user?.[0]?.data?.the_user;
+      console.log("applicantUserData", applicantUserData);
+
+      return {
+        entityId: applicant?.id,
+        userConceptId: applicant?.data?.the_entity?.the_entity_user?.[0]?.id,
+        profileImage: applicantUserData?.entity?.person?.profile_img,
+        name: `${applicantUserData?.entity?.person?.first_name} ${applicantUserData?.entity?.person?.last_name}`,
+        bio: applicantUserData?.entity?.person?.bio,
+        email: applicantUserData?.entity?.person?.email,
+        location: applicantUserData?.entity?.person?.location,
+        phone: applicantUserData?.entity?.person?.phone,
+      };
+    });
+    console.log("applicantList", applicantList);
+    applicantHTML = applicantList?.map((applicant: any) => {
+      return `
+        <tr>
+            <td class="border border-slate-300 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400">
+              <img src="${applicant?.profileImage}" alt="profile image of ${applicant?.name}" class="rounded w-[48px] h-[48px] bg-gray-200">
+            </td>
+            <td class="border border-slate-300 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400">
+              ${applicant?.name}
+            </td>
+            <td class="border border-slate-300 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400">
+              ${applicant?.bio}
+            </td>
+            <td class="border border-slate-300 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400">
+              ${applicant?.email}
+            </td>
+            <td class="border border-slate-300 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400">
+              ${applicant?.location}
+            </td>
+            <td class="border border-slate-300 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400">
+              ${applicant?.phone}
+            </td>
+            <td class="border border-slate-300 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400">
+              <a href="${thetaBoommAPI}/bm/${applicant?.userConceptId}" target="_blank" class="block px-4 py-2 leading-loose text-xs text-center text-white font-semibold bg-green-600 hover:bg-green-700 hover:text-gray-200 rounded-xl cursor-pointer">
+                Visit Profile
+              </a>
+            </td>
+          </tr>
+      `;
+    });
+  }
+
+  return `
+    <div class="my-8">
+    <h2 class="mb-4">Job Applicants</h2>
+    <table class="border-collapse w-full border border-slate-400 dark:border-slate-500 bg-white dark:bg-slate-800 text-sm shadow-sm">
+        <thead class="bg-slate-50 dark:bg-slate-700">
+          <tr>
+            <th class="w-1/7 border border-slate-300 dark:border-slate-600 font-semibold p-4 text-slate-900 dark:text-slate-200 text-left">Photo</th>
+            <th class="w-1/7 border border-slate-300 dark:border-slate-600 font-semibold p-4 text-slate-900 dark:text-slate-200 text-left">Name</th>
+            <th class="w-1/7 border border-slate-300 dark:border-slate-600 font-semibold p-4 text-slate-900 dark:text-slate-200 text-left">Bio</th>
+            <th class="w-1/7 border border-slate-300 dark:border-slate-600 font-semibold p-4 text-slate-900 dark:text-slate-200 text-left">Email</th>
+            <th class="w-1/7 border border-slate-300 dark:border-slate-600 font-semibold p-4 text-slate-900 dark:text-slate-200 text-left">Location</th>
+            <th class="w-1/7 border border-slate-300 dark:border-slate-600 font-semibold p-4 text-slate-900 dark:text-slate-200 text-left">Phone</th>
+            <th class="w-1/7 border border-slate-300 dark:border-slate-600 font-semibold p-4 text-slate-900 dark:text-slate-200 text-left">CV</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${applicantHTML}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+export async function getMyAppliedJobStatus(jobProductId: number) {
+  const profileStorageData: any = await getLocalStorageData();
+  const token = profileStorageData?.token;
+  const userEntityId = profileStorageData?.entityId;
+
+  const myHeaders = new Headers();
+  // myHeaders.append("Content-Type", "application/json");
+  myHeaders.append("Authorization", `Bearer ${token}`);
+
+  const response = await fetch(
+    `${thetaBoommAPI}/api/Connection/get-link-reverse?compositionId=${jobProductId}&linker=the_entity_s_appliedJob`,
+    {
+      method: "GET",
+      headers: myHeaders,
+    }
+  );
+
+  if (!response.ok) {
+    const errorData = await response.text();
+    console.error(`${response.status} ${errorData}`);
+    return null;
+  }
+
+  console.log("response", response);
+  const appliedJobsData = await response.json();
+  console.log("appliedJobsData getMyAppliedJobStatus ->", appliedJobsData);
+
+  if (appliedJobsData?.output?.length) {
+    return appliedJobsData?.output?.some(
+      (appliedEntity: any) => appliedEntity?.id === userEntityId
+    );
+  }
+  return false;
+}
+
 export async function applyJob(itemId: number) {
-  alert('Applied!')
+  // alert('Applied!')
 
   const profileStorageData: any = await getLocalStorageData();
-  const userEntityId = profileStorageData?.entityId
-  console.log('userEntityId', userEntityId);
-  
-  console.log('itemId', itemId);
-  console.log('jobId', jobId);
+  const userEntityId = profileStorageData?.entityId;
+  console.log("userEntityId", userEntityId);
+
+  console.log("itemId", itemId);
+  console.log("jobId", jobId);
+
+  const userEntityConcept: LConcept = await GetTheConceptLocal(userEntityId);
+  const jobItemConcept: LConcept = await GetTheConceptLocal(jobId);
+
+  console.log("userEntityConcept", userEntityConcept);
+  console.log("jobItemConcept", jobItemConcept);
+
+  const connectionResponse = await CreateConnectionBetweenEntityLocal(
+    userEntityConcept,
+    jobItemConcept,
+    "s_appliedJob"
+  );
+  console.log("connectionResponse", connectionResponse);
 
   // the_entity
-  // the_entity_appliedJob
+  // the_entity_s_appliedJob
   // the_item
 
+  await LocalSyncData.SyncDataOnline();
+
+  // show toast
+  alert("Job applied successfully!");
+  // send email
 }
 
 export async function getJobDetails(productId: number) {
@@ -73,7 +242,7 @@ export async function getJobDetails(productId: number) {
     const token = profileStorageData?.token;
     const userId = profileStorageData?.userId;
 
-    jobId = productId
+    jobId = productId;
 
     let searchfirst = new SearchQuery();
     searchfirst.composition = productId;
@@ -169,10 +338,12 @@ export async function getJobDetails(productId: number) {
     //   );
     // }
 
-    const productDetailsData = await GetTheConceptLocal(productId)
-    isItemListedByMe = userId === productDetailsData?.userId
+    const productDetailsData = await GetTheConceptLocal(productId);
+    console.log("productDetailsData", productDetailsData);
+    isItemListedByMe = userId === productDetailsData?.userId;
 
     let productDetails: string = "";
+    let jobApplicants: string = "";
 
     if (product?.errors) {
       productDetails = `
@@ -185,13 +356,6 @@ export async function getJobDetails(productId: number) {
       let listedInfoEl = "";
 
       console.log("product?.data?.listing", product?.data?.listing);
-
-      // if (product?.data?.listing) {
-      //   listedInfoEl = `
-      //     <hr class="my-6 md:my-8 border-gray-200 dark:border-gray-800" />
-      //     <p>Listed at: ${product?.data?.listing}</p>
-      //   `;
-      // }
 
       let accessibleButtons = "";
       if (isItemListedByMe) {
@@ -211,12 +375,28 @@ export async function getJobDetails(productId: number) {
             Update Item SKU
           </button>
         `;
+
+        // check job applicants here
+        jobApplicants = await getJobApplicants(Number(productId));
+        console.log("jobApplicants ->", jobApplicants);
       } else {
-        accessibleButtons = `
-          <button class="bg-green-500 text-white rounded-md px-4 py-2 hover:bg-green-700 transition" onclick="applyJob()">
-            Apply Job
-          </button>
-        `;
+        const isJobApplied: any = await getMyAppliedJobStatus(
+          Number(productId)
+        );
+        console.log("isJobApplied", isJobApplied);
+        if (isJobApplied) {
+          accessibleButtons = `
+            <button disabled class="bg-green-500 text-white rounded-md px-4 py-2 bg-green-700 transition">
+              Already applied
+            </button>
+          `;
+        } else {
+          accessibleButtons = `
+            <button class="bg-green-500 text-white rounded-md px-4 py-2 hover:bg-green-700 transition" onclick="applyJob()">
+              Apply Job
+            </button>
+          `;
+        }
       }
 
       productDetails = `
@@ -321,7 +501,9 @@ export async function getJobDetails(productId: number) {
               </div>
             </div>
           </div>
-        </div>
+
+          </div>
+          ${jobApplicants}
       `;
     }
     return productDetails;
@@ -419,8 +601,8 @@ export async function getSkuDetails() {
 }
 
 export async function submitUpdateSKUForm(e: any) {
-  alert('Namaslte')
-  console.log('submitUpdateSKUForm job')
+  alert("Namaslte");
+  console.log("submitUpdateSKUForm job");
   e.preventDefault();
   const formData: any = new FormData(e.target);
   const formValues: any = Object.fromEntries(formData); // output as an object

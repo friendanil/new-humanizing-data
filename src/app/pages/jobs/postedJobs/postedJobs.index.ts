@@ -1,6 +1,6 @@
 import mainViewClass from "../../../default/mainView.class";
 import topNavigation from "../../../modules/top-nav/top-navigation";
-import { getAllAppliedJobs } from "./appliedJobs.service";
+import { getPostedJobs } from "./postedJobs.service";
 
 export default class extends mainViewClass {
   constructor(params: any) {
@@ -9,7 +9,8 @@ export default class extends mainViewClass {
   }
 
   async getHtml() {
-    const allJobs = await getAllAppliedJobs()
+    const postedJobsHTML = await getPostedJobs();
+    console.log("postedJobsHTML", postedJobsHTML);
 
     return `
       ${topNavigation}
@@ -20,12 +21,11 @@ export default class extends mainViewClass {
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" id="job-list-container">
           <div class="flex justify-between items-center mb-8">
             <h2 class="font-manrope font-bold text-4xl text-black max-lg:text-center dark:text-white">
-              My Applied Jobs
+              My Posted Jobs
             </h2>
           </div>
 
           <div class="grid" id="job-listings">
-            ${allJobs}
           </div>
         </div>
       </section>

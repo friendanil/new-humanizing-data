@@ -35,7 +35,7 @@ export default `
                 <ul>
                   <li>
                     <router-link href="/listing" class="top-nav-item cursor-pointer text-sm text-gray-600 hover:text-gray-500">
-                      Listing Items
+                      Added Items
                     </router-link>
                   </li>
                   <li>
@@ -46,6 +46,11 @@ export default `
                   <li>
                     <router-link href="/appliedJobs" class="top-nav-item cursor-pointer text-sm text-gray-600 hover:text-gray-500">
                       Applied Jobs
+                    </router-link>
+                  </li>
+                  <li>
+                    <router-link href="/postedJobs" class="top-nav-item cursor-pointer text-sm text-gray-600 hover:text-gray-500">
+                      Posted Jobs
                     </router-link>
                   </li>
                 <ul>
