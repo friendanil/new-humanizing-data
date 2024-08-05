@@ -8,11 +8,11 @@ import { Permission, PermissionAction } from "../pages/roles/roles.service";
 
 export function sidebarHTML() {
   return `
-    <div id="sidebar" class="fixed z-10 w-80 top-0 left-0 h-screen border-r-1 border-r-gray-200 drop-shadow-lg bg-gradient-to-b from-green-800 via-green-900 via-50% to-gray-900 overflow-y-auto hidden">
+    <div id="sidebar" class="fixed z-10 w-80 top-0 left-0 h-screen border-r-1 border-r-gray-200 drop-shadow-lg bg-gradient-to-b from-green-800 via-green-900 via-50% to-gray-900 overflow-y-auto transition ease-out duration-1000 transform opacity-100 hidden">
         <div class="flex flex-row items-center justify-center my-8">
             <img class="w-64" src="./../images/humanizing-data.png" alt="Humanizing Data Logo">
         </div>
-        <ul class="px-2">
+        <ul class="px-2 list-none">
             <li class="mb-1">
                 <router-link href="/dashboard" class="flex flex-row items-center text-white justify-between px-4 py-2 rounded hover:bg-gray-100/25 hover:text-white">
                     <span class="flex flex-row items-center gap-2">
@@ -72,7 +72,9 @@ function getUserMenus() {
 
     menusHTML += `
         <li class="mb-1">
-          <router-link ${hasSubmenuAccess(menu.subMenus) ? '' : `href="${menu.url}"`} class="flex flex-row items-center justify-between px-4 py-2 rounded hover:bg-gray-100/25" onclick="openSubMenu(${i})">
+          <router-link ${
+            hasSubmenuAccess(menu.subMenus) ? "" : `href="${menu.url}"`
+          } class="flex flex-row items-center justify-between px-4 py-2 rounded hover:bg-gray-100/25" onclick="openSubMenu(${i})">
               <span class="flex flex-row items-center gap-2">
                 ${menu.svg ? menu.svg : ""}
                 <!-- <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" fill="currentColor"><path d="m612-550 141-142-28-28-113 113-57-57-28 29 85 85ZM120-160v-80h480v80H120Zm520-280q-83 0-141.5-58.5T440-640q0-83 58.5-141.5T640-840q83 0 141.5 58.5T840-640q0 83-58.5 141.5T640-440Zm-520-40v-80h252q7 22 16 42t22 38H120Zm0 160v-80h376q23 14 49 23.5t55 13.5v43H120Z"/></svg> -->
@@ -126,13 +128,13 @@ function hasSubmenuAccess(subMenus: any[] = []) {
 }
 
 function openSubMenu(index: number) {
-  console.log('here', index)
+  console.log("here", index);
   const subMenus = document.getElementsByClassName("subMenu");
   for (let i = 0; i < subMenus.length; i++) {
     const subMenu = subMenus[i];
     subMenu.classList.add("hidden");
   }
-  console.log(document.getElementById(`subMenu-${index}`), '1112')
+  console.log(document.getElementById(`subMenu-${index}`), "1112");
   document.getElementById(`subMenu-${index}`)?.classList.remove("hidden");
 }
 
