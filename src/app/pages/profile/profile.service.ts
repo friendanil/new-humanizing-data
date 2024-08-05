@@ -9,8 +9,6 @@ import {
   LocalSyncData,
   MakeTheInstanceConcept,
   PatcherStructure,
-  SearchLinkMultipleAll,
-  SearchQuery,
   SyncData,
   UpdateComposition,
   DeleteConceptById,
@@ -23,6 +21,7 @@ import { environment } from "../../environments/environment.dev";
 import { showToast } from "../../modules/toast-bar/toast-bar.index";
 import { CreateConnectionBetweenEntityLocal } from "../../services/entity.service";
 import "./profile.style.css";
+import { userListOfData } from "../../services/getUser.service";
 
 const thetaBoommAPI = environment?.boomURL;
 let attachmentValues: any;
@@ -372,7 +371,7 @@ export async function uploadImageFile(files: any) {
   formdata.append("image", files);
 
   const profileStorageData: any = await getLocalStorageData();
-  const userId = profileStorageData?.userId;
+  // const userId = profileStorageData?.userId;
   const token = profileStorageData?.token;
 
   const myHeaders = new Headers();
@@ -943,15 +942,15 @@ export async function submitAddProfileForm(e: any) {
   const formData: any = new FormData(e.target);
   formData.append("education", JSON.stringify(EducationFieldsArray));
   formData.append("experience", JSON.stringify(ExperienceFieldsArray));
-  formData.append("documents", JSON.stringify(DocumentFieldsArray));
   formData.append("skills", JSON.stringify(SkillsFieldsArray));
+  formData.append("documents", JSON.stringify(DocumentFieldsArray));
   delete formData?.profilePic;
   formData.image = attachmentValues?.url;
   // output as an object
   const formValues: any = Object.fromEntries(formData);
-  const inputFirstName = <HTMLInputElement>(
-    document.getElementById("first_name")
-  );
+
+
+  const inputFirstName = <HTMLInputElement>document.getElementById("first_name");
   const inputLastName = <HTMLInputElement>document.getElementById("last_name");
   const inputEmail = <HTMLInputElement>document.getElementById("email");
   const inputPhone = <HTMLInputElement>document.getElementById("phone");
@@ -988,90 +987,15 @@ export async function submitAddProfileForm(e: any) {
 }
 
 export async function getProfileData() {
-  let dataFromLocalStorage: string = localStorage?.getItem("profile") || "";
-  if (dataFromLocalStorage) {
-    const profileData: IUser = JSON.parse(dataFromLocalStorage);
-    // let userId:any = Number(profileData?.userId);
-    let userConceptId: any = Number(profileData?.userConcept);
-
-    let searchfirst = new SearchQuery();
-    searchfirst.composition = userConceptId;
-    searchfirst.fullLinkers = ["the_user_profile"];
-    searchfirst.inpage = 100;
-
-    let searchsecond: any = new SearchQuery();
-    searchsecond.fullLinkers = [
-      "the_profile_profilePic",
-      "the_profile_first_name",
-      "the_profile_last_name",
-      "the_profile_email",
-      "the_profile_phone",
-      "the_profile_dob",
-      "the_profile_gender",
-      "the_profile_maritialStatus",
-      "the_profile_educationLevel",
-      "the_profile_department",
-      "the_profile_workExperience",
-      "the_profile_aboutYou",
-      "the_profile_addressType",
-      "the_profile_streetNumber",
-      "the_profile_streetAddress",
-      "the_profile_unit",
-      "the_profile_city",
-      "the_profile_state",
-      "the_profile_zip",
-      "the_profile_country",
-      "the_profile_eduLevel",
-      "the_profile_course",
-      "the_profile_eduDateFrom",
-      "the_profile_eduDateTo",
-      "the_profile_institutionName",
-      "the_profile_institutionAddress",
-      "the_profile_company",
-      "the_profile_position",
-      "the_profile_expAddress",
-      "the_profile_expCountry",
-      "the_profile_expDateFrom",
-      "the_profile_expDateTo",
-      "the_profile_currentCompany",
-      "the_profile_currentSalary",
-      "the_profile_desireSalary",
-      "the_profile_s_education",
-      "the_profile_s_experience",
-      "the_profile_s_documents",
-      "the_profile_s_skills"
-    ];
-
-    let searchthird = new SearchQuery();
-    searchthird.fullLinkers = [
-      "the_education_eduLevel",
-      "the_education_course",
-      "the_education_dobFrom",
-      "the_education_dobTo",
-      "the_education_institutionName",
-      "the_education_institutionAddress",
-      "the_experience_company",
-      "the_experience_position",
-      "the_experience_address",
-      "the_experience_country",
-      "the_experience_expdobFrom",
-      "the_experience_expdobTo",
-      "the_documents_docName",
-      "the_documents_docUrl",
-      "the_skills_language",
-      "the_skills_yearOfExperience",
-    ];
-    searchthird.inpage = 100;
-    searchsecond.inpage = 100;
-    const queryParams = [searchfirst, searchsecond, searchthird];
-    profileList = await SearchLinkMultipleAll(queryParams, profileData?.token);
+    profileList= await userListOfData();
+    console.log("output ->", profileList);
+    if(profileList){
     const data =
       profileList?.data?.the_user?.the_user_profile?.[0]?.data?.the_profile ||
       "";
     const inputFirstName = <HTMLInputElement>(
       document.getElementById("first_name")
     );
-    console.log("output ->", data);
 
     inputFirstName.value =
       data?.the_profile_first_name?.[0]?.data?.the_first_name ||
@@ -1332,16 +1256,16 @@ export async function getProfileData() {
 
 export async function createProfile(formValues: any) {
   let profileId: any;
+  let conceptDeleted:any;
   profileId = profileList?.data?.the_user?.the_user_profile?.[0]?.id || "";
   if (profileId) {
-    await DeleteConceptById(profileId);
+   conceptDeleted= await DeleteConceptById(profileId);
   }
 
   const eduName = JSON.parse(formValues?.education as string);
   const expName = JSON.parse(formValues?.experience as string);
   const documents = JSON.parse(formValues?.documents as string);
   const skills = JSON.parse(formValues?.skills as string);
-
   const profileStorageData: any = await getLocalStorageData();
   const userId = profileStorageData?.userId;
   let profileNameConcept: any;
@@ -1424,7 +1348,8 @@ export async function createProfile(formValues: any) {
     profileNameConcept,
     "profile"
   );
-  await LocalSyncData.SyncDataOnline();
+await LocalSyncData.SyncDataOnline();
+
   setTimeout(async () => {
     await showToast(
       "success",
@@ -1435,6 +1360,7 @@ export async function createProfile(formValues: any) {
     );
   }, 100);
   // location.reload();
+
 }
 // console.log("itemEntityConcept ID ->", profileNameConcept?.id);
 // await getProfileData()

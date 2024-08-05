@@ -3,15 +3,40 @@ import topNavigation from "../../modules/top-nav/top-navigation"
 import './profile.style.css';
 import { addEducation,addExperience,previewImage, getProfileData, addDoc,addSkills,openProfileModal } from "./profile.service"
 import createProfileModalHTML from '../../modules/profile-modal/create-profile-modal.ts';
+import createSetInterviewModalHTML from '../../modules/setInterview-modal/setInterview-modal.ts';
 import { initTopNavigation } from '../../modules/top-nav/top-navigation.service.ts';
 import { submitAddProfileForm} from "./profile.service"
 
+// for modal
+export async function closeinterViewModal(modalId: string) {
+  const modal: any = document.getElementById(modalId);
+  // const modalFormEl = modal.querySelector("form");
+  // modalFormEl.reset();
+
+  if (modal) modal.style.display = "none";
+  document
+    .getElementsByTagName("body")[0]
+    .classList.remove("overflow-y-hidden");
+}
+
+export async function openScheduleInterviewModal(modalId:any){
+  const check = document.getElementById(modalId);
+  if (check) check.style.display = "block";
+  document.getElementsByTagName("body")[0].classList.add("overflow-y-hidden");
+
+  // Close all modals when press ESC
+  document.onkeydown = function (event: any) {
+    if (event.code === "Escape" || event.key === "Escape") {
+      // if (check) check.style.display = "none";
+      closeinterViewModal(modalId);
+    }
+  };
+}
 export default class extends mainViewClass {
   constructor(params: any) {
     super(params);
     this.setTitle('Listing Item');
   }
-
   async getHtml(): Promise<string> {
     // (window as any).popupAlert = popupAlert;
     // (window as any).saveProfileDetails = saveProfileDetails;
@@ -23,6 +48,8 @@ export default class extends mainViewClass {
     (window as any).addSkills=addSkills;
     (window as any).previewImage=previewImage;
     (window as any).openProfileModal=openProfileModal;
+    (window as any).openScheduleInterviewModal=openScheduleInterviewModal;
+    (window as any).closeModal = closeinterViewModal;
    
     // const loadHTML = await getHTML()
 
@@ -32,6 +59,7 @@ export default class extends mainViewClass {
     // console.log(profileData,"profileData")
     getProfileData()
     const profileModal = await createProfileModalHTML()
+    const scheduleModal= await createSetInterviewModalHTML()
 
     // loadProfileDetails()
 
@@ -42,6 +70,7 @@ export default class extends mainViewClass {
     return `
       ${topNavigation}
       ${profileModal}
+      ${scheduleModal}
       <div class="w-4/5 mx-auto my-8">
       <h1 class="dark:text-white">Your Profile</h1>
       <button class="float-right bg-green-500 text-white rounded-md px-4 py-2 hover:bg-green-700 transition"
@@ -49,7 +78,11 @@ export default class extends mainViewClass {
       >
       View Profile
       </button>
-
+       <button class="float-right bg-green-500 text-white rounded-md px-4 py-2 hover:bg-green-700 transition"
+      onclick="openScheduleInterviewModal('create-setInterview-modal')"
+      >
+      View Schedule
+      </button>
         <form method="post" onsubmit="submitAddProfileForm(event)" class="mt-10">
         <h2 class="dark:text-white text-2xl">Basic Information:</h2>
           <div class="grid gap-6 mb-6 mt-6 md:grid-cols-3">
