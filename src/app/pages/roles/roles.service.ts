@@ -11,8 +11,11 @@ import { fetchRoles } from "./roles.apis";
 
 export enum Permission {
   rfq = "RFQ",
+  items = "Items",
   listing = "Listing",
   attendance = "Attendance",
+  employee = "Employee",
+  role = "Role",
 }
 
 export enum PermissionAction {

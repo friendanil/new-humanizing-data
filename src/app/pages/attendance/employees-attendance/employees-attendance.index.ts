@@ -16,10 +16,10 @@ export default class extends mainViewClass {
       getEmployeesAttendanceList(employeeAttendance);
 
     return `
-      ${sidebarHTML()}
-      <div class="flex flex-row justify-end">${sidebarMenu()}</div>
+      ${await sidebarHTML()}
+      <div class="flex flex-row justify-end px-4 py-2 shadow w-full">${sidebarMenu()}</div>
 
-      <div class="container relative mx-auto my-4 text-gray-800 dark:text-white">
+      <div class="container mx-auto my-4 text-gray-800 dark:text-white">
           <h3 class="text-3xl font-bold">Today's Attendance</h3>
           <p class="text-gray-500 mb-6">${new Date().toLocaleString("en-US", {
             dateStyle: "full",
