@@ -15,6 +15,13 @@ import {
 } from "../attendance.helper";
 
 export function showDropdownMenuOption(id: string) {
+  // close all previous dropdown
+  const dropdownMenus = document.getElementsByClassName('dropdown-menu') as HTMLCollectionOf<HTMLElement>
+  for (let i = 0; i < dropdownMenus.length; i++) {
+    const dropdownMenu = dropdownMenus[i];
+    dropdownMenu.classList.add('hidden')
+  }
+  // open the dropdown
   const dropdown = document.getElementById(id);
   if (dropdown?.classList.contains("hidden"))
     dropdown.classList.remove("hidden");
@@ -71,15 +78,6 @@ export async function getCompanyEmployee() {
     token
   );
 
-  //   console.log(
-  //     searchData,
-  //     "searchDataafkasfa",
-  //     searchData?.data?.the_currentCompany
-  //       ?.the_profile_currentCompany_reverse?.[0]?.data?.the_profile
-  //       ?.the_user_profile_reverse?.[0]?.data?.the_user
-  //       ?.the_user_s_attendance?.[0]?.data?.the_attendance?.the_attendance_checkin
-  //   );
-
   let users: any[] = [];
   if (
     searchData?.data?.the_currentCompany
@@ -135,7 +133,7 @@ export function getEmployeesAttendanceList(employees: any[]) {
                 obj.checkin
                   ? "bg-green-400"
                   : obj.status == "Absent" && "bg-red-400"
-              }"">
+              }">
                   <img 
                     title="${
                       employee?.user?.firstName
@@ -149,7 +147,7 @@ export function getEmployeesAttendanceList(employees: any[]) {
                 obj.checkin
                   ? "bg-green-400"
                   : obj.status == "Absent" && "bg-red-400"
-              }"">
+              }">
               ${
                 employee?.user?.firstName
                   ? `${employee?.user?.firstName} ${employee?.user?.lastName}`
@@ -160,28 +158,28 @@ export function getEmployeesAttendanceList(employees: any[]) {
                 obj.checkin
                   ? "bg-green-400"
                   : obj.status == "Absent" && "bg-red-400"
-              }"">
+              }">
                     ${employee?.user?.email}
               </td>
               <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-opacity-25 ${
                 obj.checkin
                   ? "bg-green-400"
                   : obj.status == "Absent" && "bg-red-400"
-              }"">
+              }">
                 ${obj.checkin ? new Date(obj.checkin).toLocaleTimeString() : ""}
               </td>
               <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-opacity-25 ${
                 obj.checkin
                   ? "bg-green-400"
                   : obj.status == "Absent" && "bg-red-400"
-              }"">
+              }">
                 ${obj.times > 0 ? `${obj.times} time(s)` : ""}
               </td>
               <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-opacity-25 ${
                 obj.checkin
                   ? "bg-green-400"
                   : obj.status == "Absent" && "bg-red-400"
-              }"">
+              }">
                 ${
                   obj.checkout
                     ? new Date(obj.checkout).toLocaleTimeString()
@@ -192,21 +190,21 @@ export function getEmployeesAttendanceList(employees: any[]) {
                 obj.checkin
                   ? "bg-green-400"
                   : obj.status == "Absent" && "bg-red-400"
-              }"">
+              }">
                 ${obj.workingTime ? getDuration(obj.workingTime) : ""}
               </td>
               <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-opacity-25 ${
                 obj.checkin
                   ? "bg-green-400"
                   : obj.status == "Absent" && "bg-red-400"
-              }"">
+              }">
               ${obj.checkin ? "Present" : obj?.status || ""}
               </td>
               <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-opacity-25 ${
                 obj.checkin
                   ? "bg-green-400"
                   : obj.status == "Absent" && "bg-red-400"
-              }"">
+              }">
                   <div class="inline-block text-left">
                       <button type="button" onclick="showDropdownMenuOption('dropdown-menu-${
                         employee.user.id
@@ -215,7 +213,7 @@ export function getEmployeesAttendanceList(employees: any[]) {
                       </button>
                       <div id="dropdown-menu-${
                         employee.user.id
-                      }" class="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none hidden" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+                      }" class="dropdown-menu absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none hidden" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
                           <div class="py-1" role="none">
                               <router-link href="/employee/attendance/${
                                 employee.user.id
