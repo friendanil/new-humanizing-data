@@ -1,4 +1,5 @@
 import {
+  FilterSearch,
   MakeTheInstanceConcept,
   SearchLinkMultipleAll,
   SearchQuery,
@@ -11,6 +12,7 @@ export async function getPostedJobs() {
       const profileStorageData: any = await getLocalStorageData();
       const userId = profileStorageData?.userId;
       const token = profileStorageData?.token;
+      const userEntityId = profileStorageData?.entityId;
 
       const humanizingData = await MakeTheInstanceConcept(
         "the_listing",
@@ -18,7 +20,7 @@ export async function getPostedJobs() {
         false,
         userId
       );
-      console.log("humanizingData", humanizingData);
+      console.log("humanizingData", humanizingData);    
 
       let searchfirst = new SearchQuery();
       searchfirst.composition = humanizingData?.id;
@@ -26,34 +28,56 @@ export async function getPostedJobs() {
       searchfirst.reverse = true;
       searchfirst.inpage = 100;
 
-      let searchsecond = new SearchQuery();
+      // let searchsecond = new SearchQuery();
       // searchsecond.fullLinkers = [
-      //   "the_item_name",
-      //   "the_item_price",
-      //   "the_item_category",
-      //   "the_item_s_image",
+      //   "the_seller_s_item",
+      //   // "the_item",
+      //   // "the_item_name",
       // ];
-      searchsecond.fullLinkers = [
-        "the_item_name",
-        // "the_item_price",
-        // "the_item_category",
-        "the_seller_s_item",
-      ];
-      searchsecond.reverse = true;
-      searchsecond.inpage = 100;
+      // searchsecond.reverse = true;
+      // searchsecond.inpage = 100;
+
+      // let searchxyz = new SearchQuery();
+      // searchxyz.fullLinkers = [
+      //   "the_item",
+      //   "the_item_name",
+      // ];
+      // // searchxyz.reverse = true;
+      // searchxyz.inpage = 100;
 
       let searchthird = new SearchQuery();
       searchthird.fullLinkers = [
         // "the_attachment",
-        "the_attachment_url",
+        // "the_attachment_url",
+        "the_item",
+        "the_item_name",
+        "the_item_description",
+        "the_item_category",
+        "the_item_price",
+        "the_item_priceType",
+        "the_item_priceCurrency",
+        "the_item_type",
+        // "the_seller_s_item",
       ];
+      // searchthird.reverse = true;
       searchthird.inpage = 100;
 
-      const queryParams = [searchfirst, searchsecond, searchthird];
+      let filterSearch = new FilterSearch()
+      filterSearch.type = 'seller'
+      filterSearch.search = `${userEntityId}`
+      filterSearch.composition = false
+
+      searchthird.filterSearches = [filterSearch]
+
+
+      const queryParams = [searchfirst, searchthird];
+      console.log('queryParams', queryParams)
       const output = await SearchLinkMultipleAll(queryParams, token);
       console.log("output jobs i have posted ->", output);
+      
 
-      return "";
+      resolve("<h1> Posted Jobs page</h1>");
+      return "<h1> Posted Jobs page</h1>";
 
       const listingItems =
         output?.data?.the_listing?.the_item_s_listing_reverse;

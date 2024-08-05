@@ -1,5 +1,6 @@
 import mainViewClass from "../../../default/mainView.class";
 import topNavigation from "../../../modules/top-nav/top-navigation";
+import { initTopNavigation } from "../../../modules/top-nav/top-navigation.service";
 import { getAllAppliedJobs } from "./appliedJobs.service";
 
 export default class extends mainViewClass {
@@ -9,7 +10,11 @@ export default class extends mainViewClass {
   }
 
   async getHtml() {
-    const allJobs = await getAllAppliedJobs()
+    const allJobs = await getAllAppliedJobs();
+
+    setTimeout(() => {
+      initTopNavigation();
+    }, 500);
 
     return `
       ${topNavigation}

@@ -32,23 +32,23 @@ export default `
 
           <div class="absolute z-10 hidden group-hover:block">
               <div class="dropdown-menu w-32 bg-gray-200 px-4 py-2 shadow-lg rounded">
-                <ul>
-                  <li>
+                <ul class="ps-0">
+                  <li class="list-none">
                     <router-link href="/listing" class="top-nav-item cursor-pointer text-sm text-gray-600 hover:text-gray-500">
                       Added Items
                     </router-link>
                   </li>
-                  <li>
+                  <li class="list-none">
                     <router-link href="/rfq" class="top-nav-item cursor-pointer text-sm text-gray-600 hover:text-gray-500">
                       RFQs
                     </router-link>
                   </li>
-                  <li>
+                  <li class="list-none">
                     <router-link href="/appliedJobs" class="top-nav-item cursor-pointer text-sm text-gray-600 hover:text-gray-500">
                       Applied Jobs
                     </router-link>
                   </li>
-                  <li>
+                  <li class="list-none">
                     <router-link href="/postedJobs" class="top-nav-item cursor-pointer text-sm text-gray-600 hover:text-gray-500">
                       Posted Jobs
                     </router-link>

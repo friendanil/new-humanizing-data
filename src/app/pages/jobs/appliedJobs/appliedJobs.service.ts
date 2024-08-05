@@ -81,7 +81,7 @@ export async function getAllAppliedJobs() {
               ${job?.description}
             </td>
             <td class="border border-slate-300 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400">
-              ${job?.priceCurrency} ${job?.price} ${job?.priceType}
+              ${job?.priceCurrency || '$'} ${job?.price} ${job?.priceType || ''}
             </td>
             <td class="border border-slate-300 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400">
               ${job?.type}

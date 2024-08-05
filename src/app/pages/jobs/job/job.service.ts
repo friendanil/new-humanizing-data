@@ -105,7 +105,9 @@ export async function getJobApplicants(jobProductId: number) {
         entityId: applicant?.id,
         userConceptId: applicant?.data?.the_entity?.the_entity_user?.[0]?.id,
         profileImage: applicantUserData?.entity?.person?.profile_img,
-        name: `${applicantUserData?.entity?.person?.first_name} ${applicantUserData?.entity?.person?.last_name}`,
+        name: `${applicantUserData?.entity?.person?.first_name || ""} ${
+          applicantUserData?.entity?.person?.last_name || ""
+        }`,
         bio: applicantUserData?.entity?.person?.bio,
         email: applicantUserData?.entity?.person?.email,
         location: applicantUserData?.entity?.person?.location,
@@ -114,37 +116,42 @@ export async function getJobApplicants(jobProductId: number) {
     });
     console.log("applicantList", applicantList);
     applicantHTML = applicantList?.map((applicant: any) => {
+      if (!applicant?.profileImage || applicant?.profileImage === "undefined")
+        applicant.profileImage = "https://placehold.co/600x600";
       return `
         <tr>
             <td class="border border-slate-300 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400">
-              <img src="${applicant?.profileImage}" alt="profile image of ${applicant?.name}" class="rounded w-[48px] h-[48px] bg-gray-200">
+              <img src="${applicant?.profileImage}" alt="profile image of ${
+        applicant?.name
+      }" class="rounded w-[48px] h-[48px] bg-gray-200">
             </td>
             <td class="border border-slate-300 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400">
-              ${applicant?.name}
+              ${applicant?.name || ""}
             </td>
             <td class="border border-slate-300 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400">
-              ${applicant?.bio}
+              ${applicant?.bio || ""}
             </td>
             <td class="border border-slate-300 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400">
-              ${applicant?.email}
+              ${applicant?.email || ""}
             </td>
             <td class="border border-slate-300 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400">
-              ${applicant?.location}
+              ${applicant?.location || ""}
             </td>
             <td class="border border-slate-300 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400">
-              ${applicant?.phone}
+              ${applicant?.phone || ""}
             </td>
             <td class="border border-slate-300 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400">
-              <a href="${thetaBoommAPI}/bm/${applicant?.userConceptId}" target="_blank" class="block px-4 py-2 leading-loose text-xs text-center text-white font-semibold bg-green-600 hover:bg-green-700 hover:text-gray-200 rounded-xl cursor-pointer">
+              <a href="${thetaBoommAPI}/bm/${
+        applicant?.userConceptId
+      }" target="_blank" class="block px-4 py-2 leading-loose text-xs text-center text-white font-semibold bg-green-600 hover:bg-green-700 hover:text-gray-200 rounded-xl cursor-pointer">
                 Visit Profile
               </a>
             </td>
           </tr>
       `;
     });
-  }
 
-  return `
+    return `
     <div class="my-8">
     <h2 class="mb-4">Job Applicants</h2>
     <table class="border-collapse w-full border border-slate-400 dark:border-slate-500 bg-white dark:bg-slate-800 text-sm shadow-sm">
@@ -165,6 +172,9 @@ export async function getJobApplicants(jobProductId: number) {
       </table>
     </div>
   `;
+  }
+
+  return "";
 }
 
 export async function getMyAppliedJobStatus(jobProductId: number) {
