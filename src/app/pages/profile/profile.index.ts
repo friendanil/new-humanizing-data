@@ -6,12 +6,12 @@ import createProfileModalHTML from '../../modules/profile-modal/create-profile-m
 import { initTopNavigation } from '../../modules/top-nav/top-navigation.service.ts';
 import { submitAddProfileForm} from "./profile.service"
 
+
 export default class extends mainViewClass {
   constructor(params: any) {
     super(params);
     this.setTitle('Listing Item');
   }
-
   async getHtml(): Promise<string> {
     // (window as any).popupAlert = popupAlert;
     // (window as any).saveProfileDetails = saveProfileDetails;
@@ -49,7 +49,6 @@ export default class extends mainViewClass {
       >
       View Profile
       </button>
-
         <form method="post" onsubmit="submitAddProfileForm(event)" class="mt-10">
         <h2 class="dark:text-white text-2xl">Basic Information:</h2>
           <div class="grid gap-6 mb-6 mt-6 md:grid-cols-3">
@@ -293,14 +292,14 @@ export default class extends mainViewClass {
             </div>
             <div>
               <label for="currentSalary" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Current Salary</label>
-              <input type="text" id="currentSalary"
+              <input type="number" id="currentSalary"
                  name="currentSalary"
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="Current Salary" />
             </div>
             <div>
               <label for="desireSalary" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Desire Salary</label>
-              <input type="text" id="desireSalary"
+              <input type="number" id="desireSalary"
                  name="desireSalary"
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="Desire Salary" />

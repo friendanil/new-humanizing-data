@@ -29,6 +29,31 @@ import { closeModal } from "../../../services/modal.service";
 
 const thetaBoommAPI = environment?.boomURL;
 // let attachmentConcept: LConcept;
+// for modal
+export async function closeinterViewModal(modalId: string) {
+  const modal: any = document.getElementById(modalId);
+  // const modalFormEl = modal.querySelector("form");
+  // modalFormEl.reset();
+
+  if (modal) modal.style.display = "none";
+  document
+    .getElementsByTagName("body")[0]
+    .classList.remove("overflow-y-hidden");
+}
+
+export async function openScheduleInterviewModal(modalId:any){
+  const check = document.getElementById(modalId);
+  if (check) check.style.display = "block";
+  document.getElementsByTagName("body")[0].classList.add("overflow-y-hidden");
+
+  // Close all modals when press ESC
+  document.onkeydown = function (event: any) {
+    if (event.code === "Escape" || event.key === "Escape") {
+      // if (check) check.style.display = "none";
+      closeinterViewModal(modalId);
+    }
+  };
+}
 let rfqModalHTMLCode = `
   <h1>Hey</h1>
 `;
@@ -38,7 +63,6 @@ let listModalHTMLCode = `
 let listingItem: any;
 let isItemListedByMe: boolean = false;
 let jobId!: number;
-
 export async function getMyListingItems() {
   let search = new SearchStructure();
   search.composition = "the_item";
@@ -146,6 +170,12 @@ export async function getJobApplicants(jobProductId: number) {
       }" target="_blank" class="block px-4 py-2 leading-loose text-xs text-center text-white font-semibold bg-green-600 hover:bg-green-700 hover:text-gray-200 rounded-xl cursor-pointer">
                 Visit Profile
               </a>
+              <td class="border border-slate-300 dark:border-slate-700 p-3 text-slate-500 dark:text-slate-400">
+              <button class="text-center bg-green-500 text-white rounded-md px-4 py-2 hover:bg-green-700 transition"
+              onclick="openScheduleInterviewModal('create-setInterview-modal')">
+              View Schedule
+              </button>
+            </td>
             </td>
           </tr>
       `;
@@ -164,6 +194,7 @@ export async function getJobApplicants(jobProductId: number) {
             <th class="w-1/7 border border-slate-300 dark:border-slate-600 font-semibold p-4 text-slate-900 dark:text-slate-200 text-left">Location</th>
             <th class="w-1/7 border border-slate-300 dark:border-slate-600 font-semibold p-4 text-slate-900 dark:text-slate-200 text-left">Phone</th>
             <th class="w-1/7 border border-slate-300 dark:border-slate-600 font-semibold p-4 text-slate-900 dark:text-slate-200 text-left">CV</th>
+            <th class="w-1/7 border border-slate-300 dark:border-slate-600 font-semibold p-4 text-slate-900 dark:text-slate-200 text-left">Actions</th>
           </tr>
         </thead>
         <tbody>
