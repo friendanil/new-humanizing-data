@@ -14,20 +14,6 @@ import {
   getDuration,
 } from "../attendance.helper";
 
-export function showDropdownMenuOption(id: string) {
-  // close all previous dropdown
-  const dropdownMenus = document.getElementsByClassName('dropdown-menu') as HTMLCollectionOf<HTMLElement>
-  for (let i = 0; i < dropdownMenus.length; i++) {
-    const dropdownMenu = dropdownMenus[i];
-    dropdownMenu.classList.add('hidden')
-  }
-  // open the dropdown
-  const dropdown = document.getElementById(id);
-  if (dropdown?.classList.contains("hidden"))
-    dropdown.classList.remove("hidden");
-  else dropdown?.classList.add("hidden");
-}
-
 export async function getCompanyEmployee() {
   const profileStorageData: any = await getLocalStorageData();
   const token = profileStorageData?.token;
@@ -208,8 +194,8 @@ export function getEmployeesAttendanceList(employees: any[]) {
                   <div class="inline-block text-left">
                       <button type="button" onclick="showDropdownMenuOption('dropdown-menu-${
                         employee.user.id
-                      }')" class="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" id="menu-button" aria-expanded="true" aria-haspopup="true">
-                          <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="inherit"><path d="M480-160q-33 0-56.5-23.5T400-240q0-33 23.5-56.5T480-320q33 0 56.5 23.5T560-240q0 33-23.5 56.5T480-160Zm0-240q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm0-240q-33 0-56.5-23.5T400-720q0-33 23.5-56.5T480-800q33 0 56.5 23.5T560-720q0 33-23.5 56.5T480-640Z"/></svg>
+                      }')" class="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-2 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" id="menu-button" aria-expanded="true" aria-haspopup="true">
+                          <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="inherit"><path d="M480-160q-33 0-56.5-23.5T400-240q0-33 23.5-56.5T480-320q33 0 56.5 23.5T560-240q0 33-23.5 56.5T480-160Zm0-240q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm0-240q-33 0-56.5-23.5T400-720q0-33 23.5-56.5T480-800q33 0 56.5 23.5T560-720q0 33-23.5 56.5T480-640Z"/></svg>
                       </button>
                       <div id="dropdown-menu-${
                         employee.user.id
@@ -217,7 +203,7 @@ export function getEmployeesAttendanceList(employees: any[]) {
                           <div class="py-1" role="none">
                               <router-link href="/employee/attendance/${
                                 employee.user.id
-                              }"><a role="button" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="menu-item-0">View Attendance</a></router-link>
+                              }"><a role="button" onclick="viewEmployee" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="menu-item-0">View</a></router-link>
                           </div>
                       </div>
                   </div>
