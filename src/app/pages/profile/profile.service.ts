@@ -1244,21 +1244,34 @@ export async function getProfileData() {
           ?.the_yearOfExperience || "";
     });
     const inputFullName = <HTMLInputElement>document.getElementById("fullName");
-    inputFullName.innerHTML =
-      data?.the_profile_first_name?.[0]?.data?.the_first_name +
-      " " +
-      data?.the_profile_last_name?.[0]?.data?.the_last_name;
+    inputFullName.innerHTML = !data?profileList?.data?.the_user.entity.person.first_name +" "+profileList?.data?.the_user?.entity?.person.last_name
+    :data.the_profile_first_name?.[0]?.data?.the_first_name +" "+data.the_profile_last_name?.[0]?.data?.the_last_name;
 
     const inputContact = <HTMLInputElement>document.getElementById("contact");
-    inputContact.innerHTML =
-      data?.the_profile_email?.[0]?.data?.the_email +
-      "||" +
-      data?.the_profile_phone?.[0]?.data?.the_phone;
+    inputContact.innerHTML =data?data.the_profile_email?.[0]?.data?.the_email +"||"+data?.the_profile_phone?.[0]?.data?.the_phone: profileList.data.the_user.entity.person.email +
+      "||" +profileList.data.the_user.entity.person.phone;
+
     const inputAbout = <HTMLInputElement>document.getElementById("about");
-    inputAbout.innerHTML = data?.the_profile_aboutYou?.[0]?.data?.the_aboutYou;
+    if(data?.the_profile_aboutYou){
+    inputAbout.innerHTML = data?.the_profile_aboutYou?.[0]?.data?.the_aboutYou || '';
+    const inputProfile = <HTMLInputElement>document.getElementById("profile");
+    inputProfile.style.display="block"
+    }
+    if(data?.the_profile_s_experience){
+    const inputExp = <HTMLInputElement>document.getElementById("exp");
+    inputExp.style.display="block"
     await experience(data?.the_profile_s_experience);
-    await education(data?.the_profile_s_education);
-    await skills(data?.the_profile_s_skills);
+    }
+    if(data?.the_profile_s_experience){
+      const inputEdu = <HTMLInputElement>document.getElementById("edu");
+      inputEdu.style.display="block"
+      await education(data?.the_profile_s_education);
+      }
+    if(data?.the_profile_s_experience){
+      const inputSkill = <HTMLInputElement>document.getElementById("skill");
+      inputSkill.style.display="block"
+      await skills(data?.the_profile_s_skills); 
+      }
   }
 }
 
@@ -1269,7 +1282,6 @@ export async function createProfile(formValues: any) {
   if (profileId) {
    conceptDeleted= await DeleteConceptById(profileId);
   }
-
   const eduName = JSON.parse(formValues?.education as string);
   const expName = JSON.parse(formValues?.experience as string);
   const documents = JSON.parse(formValues?.documents as string);
@@ -1366,8 +1378,8 @@ await LocalSyncData.SyncDataOnline();
       "top-right",
       5000
     );
+    location.reload();
   }, 100);
-  // location.reload();
 
 }
 // console.log("itemEntityConcept ID ->", profileNameConcept?.id);

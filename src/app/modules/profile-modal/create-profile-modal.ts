@@ -27,19 +27,19 @@ export default async function createProfileModalHTML() {
             <p>Software Developer</p>
             <p id="contact">Email: johndoe@example.com | Phone: (123) 456-7890</p>
         </header>
-        <section>
+        <section id="profile" style="display:none">
             <h2>Profile</h2>
             <p id="about" style="color:black">A highly motivated software developer with 5 years of experience in developing web applications. Strong background in JavaScript, HTML, CSS, and modern frameworks.</p>
         </section>
-        <section>
+        <section id="exp" style="display:none">
           <h2>Experience</h2>
           <div id="experience"></div>
         </section>
-        <section>
+        <section  id="edu" style="display:none">
             <h2>Education</h2>
               <div id="education"></div>
         </section>
-        <section>
+        <section id="skill" style="display:none">
             <h2>Skills</h2>
             <ul style="color:black">
             <div id="skills"></div>

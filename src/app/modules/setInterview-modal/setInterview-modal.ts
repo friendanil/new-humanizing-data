@@ -1,5 +1,5 @@
 import { environment } from "../../environments/environment.dev";
-import { closeinterViewModal } from "../../pages/profile/profile.index";
+import { closeinterViewModal } from "../../pages/jobs/job/job.service";
 import { getLocalStorageData } from "../../services/helper.service";
 import {userListOfData } from "../../services/getUser.service";
 const thetaBoommAPI = environment?.boomURL;
