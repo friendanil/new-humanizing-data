@@ -40,12 +40,10 @@ export async function getCompanyEmployee() {
   search1.composition = companyConcept.id;
   search1.reverse = true;
   search1.fullLinkers = ["the_profile_currentCompany"];
-  search1.doFilter = true;
 
   const search2 = new SearchQuery();
   search2.reverse = true;
   search2.fullLinkers = ["the_user_profile"];
-  search2.doFilter = true;
 
   const checkInFilter = new FilterSearch();
   checkInFilter.type = "checkin";
@@ -110,6 +108,7 @@ export async function getCompanyEmployee() {
 }
 
 export function getEmployeesAttendanceList(employees: any[]) {
+  console.log("employees", employees);
   if (employees.length == 0) {
     return `
         <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
@@ -132,7 +131,11 @@ export function getEmployeesAttendanceList(employees: any[]) {
 
     employeesAttendanceRows += `
           <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-              <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-green-400 bg-opacity-25">
+              <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-opacity-25 ${
+                obj.checkin
+                  ? "bg-green-400"
+                  : obj.status == "Absent" && "bg-red-400"
+              }"">
                   <img 
                     title="${
                       employee?.user?.firstName
@@ -142,36 +145,68 @@ export function getEmployeesAttendanceList(employees: any[]) {
                     class="max-w-8 max-h-8 min-w-8 min-h-8 h-full w-full rounded-full border border-gray-300 dark:boarder-gray-700" 
                     src="${employee?.user?.profileImg}" alt="Profile Image" />
               </td>
-              <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-green-400 bg-opacity-25">
+              <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-opacity-25 ${
+                obj.checkin
+                  ? "bg-green-400"
+                  : obj.status == "Absent" && "bg-red-400"
+              }"">
               ${
                 employee?.user?.firstName
                   ? `${employee?.user?.firstName} ${employee?.user?.lastName}`
                   : employee?.user?.email
               }
               </td>
-              <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-green-400 bg-opacity-25">
+              <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-opacity-25 ${
+                obj.checkin
+                  ? "bg-green-400"
+                  : obj.status == "Absent" && "bg-red-400"
+              }"">
                     ${employee?.user?.email}
               </td>
-              <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-green-400 bg-opacity-25">
+              <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-opacity-25 ${
+                obj.checkin
+                  ? "bg-green-400"
+                  : obj.status == "Absent" && "bg-red-400"
+              }"">
                 ${obj.checkin ? new Date(obj.checkin).toLocaleTimeString() : ""}
               </td>
-              <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-green-400 bg-opacity-25">
+              <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-opacity-25 ${
+                obj.checkin
+                  ? "bg-green-400"
+                  : obj.status == "Absent" && "bg-red-400"
+              }"">
                 ${obj.times > 0 ? `${obj.times} time(s)` : ""}
               </td>
-              <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-green-400 bg-opacity-25">
+              <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-opacity-25 ${
+                obj.checkin
+                  ? "bg-green-400"
+                  : obj.status == "Absent" && "bg-red-400"
+              }"">
                 ${
                   obj.checkout
                     ? new Date(obj.checkout).toLocaleTimeString()
                     : ""
                 }
               </td>
-              <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-green-400 bg-opacity-25">
+              <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-opacity-25 ${
+                obj.checkin
+                  ? "bg-green-400"
+                  : obj.status == "Absent" && "bg-red-400"
+              }"">
                 ${obj.workingTime ? getDuration(obj.workingTime) : ""}
               </td>
-              <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-green-400 bg-opacity-25">
+              <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-opacity-25 ${
+                obj.checkin
+                  ? "bg-green-400"
+                  : obj.status == "Absent" && "bg-red-400"
+              }"">
               ${obj.checkin ? "Present" : obj?.status || ""}
               </td>
-              <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-green-400 bg-opacity-25">
+              <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-opacity-25 ${
+                obj.checkin
+                  ? "bg-green-400"
+                  : obj.status == "Absent" && "bg-red-400"
+              }"">
                   <div class="inline-block text-left">
                       <button type="button" onclick="showDropdownMenuOption('dropdown-menu-${
                         employee.user.id
