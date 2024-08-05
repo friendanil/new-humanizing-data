@@ -65,12 +65,20 @@ export function getDuration(timeMs: number) {
 export function getDateInMonth(year: number, month: number) {
   let date = new Date(year, month - 1, 1);
   let dates = [];
-  console.log(date, 'date', year, month - 1, 1)
-  console.log(date.getMonth() === month - 1, date.getMonth() , month - 1)
-  console.log('time', date.getTime() , new Date(new Date().setHours(0,0,0,0)).getTime())
+  console.log(date, "date", year, month - 1, 1);
+  console.log(date.getMonth() === month - 1, date.getMonth(), month - 1);
+  console.log(
+    "time",
+    date.getTime(),
+    new Date(new Date().setHours(0, 0, 0, 0)).getTime()
+  );
 
   while (date.getMonth() === month - 1) {
-    if (date.getTime() > new Date(new Date().setHours(0,0,0,0)).getTime() + 1) break
+    if (
+      date.getTime() >
+      new Date(new Date().setHours(0, 0, 0, 0)).getTime() + 1
+    )
+      break;
     if (date) dates.push(formatDate(date));
     date.setDate(date.getDate() + 1);
   }
@@ -144,7 +152,7 @@ export async function searchUserAttendance(
  * @param attendanceList any[]
  * @returns Promise<Attendance[]>
  */
-async function formatUserAttendance(attendanceList: any[]) {
+export async function formatUserAttendance(attendanceList: any[]) {
   if (attendanceList?.length == 0) return [];
   return Promise.all(
     attendanceList?.map((attendance: any) => {
@@ -175,7 +183,7 @@ export async function getUserMonthlyAttendanceRows(
   showActions: boolean = false,
   userConceptId?: number
 ) {
-  let dateList: string[]
+  let dateList: string[];
   if (monthlyAttendance?.[0]?.checkin) {
     dateList = getDateInMonth(
       new Date(monthlyAttendance?.[0]?.checkin).getFullYear(),
@@ -187,9 +195,9 @@ export async function getUserMonthlyAttendanceRows(
       new Date(monthlyDate).getMonth() + 1
     );
   }
-console.log('date list', dateList)
+  console.log("date list", dateList);
   if (
-    dateList.length == 0 
+    dateList.length == 0
     // ||
     // monthlyAttendance.length == 0 ||
     // (monthlyAttendance?.[0]?.checkin?.split(0, 4) < new Date().getFullYear() &&
@@ -204,52 +212,7 @@ console.log('date list', dateList)
   let attendanceRows = "";
 
   dateList.forEach((date: string) => {
-    const attendances = monthlyAttendance.filter(
-      (attendance) =>
-        attendance?.checkin?.includes(date) ||
-        attendance?.checkout?.includes(date)
-    );
-    const obj: any = {
-      ids: [],
-      currentDate: date,
-      times: -1,
-    };
-    attendances.map((attendance) => {
-      obj.ids.push(attendance.id);
-      if (!obj.checkin && attendance.checkin) obj.checkin = attendance.checkin;
-      else if (obj.checkin && attendance.checkin) {
-        if (
-          new Date(attendance.checkin).getTime() -
-            new Date(obj.checkin).getTime() <=
-          0
-        ) {
-          obj.checkin = attendance.checkin;
-        }
-      }
-
-      if (!obj.checkout && attendance.checkout)
-        obj.checkout = attendance.checkout;
-      else if (obj.checkout && attendance.checkout) {
-        if (
-          new Date(attendance.checkout).getTime() -
-            new Date(obj.checkout).getTime() >=
-          0
-        ) {
-          obj.checkout = attendance.checkout;
-        }
-      }
-      if (attendance.checkin && attendance.checkout) {
-        if (!obj.workingTime)
-          obj.workingTime =
-            new Date(attendance.checkout).getTime() -
-            new Date(attendance.checkin).getTime();
-        else
-          obj.workingTime +=
-            new Date(attendance.checkout).getTime() -
-            new Date(attendance.checkin).getTime();
-      }
-      obj.times += 1;
-    });
+    const obj = calculateAttendance(monthlyAttendance, date);
 
     attendanceRows +=
       '<tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">';
@@ -317,6 +280,59 @@ console.log('date list', dateList)
   });
 
   return attendanceRows;
+}
+
+export function calculateAttendance(
+  attendanceList: Attendance[],
+  date: string
+) {
+  const attendances = attendanceList.filter(
+    (attendance) =>
+      attendance?.checkin?.includes(date) ||
+      attendance?.checkout?.includes(date)
+  );
+  const obj: any = {
+    ids: [],
+    currentDate: date,
+    times: -1,
+  };
+  attendances.map((attendance) => {
+    obj.ids.push(attendance.id);
+    if (!obj.checkin && attendance.checkin) obj.checkin = attendance.checkin;
+    else if (obj.checkin && attendance.checkin) {
+      if (
+        new Date(attendance.checkin).getTime() -
+          new Date(obj.checkin).getTime() <=
+        0
+      ) {
+        obj.checkin = attendance.checkin;
+      }
+    }
+
+    if (!obj.checkout && attendance.checkout)
+      obj.checkout = attendance.checkout;
+    else if (obj.checkout && attendance.checkout) {
+      if (
+        new Date(attendance.checkout).getTime() -
+          new Date(obj.checkout).getTime() >=
+        0
+      ) {
+        obj.checkout = attendance.checkout;
+      }
+    }
+    if (attendance.checkin && attendance.checkout) {
+      if (!obj.workingTime)
+        obj.workingTime =
+          new Date(attendance.checkout).getTime() -
+          new Date(attendance.checkin).getTime();
+      else
+        obj.workingTime +=
+          new Date(attendance.checkout).getTime() -
+          new Date(attendance.checkin).getTime();
+    }
+    obj.times += 1;
+  });
+  return obj;
 }
 
 function formatDate(date: any) {

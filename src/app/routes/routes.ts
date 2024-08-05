@@ -11,10 +11,13 @@ import listingItemsIndex from "../pages/listingItems/listingItems.index.ts";
 import rfqIndex from "../pages/rfq/rfq.index.ts";
 import roleClass from "../pages/roles/roles.index.ts";
 import attendanceClass from "../pages/attendance/user-attendance/attendance.index.ts";
+import employeeHiredClass from "../pages/hired-employee/hired-employee.index.ts";
 import employeeAttendanceClass from "../pages/attendance/employees-attendance/employees-attendance.index.ts";
 import indivisualAttendanceClass from "../pages/attendance/indivisual-attendance/indivisual-attendance.index.ts";
 import jobListIndex from "../pages/jobs/jobList/jobList.index.ts";
 import jobIndex from "../pages/jobs/job/job.index.ts";
+import appliedJobsIndex from "../pages/jobs/appliedJobs/appliedJobs.index.ts";
+import postedJobsIndex from "../pages/jobs/postedJobs/postedJobs.index.ts";
 
 type RouteParams = {
   path: any;
@@ -103,6 +106,11 @@ const routes: RouteParams[] = [
     isAuthenticated: true,
   },
   {
+    path: "/employee/hired",
+    content: employeeHiredClass,
+    isAuthenticated: true,
+  },
+  {
     path: "/employee/attendance",
     content: employeeAttendanceClass,
     isAuthenticated: true,
@@ -120,6 +128,16 @@ const routes: RouteParams[] = [
   {
     path: "/job/:id",
     content: jobIndex,
+    isAuthenticated: true,
+  },
+  {
+    path: "/appliedJobs",
+    content: appliedJobsIndex,
+    isAuthenticated: true,
+  },
+  {
+    path: "/postedJobs",
+    content: postedJobsIndex,
     isAuthenticated: true,
   },
 ];

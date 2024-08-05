@@ -8,7 +8,7 @@ import { Permission, PermissionAction } from "../pages/roles/roles.service";
 
 export function sidebarHTML() {
   return `
-    <div id="sidebar" class="fixed z-10 w-80 top-0 left-0 h-screen border-r-1 border-r-gray-200 drop-shadow-lg bg-gradient-to-b from-green-800 via-green-900 via-50% to-gray-900 overflow-y-auto">
+    <div id="sidebar" class="fixed z-10 w-80 top-0 left-0 h-screen border-r-1 border-r-gray-200 drop-shadow-lg bg-gradient-to-b from-green-800 via-green-900 via-50% to-gray-900 overflow-y-auto hidden">
         <div class="flex flex-row items-center justify-center my-8">
             <img class="w-64" src="./../images/humanizing-data.png" alt="Humanizing Data Logo">
         </div>

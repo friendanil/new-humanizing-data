@@ -38,7 +38,7 @@ let profileList: any;
 const EducationFieldsArray: any = [];
 const ExperienceFieldsArray: any = [];
 const DocumentFieldsArray: any = [];
-const SkillsFieldsArray:any=[];
+const SkillsFieldsArray: any = [];
 
 // for modal
 export async function closeProfileModal(modalId: string) {
@@ -452,7 +452,7 @@ export async function uploadPdfFile(files: any) {
     return null;
   }
   const output = await response.json();
-  console.log(output,"output")
+  console.log(output, "output");
   const inputPdf = <HTMLInputElement>document?.getElementById("pdfFile");
   inputPdf.value = output?.data;
   // attachmentValues = {
@@ -488,33 +488,33 @@ export async function uploadPdfFile(files: any) {
 export async function experience(data: any) {
   const divEle: any = document.getElementById(`experience`);
   data?.map(async (opt: any, index: any) => {
-  const container = document.createElement(`div${index}`);
-  container.innerHTML = `
-            <div class="experience-item">
-                <h3>${opt?.data.the_experience?.the_experience_position?.[0]?.data?.the_position}</h3>
-                <p>${opt?.data.the_experience?.the_experience_company?.[0]?.data?.the_company}, ${opt?.data.the_experience?.the_experience_expdobFrom?.[0]?.data?.the_expdobFrom} - ${opt?.data.the_experience?.the_experience_expdobTo?.[0]?.data?.the_expdobTo}</p>
-                <ul>
-                    <li>Developed and maintained web applications using React and Node.js.</li>
-                    <li>Led a team of 5 developers in project planning and execution.</li>
-                    <li>Implemented RESTful APIs and integrated third-party services.</li>
-                </ul>
-            </div>`
-  divEle?.appendChild(container);
-  })
+    const container = document.createElement(`div${index}`);
+    container.innerHTML = `
+      <div class="experience-item">
+          <h3>${opt?.data.the_experience?.the_experience_position?.[0]?.data?.the_position}</h3>
+          <p>${opt?.data.the_experience?.the_experience_company?.[0]?.data?.the_company}, ${opt?.data.the_experience?.the_experience_expdobFrom?.[0]?.data?.the_expdobFrom} - ${opt?.data.the_experience?.the_experience_expdobTo?.[0]?.data?.the_expdobTo}</p>
+          <ul>
+              <li>Developed and maintained web applications using React and Node.js.</li>
+              <li>Led a team of 5 developers in project planning and execution.</li>
+              <li>Implemented RESTful APIs and integrated third-party services.</li>
+          </ul>
+      </div>`;
+    divEle?.appendChild(container);
+  });
 }
 
 //function to add experience
 export async function education(data: any) {
   const divEle: any = document.getElementById(`education`);
   data?.map(async (opt: any, index: any) => {
-  const container = document.createElement(`div${index}`);
-  container.innerHTML = `
+    const container = document.createElement(`div${index}`);
+    container.innerHTML = `
             <div class="education-item">
                 <h3>${opt?.data?.the_education.the_education_eduLevel[0].data.the_eduLevel} in ${opt?.data?.the_education.the_education_course[0].data.the_course}</h3>
                 <p>${opt?.data?.the_education.the_education_institutionName[0].data.the_institutionName}, ${opt?.data?.the_education.the_education_dobFrom[0].data.the_dobFrom} - ${opt?.data?.the_education.the_education_dobTo[0].data.the_dobTo}</p>
-            </div>`
-  divEle?.appendChild(container);
-  })
+            </div>`;
+    divEle?.appendChild(container);
+  });
 }
 
 //function to add experience
@@ -522,12 +522,11 @@ export async function skills(data: any) {
   const divEle: any = document.getElementById(`skills`);
 
   data?.map(async (opt: any, index: any) => {
-  const container = document.createElement(`div${index}`);
-  container.innerHTML = `<li>${opt?.data?.the_skills.the_skills_language[0].data.the_language}</li>`
-  divEle?.appendChild(container);
-  })
+    const container = document.createElement(`div${index}`);
+    container.innerHTML = `<li>${opt?.data?.the_skills.the_skills_language[0].data.the_language}</li>`;
+    divEle?.appendChild(container);
+  });
 }
-
 
 // Save profile details
 export async function saveProfileDetails(e: Event) {
@@ -820,12 +819,12 @@ export async function updateProfile(e: Event) {
   e.preventDefault();
 
   // let userId!: number
-  let userConceptId!: number
-  let dataFromLocalStorage: string = localStorage?.getItem("profile") || ''
+  let userConceptId!: number;
+  let dataFromLocalStorage: string = localStorage?.getItem("profile") || "";
   if (dataFromLocalStorage) {
-    const profileData: IUser = JSON.parse(dataFromLocalStorage)
+    const profileData: IUser = JSON.parse(dataFromLocalStorage);
     // userId = Number(profileData?.userId)
-    userConceptId = Number(profileData?.userConcept)
+    userConceptId = Number(profileData?.userConcept);
   }
 
   const linkResponse = await GetLink(userConceptId, "profile", 10, 1);
@@ -929,7 +928,7 @@ export async function submitAddProfileForm(e: any) {
 
   const skillsContainers = document.querySelectorAll(".input-container-3");
   SkillsFieldsArray.length = 0; // Clear the array
-  
+
   skillsContainers.forEach((container, index) => {
     const inputs: any = container.querySelectorAll(".input-field-3");
     SkillsFieldsArray.push({
@@ -1039,78 +1038,82 @@ export async function getProfileData() {
     const inputMaritialStatus = <HTMLInputElement>(
       document.getElementById("maritialStatus")
     );
-    inputMaritialStatus.value =data?.the_profile_maritialStatus?.[0]
-        ?.data?.the_maritialStatus || "";
+    inputMaritialStatus.value =
+      data?.the_profile_maritialStatus?.[0]?.data?.the_maritialStatus || "";
 
     const inputEducationLevel = <HTMLInputElement>(
       document.getElementById("educationLevel")
     );
-    inputEducationLevel.value =data?.the_profile_educationLevel?.[0]
-        ?.data?.the_educationLevel || "";
+    inputEducationLevel.value =
+      data?.the_profile_educationLevel?.[0]?.data?.the_educationLevel || "";
 
     const inputDepartment = <HTMLInputElement>(
       document.getElementById("department")
     );
-    inputDepartment.value =data?.the_profile_department?.[0]?.data
-        ?.the_department || "";
+    inputDepartment.value =
+      data?.the_profile_department?.[0]?.data?.the_department || "";
 
     const inputWorkExperience = <HTMLInputElement>(
       document.getElementById("workExperience")
     );
-    inputWorkExperience.value =data?.the_profile_workExperience?.[0]
-        ?.data?.the_workExperience || "";
+    inputWorkExperience.value =
+      data?.the_profile_workExperience?.[0]?.data?.the_workExperience || "";
 
     const inputAboutYou = <HTMLInputElement>document.getElementById("aboutYou");
-    inputAboutYou.value =data?.the_profile_aboutYou?.[0]?.data
-        ?.the_aboutYou || "";
+    inputAboutYou.value =
+      data?.the_profile_aboutYou?.[0]?.data?.the_aboutYou || "";
 
     const inputAddressType = <HTMLInputElement>(
       document.getElementById("addressType")
     );
-    inputAddressType.value =data?.the_profile_addressType?.[0]?.data
-        ?.the_addressType || "";
+    inputAddressType.value =
+      data?.the_profile_addressType?.[0]?.data?.the_addressType || "";
 
     const inputStreetNumber = <HTMLInputElement>(
       document.getElementById("streetNumber")
     );
-    inputStreetNumber.value =data?.the_profile_streetNumber?.[0]?.data
-        ?.the_streetNumber || "";
+    inputStreetNumber.value =
+      data?.the_profile_streetNumber?.[0]?.data?.the_streetNumber || "";
 
     const inputStreetAddress = <HTMLInputElement>(
       document.getElementById("streetAddress")
     );
-    inputStreetAddress.value =data?.the_profile_streetAddress?.[0]?.data
-        ?.the_streetAddress || "";
+    inputStreetAddress.value =
+      data?.the_profile_streetAddress?.[0]?.data?.the_streetAddress || "";
 
     const inputUnit = <HTMLInputElement>document.getElementById("unit");
-    inputUnit.value =data?.the_profile_unit?.[0]?.data?.the_unit || "";
+    inputUnit.value = data?.the_profile_unit?.[0]?.data?.the_unit || "";
 
     const inputCity = <HTMLInputElement>document.getElementById("city");
-    inputCity.value =data?.the_profile_city?.[0]?.data?.the_city || "";
+    inputCity.value = data?.the_profile_city?.[0]?.data?.the_city || "";
 
     const inputState = <HTMLInputElement>document.getElementById("state");
-    inputState.value =data?.the_profile_state?.[0]?.data?.the_state || "";
+    inputState.value = data?.the_profile_state?.[0]?.data?.the_state || "";
 
     const inputZip = <HTMLInputElement>document.getElementById("zip");
-    inputZip.value =data?.the_profile_zip?.[0]?.data?.the_zip || "";
+    inputZip.value = data?.the_profile_zip?.[0]?.data?.the_zip || "";
 
     const inputCountry = <HTMLInputElement>document.getElementById("country");
-    inputCountry.value =data?.the_profile_country?.[0]?.data?.the_country || "";
+    inputCountry.value =
+      data?.the_profile_country?.[0]?.data?.the_country || "";
 
     const inputCurrentCompany = <HTMLInputElement>(
       document.getElementById("currentCompany")
     );
-    inputCurrentCompany.value =data?.the_profile_currentCompany?.[0]?.data?.the_currentCompany || "";
+    inputCurrentCompany.value =
+      data?.the_profile_currentCompany?.[0]?.data?.the_currentCompany || "";
 
     const inputCurrentSalary = <HTMLInputElement>(
       document.getElementById("currentSalary")
     );
-    inputCurrentSalary.value =data?.the_profile_currentSalary?.[0]?.data?.the_currentSalary || "";
+    inputCurrentSalary.value =
+      data?.the_profile_currentSalary?.[0]?.data?.the_currentSalary || "";
 
     const inputDesireSalary = <HTMLInputElement>(
       document.getElementById("desireSalary")
     );
-    inputDesireSalary.value =data?.the_profile_desireSalary?.[0]?.data?.the_desireSalary || "";
+    inputDesireSalary.value =
+      data?.the_profile_desireSalary?.[0]?.data?.the_desireSalary || "";
 
     data?.the_profile_s_education?.map(async (data: any, index: any) => {
       await addEducation(index);
@@ -1125,8 +1128,8 @@ export async function getProfileData() {
         document.getElementById(`course${index}`)
       );
       inputCourse.value =
-        data?.data?.the_education?.the_education_course?.[0]?.data?.the_course ||
-        "";
+        data?.data?.the_education?.the_education_course?.[0]?.data
+          ?.the_course || "";
 
       const inputEduDateFrom = <HTMLInputElement>(
         document.getElementById(`eduDateFrom${index}`)
@@ -1209,19 +1212,19 @@ export async function getProfileData() {
       );
       inputDocName.value =
         data?.data?.the_documents?.the_documents_docName?.[0]?.data?.the_docName;
-        
-        const inputViewPDF:any=document.getElementById(`viewPdf${index}`)
-        inputViewPDF.href =data?.data?.the_documents?.the_documents_docUrl?.[0]?.data?.the_docUrl;
-        
-        if(data?.data?.the_documents?.the_documents_docUrl){
-        const inputPdfValue:any=document.getElementById(`pdfFromDb${index}`)
-        inputPdfValue.value =data?.data?.the_documents?.the_documents_docUrl?.[0]?.data?.the_docUrl;
-        const pdfFl:any=document.getElementById(`pdfField${index}`)
-        pdfFl.classList.remove("hidden");
-        pdfFl.classList.add("block")
-        }
 
-     
+      const inputViewPDF: any = document.getElementById(`viewPdf${index}`);
+      inputViewPDF.href =
+        data?.data?.the_documents?.the_documents_docUrl?.[0]?.data?.the_docUrl;
+
+      if (data?.data?.the_documents?.the_documents_docUrl) {
+        const inputPdfValue: any = document.getElementById(`pdfFromDb${index}`);
+        inputPdfValue.value =
+          data?.data?.the_documents?.the_documents_docUrl?.[0]?.data?.the_docUrl;
+        const pdfFl: any = document.getElementById(`pdfField${index}`);
+        pdfFl.classList.remove("hidden");
+        pdfFl.classList.add("block");
+      }
     });
 
     data?.the_profile_s_skills?.map(async (data: any, index: any) => {
@@ -1230,27 +1233,32 @@ export async function getProfileData() {
         document.getElementById(`language${index}`)
       );
       inputlanguage.value =
-        data?.data?.the_skills?.the_skills_language?.[0]?.data
-          ?.the_language || "";
+        data?.data?.the_skills?.the_skills_language?.[0]?.data?.the_language ||
+        "";
 
-          const inputYearOfExperience = <HTMLInputElement>(
-            document.getElementById(`yearOfExperience${index}`)
-          );
-          inputYearOfExperience.value =
-            data?.data?.the_skills?.the_skills_yearOfExperience?.[0]?.data
-              ?.the_yearOfExperience || "";      
-
-    })     
+      const inputYearOfExperience = <HTMLInputElement>(
+        document.getElementById(`yearOfExperience${index}`)
+      );
+      inputYearOfExperience.value =
+        data?.data?.the_skills?.the_skills_yearOfExperience?.[0]?.data
+          ?.the_yearOfExperience || "";
+    });
     const inputFullName = <HTMLInputElement>document.getElementById("fullName");
-    inputFullName.innerHTML =data?.the_profile_first_name?.[0]?.data?.the_first_name +" " +data?.the_profile_last_name?.[0]?.data?.the_last_name;
+    inputFullName.innerHTML =
+      data?.the_profile_first_name?.[0]?.data?.the_first_name +
+      " " +
+      data?.the_profile_last_name?.[0]?.data?.the_last_name;
 
     const inputContact = <HTMLInputElement>document.getElementById("contact");
-    inputContact.innerHTML =data?.the_profile_email?.[0]?.data?.the_email + "||" + data?.the_profile_phone?.[0]?.data?.the_phone;
+    inputContact.innerHTML =
+      data?.the_profile_email?.[0]?.data?.the_email +
+      "||" +
+      data?.the_profile_phone?.[0]?.data?.the_phone;
     const inputAbout = <HTMLInputElement>document.getElementById("about");
-    inputAbout.innerHTML =data?.the_profile_aboutYou?.[0]?.data?.the_aboutYou;
+    inputAbout.innerHTML = data?.the_profile_aboutYou?.[0]?.data?.the_aboutYou;
     await experience(data?.the_profile_s_experience);
     await education(data?.the_profile_s_education);
-    await skills(data?.the_profile_s_skills)
+    await skills(data?.the_profile_s_skills);
   }
 }
 
@@ -1275,7 +1283,7 @@ export async function createProfile(formValues: any) {
   let deletedFormValue: any;
   // console.log(profilePicUrl, "profilePicUrl");
   // Object.assign(formValues, { profilePicUrl: profilePicUrl });
-  
+
   deletedFormValue = delete formValues.education;
   deletedFormValue = delete formValues.experience;
   deletedFormValue = delete formValues.documents;
@@ -1292,7 +1300,7 @@ export async function createProfile(formValues: any) {
   deletedFormValue = delete formValues.expCountry;
   deletedFormValue = delete formValues.expDateFrom;
   deletedFormValue = delete formValues.expDateTo;
-  
+
   profileNameConcept = await createEntityInstance(
     "profile",
     userId,
