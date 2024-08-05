@@ -36,11 +36,11 @@ export default async function assignUserRoleModalHTML() {
                     </div>
                 </div>
 
-                <ul id="search-users-lists">
+                <ul class="list-none ps-0" id="search-users-lists">
                 </ul>
 
                 <h4 class="text-xl font-bold mb-2">Selected User Roles</h4>
-                <ul id="user-roles-lists">
+                <ul class="list-none ps-0" id="user-roles-lists">
 
                 </ul>
         

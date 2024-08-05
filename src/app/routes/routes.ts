@@ -11,6 +11,7 @@ import listingItemsIndex from "../pages/listingItems/listingItems.index.ts";
 import rfqIndex from "../pages/rfq/rfq.index.ts";
 import roleClass from "../pages/roles/roles.index.ts";
 import attendanceClass from "../pages/attendance/user-attendance/attendance.index.ts";
+import employeeHiredClass from "../pages/hired-employee/hired-employee.index.ts";
 import employeeAttendanceClass from "../pages/attendance/employees-attendance/employees-attendance.index.ts";
 import indivisualAttendanceClass from "../pages/attendance/indivisual-attendance/indivisual-attendance.index.ts";
 import jobListIndex from "../pages/jobs/jobList/jobList.index.ts";
@@ -100,6 +101,11 @@ const routes: RouteParams[] = [
   {
     path: "/attendance",
     content: attendanceClass,
+    isAuthenticated: true,
+  },
+  {
+    path: "/employee/hired",
+    content: employeeHiredClass,
     isAuthenticated: true,
   },
   {

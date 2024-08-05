@@ -1,18 +1,19 @@
 import mainViewClass from "../../../default/mainView.class";
+import { showDropdownMenuOption } from "../../../services/dropdown.service";
 import { sidebarHTML, sidebarMenu } from "../../../services/sidebar.service";
 import {
   getCompanyEmployee,
   getEmployeesAttendanceList,
-  showDropdownMenuOption,
 } from "./employees-attendance.service";
 
 export default class extends mainViewClass {
   async getHtml(): Promise<string> {
     (window as any).showDropdownMenuOption = showDropdownMenuOption;
 
-    const employeeAttendance = await getCompanyEmployee()
-    
-    const employeeAttendanceRows = getEmployeesAttendanceList(employeeAttendance);
+    const employeeAttendance = await getCompanyEmployee();
+
+    const employeeAttendanceRows =
+      getEmployeesAttendanceList(employeeAttendance);
 
     return `
       ${sidebarHTML()}
@@ -30,7 +31,7 @@ export default class extends mainViewClass {
                           <tr>
                               <th scope="col" class="px-6 py-3">DP</th>
                               <th scope="col" class="px-6 py-3">Name</th>
-                              <th scope="col" class="px-6 py-3">Email In</th>
+                              <th scope="col" class="px-6 py-3">Email</th>
                               <th scope="col" class="px-6 py-3">First In</th>
                               <th scope="col" class="px-6 py-3">Breaks</th>
                               <th scope="col" class="px-6 py-3">Last Out</th>
