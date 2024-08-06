@@ -66,13 +66,6 @@ export function getDuration(timeMs: number) {
 export function getDateInMonth(year: number, month: number) {
   let date = new Date(year, month - 1, 1);
   let dates = [];
-  console.log(date, "date", year, month - 1, 1);
-  console.log(date.getMonth() === month - 1, date.getMonth(), month - 1);
-  console.log(
-    "time",
-    date.getTime(),
-    new Date(new Date().setHours(0, 0, 0, 0)).getTime()
-  );
 
   while (date.getMonth() === month - 1) {
     if (
@@ -98,7 +91,6 @@ export async function searchUserAttendance(
 ) {
   const profileStorageData: any = await getLocalStorageData();
   const token = profileStorageData?.token;
-  console.log(searchDate, "seachdate");
 
   const checkInFilter = new FilterSearch();
   checkInFilter.type = "checkin";
@@ -198,7 +190,6 @@ export async function getUserMonthlyAttendanceRows(
       new Date(monthlyDate).getMonth() + 1
     );
   }
-  console.log("date list", dateList);
   if (
     dateList.length == 0
     // ||
@@ -351,10 +342,6 @@ export async function exportAttendance(searchDate: string, type: 'pdf' | 'csv', 
     "0" +
     (new Date().getMonth() + 1)
   ).slice(-2)}-${("0" + (new Date().getMonth() + 1)).slice(-2)}`;
-  // const monthlyDate = `${new Date().getFullYear()}-${(
-  //   "0" +
-  //   (new Date().getMonth() + 1)
-  // ).slice(-2)}`;
 
   const emploeyeeList = await getCompanyEmployee(searchDate);
   const headers = [
@@ -366,7 +353,6 @@ export async function exportAttendance(searchDate: string, type: 'pdf' | 'csv', 
     "Working Time",
     "Status",
   ];
-  console.log(emploeyeeList);
 
   let pdfHTML = "";
 
@@ -391,7 +377,6 @@ export async function exportAttendance(searchDate: string, type: 'pdf' | 'csv', 
         new Date(searchDate).getMonth() + 1
       );
     }
-    console.log("date list", dateList);
 
     const datas: any[] = [];
     dateList.forEach((date: string) => {
@@ -414,24 +399,21 @@ export async function exportAttendance(searchDate: string, type: 'pdf' | 'csv', 
       };
       datas.push(csvmaker(data));
     });
-    console.log(datas, "dattas");
 
     if (type == "csv") {
       let final =
         headers.join(",") +
         "\n" +
         datas.map((data) => data.join(",")).join("\n");
-      console.log(final, "final");
 
       const blob = new Blob([final], { type: "text/csv" });
 
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
-      a.download = `attendance-${user.firstName}-${dailyDate}.csv`;
+      a.download = `attendance-${user.firstName}.csv`;
 
       a.click();
     } else if (type == "pdf") {
-      console.log(user, 'user one')
       pdfHTML += await getPrintableUserAttendanceTable(
         monthlyAttendance,
         searchDate,
@@ -456,12 +438,11 @@ export async function exportAttendance(searchDate: string, type: 'pdf' | 'csv', 
 const csvmaker = (data: any) => {
   // Get the keys (headers) of the object
   const headers = Object.keys(data);
-  console.log("headers", headers);
 
   // Get the values of the object
   const values = Object.values(data);
-  console.log(values, " values");
-  console.log([headers.join(","), values.join(",")].join("\n"), " return");
+  // console.log(values, " values");
+  // console.log([headers.join(","), values.join(",")].join("\n"), " return");
 
   return values;
   return values.join(",");
@@ -474,16 +455,15 @@ async function getPrintableUserAttendanceTable(
   monthlyDate: string,
   user: any
 ) {
-  console.log(user, 'user tow')
   const employeeAttendanceRows = await getUserMonthlyAttendanceRows(
     monthlyAttendance,
     monthlyDate
   );
   return `
-    <h2 class="text-3xl text-gray-800 dark:text-white font-bold mb-6" style="text-align:center;">Addendance of <span class="capitalize">${
-      user.firstName ? user.firstName + " " + user.lastName : user.email
-    }</span></h2>
-    <div class="overflow-x-auto mb-6 block" style="display: block; page-break-after: always;">
+    <div class="block" style="display: block; page-break-after: always;">
+      <h2 class="text-3xl text-gray-800 dark:text-white font-bold mb-6" style="text-align:center;">Addendance of <span class="capitalize">${
+        user.firstName ? user.firstName + " " + user.lastName : user.email
+      }</span></h2>
         <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
             <thead class="text-xs text-gray-700 uppercase bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
