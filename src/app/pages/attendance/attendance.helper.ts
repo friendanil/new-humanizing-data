@@ -5,6 +5,7 @@ import {
 } from "mftsccs-browser";
 import { MONTHS } from "../../constants/time.constants";
 import { getLocalStorageData } from "../../services/helper.service";
+import { getCompanyEmployee } from "./employees-attendance/employees-attendance.service";
 
 export type Attendance = {
   id: any;
@@ -105,11 +106,11 @@ export async function searchUserAttendance(
   checkInFilter.search = `%${searchDate}%`;
   checkInFilter.composition = false;
 
-  //   const checkOutFilter = new FilterSearch();
-  //   checkOutFilter.type = "checkin";
-  //   checkOutFilter.logicoperator = "=";
-  //   checkOutFilter.search = "2024";
-  //   checkOutFilter.composition = false;
+  // const checkOutFilter = new FilterSearch();
+  // checkOutFilter.type = "checkout";
+  // checkOutFilter.logicoperator = "=";
+  // checkOutFilter.search = `%${searchDate}%`;
+  // checkOutFilter.composition = false;
 
   const searchQuery = new SearchQuery();
   searchQuery.composition = compositionId;
@@ -120,11 +121,13 @@ export async function searchUserAttendance(
 
   const attendanceQuery = new SearchQuery();
   attendanceQuery.logic = "or";
-  attendanceQuery.fullLinkers = [
+  attendanceQuery.selectors = [
     "the_attendance_checkin",
     "the_attendance_checkout",
     "the_attendance_status",
   ];
+  attendanceQuery.fullLinkers = ["the_attendance_checkin"];
+  attendanceQuery.inpage = 100;
   attendanceQuery.filterSearches = [checkInFilter];
   attendanceQuery.doFilter = true;
 
@@ -286,7 +289,7 @@ export function calculateAttendance(
   attendanceList: Attendance[],
   date: string
 ) {
-  const attendances = attendanceList.filter(
+  const attendances = attendanceList?.filter(
     (attendance) =>
       attendance?.checkin?.includes(date) ||
       attendance?.checkout?.includes(date)
@@ -296,7 +299,7 @@ export function calculateAttendance(
     currentDate: date,
     times: -1,
   };
-  attendances.map((attendance) => {
+  attendances?.map((attendance) => {
     obj.ids.push(attendance.id);
     if (!obj.checkin && attendance.checkin) obj.checkin = attendance.checkin;
     else if (obj.checkin && attendance.checkin) {
@@ -341,4 +344,159 @@ function formatDate(date: any) {
   let day = date.getDate().toString().padStart(2, "0");
 
   return `${year}-${month}-${day}`;
+}
+
+export async function exportAttendance(searchDate: string, type: 'pdf' | 'csv', userIds?: string[]) {
+  const dailyDate = `${new Date().getFullYear()}-${(
+    "0" +
+    (new Date().getMonth() + 1)
+  ).slice(-2)}-${("0" + (new Date().getMonth() + 1)).slice(-2)}`;
+  // const monthlyDate = `${new Date().getFullYear()}-${(
+  //   "0" +
+  //   (new Date().getMonth() + 1)
+  // ).slice(-2)}`;
+
+  const emploeyeeList = await getCompanyEmployee(searchDate);
+  const headers = [
+    "Date",
+    "Day",
+    "First Check In",
+    "Breaks",
+    "Check Out",
+    "Working Time",
+    "Status",
+  ];
+  console.log(emploeyeeList);
+
+  let pdfHTML = "";
+
+  for (let i = 0; i < emploeyeeList.length; i++) {
+    const employee = emploeyeeList[i];
+
+    const user = employee.user;
+    const monthlyAttendance = employee.attendances;
+
+    if (userIds && userIds.length && !userIds.includes(user.id.toString()))
+      continue;
+
+    let dateList: string[];
+    if (monthlyAttendance?.[0]?.checkin) {
+      dateList = getDateInMonth(
+        new Date(monthlyAttendance?.[0]?.checkin).getFullYear(),
+        new Date(monthlyAttendance?.[0]?.checkin).getMonth() + 1
+      );
+    } else {
+      dateList = getDateInMonth(
+        new Date(searchDate).getFullYear(),
+        new Date(searchDate).getMonth() + 1
+      );
+    }
+    console.log("date list", dateList);
+
+    const datas: any[] = [];
+    dateList.forEach((date: string) => {
+      const obj = calculateAttendance(monthlyAttendance, date);
+
+      let data = {
+        date: `"${date}"`,
+        day: obj.currentDate
+          ? new Date(obj.currentDate).toLocaleString("en-us", {
+              weekday: "short",
+            })
+          : "",
+        checkin: obj.checkin ? new Date(obj.checkin).toLocaleTimeString() : "",
+        breaks: obj.times > 0 ? `${obj.times} time(s)` : "",
+        checkout: obj.checkout
+          ? `"${new Date(obj.checkout).toLocaleTimeString()}"`
+          : "",
+        workingTime: obj.workingTime ? `"${getDuration(obj.workingTime)}"` : "",
+        status: obj.checkin ? "Present" : `${obj?.status || ""}` || "",
+      };
+      datas.push(csvmaker(data));
+    });
+    console.log(datas, "dattas");
+
+    if (type == "csv") {
+      let final =
+        headers.join(",") +
+        "\n" +
+        datas.map((data) => data.join(",")).join("\n");
+      console.log(final, "final");
+
+      const blob = new Blob([final], { type: "text/csv" });
+
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `attendance-${user.firstName}-${dailyDate}.csv`;
+
+      a.click();
+    } else if (type == "pdf") {
+      pdfHTML += await getPrintableUserAttendanceTable(
+        monthlyAttendance,
+        searchDate,
+        user
+      );
+    }
+  }
+
+  if (type == "pdf" && pdfHTML != "") {
+    document.getElementById("app")?.classList.add("hidden");
+    document.body.insertAdjacentHTML(
+      "beforeend",
+      `<div id="print_delete">${pdfHTML}</div>`
+    );
+    window.print();
+    document.getElementById("print_delete")?.remove();
+    document.getElementById("app")?.classList.remove("hidden");
+  }
+}
+
+// Function to create a CSV string from an object
+const csvmaker = (data: any) => {
+  // Get the keys (headers) of the object
+  const headers = Object.keys(data);
+  console.log("headers", headers);
+
+  // Get the values of the object
+  const values = Object.values(data);
+  console.log(values, " values");
+  console.log([headers.join(","), values.join(",")].join("\n"), " return");
+
+  return values;
+  return values.join(",");
+  // Join the headers and values with commas and newlines to create the CSV string
+  return [headers.join(","), values.join(",")].join("\n");
+};
+
+async function getPrintableUserAttendanceTable(
+  monthlyAttendance: any,
+  monthlyDate: string,
+  user: any
+) {
+  const employeeAttendanceRows = await getUserMonthlyAttendanceRows(
+    monthlyAttendance,
+    monthlyDate
+  );
+  return `
+    <h2 class="text-3xl text-gray-800 dark:text-white font-bold mb-6" style="text-align:center;">Addendance of <span class="capitalize"${
+      user.firstName ? user.firstName + " " + user.lastName : user.email
+    }</span></h2>
+    <div class="overflow-x-auto mb-6 block" style="display: block; page-break-after: always;">
+        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                    <th scope="col" class="px-6 py-3">Date</th>
+                    <th scope="col" class="px-6 py-3">Day</th>
+                    <th scope="col" class="px-6 py-3">First In</th>
+                    <th scope="col" class="px-6 py-3">Breaks</th>
+                    <th scope="col" class="px-6 py-3">Last Out</th>
+                    <th scope="col" class="px-6 py-3">Working Time</th>
+                    <th scope="col" class="px-6 py-3">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${employeeAttendanceRows}
+            </tbody>
+      </table>
+    </div>`;
 }
