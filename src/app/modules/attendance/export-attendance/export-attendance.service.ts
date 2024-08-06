@@ -15,9 +15,9 @@ export function exportUserAttendance(e: any) {
   const date = `${year}-${month}`;
   const type: any = fromValues?.["export-format"].toString();
 
-  if (fromValues?.["export-userId"]) {
-    const userIds = fromValues["export-userId"].toString().split(",");
-    exportAttendance(date, type, userIds);
+  if (fromValues?.["export-userConceptId"]) {
+    const userConceptIds = fromValues["export-userConceptId"].toString().split(",");
+    exportAttendance(date, type, userConceptIds);
   } else {
     exportAttendance(date, type);
   }

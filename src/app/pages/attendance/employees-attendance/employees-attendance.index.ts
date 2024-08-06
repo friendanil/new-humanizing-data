@@ -5,14 +5,11 @@ import { sidebarHTML, sidebarMenu } from "../../../services/sidebar.service";
 import {
   getCompanyEmployee,
   getEmployeesAttendanceList,
-  handleExportEmployeesAteendanceModal,
 } from "./employees-attendance.service";
 
 export default class extends mainViewClass {
   async getHtml(): Promise<string> {
     (window as any).showDropdownMenuOption = showDropdownMenuOption;
-    (window as any).handleExportEmployeesAteendanceModal =
-      handleExportEmployeesAteendanceModal;
 
     const employeeAttendance = await getCompanyEmployee();
 
@@ -35,7 +32,7 @@ export default class extends mainViewClass {
               )}</p>
             </div>
             <div>
-              <button onclick="handleExportEmployeesAteendanceModal(false)" id="checkin-btn" type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 disabled:bg-blue-400 dark:bg-blue-500 disabled:cursor-not-allowed">Export</button>
+              <button onclick="handleExportEmployeesAteendanceModal(false)" type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 disabled:bg-blue-400 dark:bg-blue-500 disabled:cursor-not-allowed">Export</button>
             </div>
           </div>
           <div class="w-full px-6 py-4 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">

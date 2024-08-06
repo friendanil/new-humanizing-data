@@ -222,20 +222,20 @@ export function getEmployeesAttendanceList(employees: any[]) {
 
 export function handleExportEmployeesAteendanceModal(
   indivisualUser: boolean = false,
-  userId: number = 0
+  userConceptId: number = 0
 ) {
   openModal("export-employees-ateendance");
 
-  if (indivisualUser && userId) {
-    // populate userId to be exported for indivisual User
-    document.getElementById("export-userId")?.remove();
+  if (indivisualUser && userConceptId) {
+    // populate userConceptId to be exported for indivisual User
+    document.getElementById("export-userConceptId")?.remove();
 
     const exportForm = document.getElementById("exportEmployeesAttendanceForm");
 
     if (exportForm) {
       exportForm.insertAdjacentHTML(
         "afterbegin",
-        `<input type="text" value="${userId}" name="export-userId" id="export-userId" class="hidden" />`
+        `<input type="text" value="${userConceptId}" name="export-userConceptId" id="export-userConceptId" class="hidden" />`
       );
     }
   }

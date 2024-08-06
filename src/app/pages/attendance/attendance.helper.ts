@@ -431,6 +431,7 @@ export async function exportAttendance(searchDate: string, type: 'pdf' | 'csv', 
 
       a.click();
     } else if (type == "pdf") {
+      console.log(user, 'user one')
       pdfHTML += await getPrintableUserAttendanceTable(
         monthlyAttendance,
         searchDate,
@@ -473,12 +474,13 @@ async function getPrintableUserAttendanceTable(
   monthlyDate: string,
   user: any
 ) {
+  console.log(user, 'user tow')
   const employeeAttendanceRows = await getUserMonthlyAttendanceRows(
     monthlyAttendance,
     monthlyDate
   );
   return `
-    <h2 class="text-3xl text-gray-800 dark:text-white font-bold mb-6" style="text-align:center;">Addendance of <span class="capitalize"${
+    <h2 class="text-3xl text-gray-800 dark:text-white font-bold mb-6" style="text-align:center;">Addendance of <span class="capitalize">${
       user.firstName ? user.firstName + " " + user.lastName : user.email
     }</span></h2>
     <div class="overflow-x-auto mb-6 block" style="display: block; page-break-after: always;">

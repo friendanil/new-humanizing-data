@@ -1,7 +1,10 @@
 import { GetCompositionWithId } from "mftsccs-browser";
 import mainViewClass from "../../../default/mainView.class";
 import { updateContent } from "../../../routes/renderRoute.service";
-import { formatUserComposition, getLocalStorageData } from "../../../services/helper.service";
+import {
+  formatUserComposition,
+  getLocalStorageData,
+} from "../../../services/helper.service";
 import {
   generateMonthOptions,
   generateYearOptions,
@@ -11,6 +14,7 @@ import {
 import { handleMonthlyDateChange } from "../user-attendance/attendance.service";
 import editAttendanceModalHTML from "../../../modules/attendance/edit/edit-attendance-modal.index";
 import { showEditAttendanceModal } from "./indivisual-attendance.service";
+import { exportEmployeesAteendanceModalHTML } from "../../../modules/attendance/export-attendance/export-attendance.index";
 
 export default class extends mainViewClass {
   userConcept!: number;
@@ -51,7 +55,11 @@ export default class extends mainViewClass {
         <div class="container mx-auto my-4 text-gray-800">
             <div class="flex flex-row items-center justify-between mb-4">
                 <h3 class="text-4xl font-bold">Monthly Attendance</h3>
-                <div class="flex flex-row gap-4 items-center">
+                <div class="flex flex-row gap-4 items-end">
+                    <button 
+                        onclick="handleExportEmployeesAteendanceModal(true, ${this.userConcept})" 
+                        type="button" 
+                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 disabled:bg-blue-400 dark:bg-blue-500 disabled:cursor-not-allowed">Export</button>
                     <div class="">
                         <label for="filter-attendance-year" class="block text-sm font-medium leading-6">For the year of</label>
                         <select id="filter-attendance-year" name="filter-attendance-year" onchange="handleMonthlyDateChange()"
@@ -115,6 +123,7 @@ export default class extends mainViewClass {
             </div>
 
             ${editAttendanceModalHTML()}
+            ${exportEmployeesAteendanceModalHTML()}
         </div>
     `;
   }

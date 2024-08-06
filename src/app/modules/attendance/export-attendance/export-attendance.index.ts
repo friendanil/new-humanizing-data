@@ -2,9 +2,12 @@ import {
   generateMonthOptions,
   generateYearOptions,
 } from "../../../pages/attendance/attendance.helper";
+import { handleExportEmployeesAteendanceModal } from "../../../pages/attendance/employees-attendance/employees-attendance.service";
 import { exportUserAttendance } from "./export-attendance.service";
 
 export function exportEmployeesAteendanceModalHTML() {
+  (window as any).handleExportEmployeesAteendanceModal =
+    handleExportEmployeesAteendanceModal;
   (window as any).exportUserAttendance = exportUserAttendance;
   return `
         <div id="export-employees-ateendance" class="fixed hidden print:hidden z-50 inset-0 bg-gray-900 bg-opacity-60 dark:bg-gray-200 dark:bg-opacity-40 overflow-y-auto h-full w-full px-4">
