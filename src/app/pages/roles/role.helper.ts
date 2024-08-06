@@ -26,7 +26,8 @@ export async function hasPermission(
         const permissionItem = role.permissions[j];
         // check if has permission module
         if (
-          permissionItem?.internal_permission?.module_name.toLocaleLowerCase() == permission.toLocaleLowerCase()
+          permissionItem?.internal_permission?.module_name.toLocaleLowerCase() ==
+          permission.toLocaleLowerCase()
         ) {
           // if not array check if has access
           if (
@@ -58,14 +59,15 @@ export async function hasPermission(
 async function getLocalRoles() {
   const profileStorageData: any = await getLocalStorageData();
   const rolesData = JSON.parse(atob(profileStorageData?.amcode)) || [];
-  if (!Array.isArray(rolesData)) return []
+  if (!Array.isArray(rolesData)) return [];
   let roles = rolesData.map((role: any) => {
     return {
       name: role?.humanizing_data_internal_role_name?.name,
-      permissions: role?.humanizing_data_internal_role_name?.humanizing_data_internal_role_name_s_has_permission_s || []
-    }
-  })
-  console.log(roles, 'test')
+      permissions:
+        role?.humanizing_data_internal_role_name
+          ?.humanizing_data_internal_role_name_s_has_permission_s || [],
+    };
+  });
 
   return roles;
 }
