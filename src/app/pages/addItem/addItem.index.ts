@@ -32,40 +32,70 @@ export default class extends mainViewClass {
     // (window as any).resetUpdateCategory = resetUpdateCategory;
 
     const itemCategoryHTML = await getCategoryList();
-    const myAgentType = await getMyAgentType();
+    const myAgentType: any = await getMyAgentType();
 
     let listingAgentsHTML: any;
     let sellerAgentsHTML: any;
     let sellersHTML: any;
     let agentListHTML: any;
 
-    if (myAgentType?.length) {
-      const listingAgent = myAgentType?.filter(
-        (agent: any) =>
-          agent?.data?.agent_request_info?.agentType === "listingAgent" &&
-          agent?.data?.agent_request_info?.isApproved === "True"
-      );
-      // console.log("listingAgent", listingAgent);
+    if (myAgentType) {
+      // const listingAgent = myAgentType?.filter(
+      //   (agent: any) =>
+      //     agent?.data?.agent_request_info?.agentType === "listingAgent" &&
+      //     agent?.data?.agent_request_info?.isApproved === "True"
+      // );
+      const agentType = myAgentType?.data?.agent_request_info?.agentType
+      console.log("agentType", agentType);
 
-      if (listingAgent?.length) {
+      if (agentType === "listingAgent") {
+        // listing agent selects seller
         sellersHTML = await getAgentSellers();
         agentListHTML = `
-        <div class="mt-4">
-          <label for="seller" class="block text-sm font-medium leading-6">Item Seller <span
-            class="text-rose-400">*</span></label>
-          <select id="seller" name="seller" autocomplete="seller-name"
-            class="block w-full rounded-md border-0 mt-2 px-3 py-2 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-md sm:text-sm sm:leading-6 text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">
-            <option value="" selected disabled>-- select seller --</option>
-            ${sellersHTML}
-          </select>
-        </div>
-      `;
+          <div class="mt-4">
+            <label for="seller" class="block text-sm font-medium leading-6">Item Seller <span
+              class="text-rose-400">*</span></label>
+            <select id="seller" name="seller" autocomplete="seller-name"
+              class="block w-full rounded-md border-0 mt-2 px-3 py-2 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-md sm:text-sm sm:leading-6 text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">
+              <option value="" selected disabled>-- select seller --</option>
+              ${sellersHTML}
+            </select>
+          </div>
+        `;
       } else {
         await getAgents();
       }
     } else {
       await getAgents();
     }
+
+    // if (myAgentType?.length) {
+    //   const listingAgent = myAgentType?.filter(
+    //     (agent: any) =>
+    //       agent?.data?.agent_request_info?.agentType === "listingAgent" &&
+    //       agent?.data?.agent_request_info?.isApproved === "True"
+    //   );
+    //   console.log("listingAgent", listingAgent);
+
+    //   if (listingAgent?.length) {
+    //     sellersHTML = await getAgentSellers();
+    //     agentListHTML = `
+    //     <div class="mt-4">
+    //       <label for="seller" class="block text-sm font-medium leading-6">Item Seller <span
+    //         class="text-rose-400">*</span></label>
+    //       <select id="seller" name="seller" autocomplete="seller-name"
+    //         class="block w-full rounded-md border-0 mt-2 px-3 py-2 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-md sm:text-sm sm:leading-6 text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">
+    //         <option value="" selected disabled>-- select seller --</option>
+    //         ${sellersHTML}
+    //       </select>
+    //     </div>
+    //   `;
+    //   } else {
+    //     await getAgents();
+    //   }
+    // } else {
+    //   await getAgents();
+    // }
 
     async function getAgents() {
       listingAgentsHTML = await getListingAgents();

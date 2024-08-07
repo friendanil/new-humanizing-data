@@ -27,6 +27,7 @@ let typeListHTML: any;
 
 let categoryNameList: any;
 let typeNameList: any;
+let currentMyAgentType: any;
 
 export async function getHTML() {
   try {
@@ -354,11 +355,37 @@ export async function updateItemCategory(e: any) {
 // }
 
 export async function getMyAgentType() {
-  const profileStorageData: any = await getLocalStorageData();
-  const userConceptId = profileStorageData?.userConcept;
-  const agentTypeResonse = await GetLink(userConceptId, "isAgent_s", 10, 1);
-  console.log("agentTypeResonse", agentTypeResonse);
-  return agentTypeResonse;
+  return new Promise(async (resolve: any) => {
+    const profileStorageData: any = await getLocalStorageData();
+    const userConceptId = profileStorageData?.userConcept;
+    const agentType = await GetLink(userConceptId, "isAgent_s", 10, 1);
+    console.log("agentType", agentType);
+
+    const approvedAgentType = agentType?.filter(
+      (agent: any) =>
+        agent?.data?.agent_request_info &&
+        agent?.data?.agent_request_info?.isApproved === "True"
+    );
+
+    console.log("approvedAgentType ->", approvedAgentType);
+
+    approvedAgentType.sort((a: any, b: any) => {
+      const aTime = new Date(a?.created_at).getTime();
+      const bTime = new Date(b?.created_at).getTime();
+      return bTime - aTime;
+    });
+
+    console.log("approvedAgentType", approvedAgentType);
+
+    currentMyAgentType = approvedAgentType[0];
+    console.log("currentMyAgentType ->", currentMyAgentType);
+
+    // updateItem("xyz");
+
+    resolve(currentMyAgentType);
+    // return currentMyAgentType;
+    // return agentType;
+  });
 }
 
 export async function getAgentSellers() {
@@ -470,7 +497,9 @@ export async function submitAddItemForm(e: any) {
   const itemConceptResponse = await createItem(formValues);
   // await LocalSyncData.SyncDataOnline();
 
-  // the_seller_s_item
+  console.log('itemConceptResponse', itemConceptResponse)
+
+  // the_seller_s_item || the_listingagent_s_item
   const sellerItemResponse = await updateItem(itemConceptResponse);
   console.log("sellerItemResponse ->", sellerItemResponse);
   await LocalSyncData.SyncDataOnline();
@@ -701,7 +730,7 @@ export async function createItem(formValues: any) {
     title: itemName,
   });
 
-  const itemEntityConcept = await MakeTheInstanceConceptLocal(
+  const itemEntityConcept: LConcept = await MakeTheInstanceConceptLocal(
     "the_item",
     "",
     true,
@@ -750,7 +779,111 @@ export async function createItem(formValues: any) {
   return itemEntityConcept;
 }
 
-export async function updateItem(itemEntityConcept: any) {
+export async function updateItem(itemEntityConcept: LConcept) {
+  console.log("updateItem itemEntityConcept ->", itemEntityConcept);
+
+  const profileStorageData: any = await getLocalStorageData();
+  const userId = profileStorageData?.userId;
+  // const userConceptId = profileStorageData?.userConcept;
+  const userEntityId = profileStorageData?.entityId;
+  const token = profileStorageData?.token;
+
+  console.log("userEntityId", userEntityId);
+
+  console.log("currentMyAgentType", currentMyAgentType);
+  const myAgentType: string =
+    currentMyAgentType?.data?.agent_request_info?.agentType.toLowerCase();
+  console.log("myAgentType", myAgentType);
+
+  /*
+    if myAgentType undefined or !== listingagent
+      check the_seller
+        if the_seller get sellerconcept
+        else create the_seller concept
+    else if myAgentType is defined and is listingagent
+      check the_listingagent
+        if the_listingagent get listingagent concept
+        else create the_listingagent concept
+  */
+
+  // if (myAgentType) {
+  //   let search = new SearchStructure();
+  //   search.composition = `the_${myAgentType}`;
+  //   // search.composition = `the_seller`;
+  //   search.inpage = 100;
+  //   const agentResponse = await SearchLinkInternal(search, token);
+  //   console.log("agentResponse", agentResponse);
+  // }
+
+  if (!myAgentType || (myAgentType && myAgentType !== "listingagent")) {
+    console.log("IF");
+    console.log('IF itemEntityConcept', itemEntityConcept);
+    
+    return await getAgentEntityConcept(
+      "seller",
+      itemEntityConcept,
+      token,
+      userEntityId,
+      userId
+    );
+   
+  } else if (myAgentType && myAgentType === "listingagent") {
+    console.log("ELSE IF", "listingagent");
+    console.log('IF itemEntityConcept', itemEntityConcept);
+
+    return await getAgentEntityConcept(
+      "listingagent",
+      itemEntityConcept,
+      token,
+      userEntityId,
+      userId
+    );
+  }
+  
+}
+
+export async function getAgentEntityConcept(
+  agentType: string,
+  itemEntityConcept: LConcept,
+  token: string,
+  userEntityId: number,
+  userId: number
+) {
+  console.log('agentType', agentType)
+  let search = new SearchStructure();
+  search.composition = `the_${agentType}`;
+  search.inpage = 100;
+  const agentResponse = await SearchLinkInternal(search, token);
+  console.log("agentResponse", agentResponse);
+
+  // return;
+  let agentEntityConcept: any;
+  if (agentResponse?.length) {
+    agentEntityConcept = await GetTheConceptLocal(agentResponse?.[0]?.id);
+  } else {
+    agentEntityConcept = await MakeTheInstanceConceptLocal(
+      `the_${agentType}`,
+      `${userEntityId}`,
+      true,
+      userId,
+      4,
+      999
+    );
+  }
+
+  console.log('agentEntityConcept', agentEntityConcept)
+  console.log('itemEntityConcept', itemEntityConcept)
+
+  await CreateConnectionBetweenEntityLocal(
+    agentEntityConcept,
+    itemEntityConcept,
+    "s_item"
+  );
+
+  return agentEntityConcept;
+}
+
+export async function _updateItem(itemEntityConcept: any) {
   console.log("updateItem itemEntityConcept ->", itemEntityConcept);
 
   const profileStorageData: any = await getLocalStorageData();

@@ -57,7 +57,7 @@ export const sendEmailForInterview=async()=>{
     const emailContainers = document.querySelectorAll(".email-container");
     EmailFieldsArray.length = 0; // Clear the array
   
-   await emailContainers.forEach((container, index) => {
+   await emailContainers.forEach((container) => {
       const inputs: any = container.querySelectorAll(".email-field");
       EmailFieldsArray.push(inputs[0].value);
     });
