@@ -60,6 +60,7 @@ export async function handleAttendanceClick() {
       "attendance",
       userId,
       {
+        date: new Date().toISOString(),
         checkin: new Date().toISOString(),
         status: "Present",
       }

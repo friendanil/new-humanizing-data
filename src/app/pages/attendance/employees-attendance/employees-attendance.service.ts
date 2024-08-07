@@ -42,11 +42,11 @@ export async function getCompanyEmployee(filterDate?: string) {
   search2.reverse = true;
   search2.fullLinkers = ["the_user_profile"];
 
-  const checkInFilter = new FilterSearch();
-  checkInFilter.type = "checkin";
-  checkInFilter.logicoperator = "like";
-  checkInFilter.search = `%${searchDate}%`;
-  checkInFilter.composition = false;
+  const dateFilter = new FilterSearch();
+  dateFilter.type = "date";
+  dateFilter.logicoperator = "like";
+  dateFilter.search = `%${searchDate}%`;
+  dateFilter.composition = false;
 
   const search3 = new SearchQuery();
   search3.fullLinkers = ["the_user_s_attendance"];
@@ -54,13 +54,15 @@ export async function getCompanyEmployee(filterDate?: string) {
   search3.doFilter = true;
 
   const search4 = new SearchQuery();
-  search4.filterSearches = [checkInFilter];
+  search4.filterSearches = [dateFilter];
   search4.logic = "or";
-  search4.fullLinkers = [
+  search4.selectors = [
+    "the_attendance_date",
     "the_attendance_checkin",
     "the_attendance_checkout",
     "the_attendance_status",
   ];
+  search4.fullLinkers = ["the_attendance_date"];
   search4.doFilter = true;
   search4.inpage = 100;
 
@@ -190,7 +192,8 @@ export function getEmployeesAttendanceList(employees: any[]) {
                   ? "bg-green-400"
                   : obj.status == "Absent" && "bg-red-400"
               }">
-              ${obj.checkin ? "Present" : obj?.status || ""}
+              <!-- ${obj.checkin ? "Present" : obj?.status || ""} -->
+              ${obj.status}
               </td>
               <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-opacity-25 ${
                 obj.checkin

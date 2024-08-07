@@ -11,6 +11,7 @@ export type Attendance = {
   id: any;
   checkin: any;
   checkout?: any;
+  date: any;
   status: any;
   createdAt?: any;
   remarks?: any;
@@ -92,11 +93,17 @@ export async function searchUserAttendance(
   const profileStorageData: any = await getLocalStorageData();
   const token = profileStorageData?.token;
 
-  const checkInFilter = new FilterSearch();
-  checkInFilter.type = "checkin";
-  checkInFilter.logicoperator = "like";
-  checkInFilter.search = `%${searchDate}%`;
-  checkInFilter.composition = false;
+  const dateFilter = new FilterSearch();
+  dateFilter.type = "date";
+  dateFilter.logicoperator = "like";
+  dateFilter.search = `%${searchDate}%`;
+  dateFilter.composition = false;
+
+  // const absentFilter = new FilterSearch();
+  // absentFilter.type = "status";
+  // absentFilter.logicoperator = "=";
+  // absentFilter.search = `Absent`;
+  // absentFilter.composition = false;
 
   // const checkOutFilter = new FilterSearch();
   // checkOutFilter.type = "checkout";
@@ -114,13 +121,15 @@ export async function searchUserAttendance(
   const attendanceQuery = new SearchQuery();
   attendanceQuery.logic = "or";
   attendanceQuery.selectors = [
+    "the_attendance_date",
     "the_attendance_checkin",
     "the_attendance_checkout",
     "the_attendance_status",
   ];
-  attendanceQuery.fullLinkers = ["the_attendance_checkin"];
+  attendanceQuery.fullLinkers = ["the_attendance_date"];
   attendanceQuery.inpage = 100;
-  attendanceQuery.filterSearches = [checkInFilter];
+  attendanceQuery.logic = "or";
+  attendanceQuery.filterSearches = [dateFilter];
   attendanceQuery.doFilter = true;
 
   console.log(searchQuery);
@@ -152,6 +161,8 @@ export async function formatUserAttendance(attendanceList: any[]) {
     attendanceList?.map((attendance: any) => {
       return {
         id: attendance.id,
+        date: attendance?.data?.[`the_attendance`]?.[`the_attendance_date`]?.[0]
+          ?.data?.["the_date"],
         checkin:
           attendance?.data?.[`the_attendance`]?.[`the_attendance_checkin`]?.[0]
             ?.data?.["the_checkin"],
@@ -249,7 +260,8 @@ export async function getUserMonthlyAttendanceRows(
           obj.checkin ? "bg-green-400" : obj.status == "Absent" && "bg-red-400"
         }">
             <!-- ${obj.count > 0 ? `Present` : ""} -->
-            ${obj.checkin ? "Present" : obj?.status || ""}
+            <!-- ${obj.checkin ? "Present" : obj?.status || ""} -->
+            ${obj.status}
         </td>
         `;
     if (showActions && userConceptId) {
@@ -257,14 +269,28 @@ export async function getUserMonthlyAttendanceRows(
         <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-opacity-25 ${
           obj.checkin ? "bg-green-400" : obj.status == "Absent" && "bg-red-400"
         }">
-          <div class="flex flex-row items-center gap-2">
-            <a role="button" 
-              onclick="showEditAttendanceModal(
-                '${userConceptId}', '${obj.currentDate}')" 
-              class="text-gray-700 border border-gray-700 hover:bg-gray-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm p-1 text-center inline-flex items-center dark:border-gray-500 dark:text-gray-500 dark:hover:text-white dark:focus:ring-gray-800 dark:hover:bg-gray-500">
-              <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="#333"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg>
-              <span class="sr-only">Icon Edit</span>
-            </a>
+          <div class="inline-block text-left">
+              <button type="button" onclick="showDropdownMenuOption('dropdown-menu-${
+                obj.currentDate
+              }')" class="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-2 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" id="menu-button" aria-expanded="true" aria-haspopup="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="inherit"><path d="M480-160q-33 0-56.5-23.5T400-240q0-33 23.5-56.5T480-320q33 0 56.5 23.5T560-240q0 33-23.5 56.5T480-160Zm0-240q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm0-240q-33 0-56.5-23.5T400-720q0-33 23.5-56.5T480-800q33 0 56.5 23.5T560-720q0 33-23.5 56.5T480-640Z"/></svg>
+              </button>
+              <div id="dropdown-menu-${
+                obj.currentDate
+              }" class="dropdown-menu absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none hidden" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+                  <div class="py-1" role="none">
+                    <a 
+                      role="button" 
+                      onclick="showEditAttendanceModal(
+                        '${userConceptId}', '${obj.currentDate}')" 
+                      class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:border-gray-500 dark:text-gray-500 dark:hover:text-white dark:focus:ring-gray-800 dark:hover:bg-gray-500" role="menuitem" tabindex="-1" id="menu-item-0">Edit Attendance</a>
+                    <a 
+                      role="button" 
+                      onclick="markAsAbsent(
+                        '${userConceptId}', '${obj.currentDate}')" 
+                      class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-300 dark:border-gray-500 dark:text-gray-500 dark:hover:text-white dark:focus:ring-gray-800 dark:hover:bg-gray-500" role="menuitem" tabindex="-1" id="menu-item-1">Mark As Absent</a>
+                  </div>
+              </div>
           </div>
         </td>
         `;
@@ -280,17 +306,30 @@ export function calculateAttendance(
   date: string
 ) {
   const attendances = attendanceList?.filter(
-    (attendance) =>
-      attendance?.checkin?.includes(date) ||
-      attendance?.checkout?.includes(date)
+    (attendance) => attendance.date?.includes(date)
+    // attendance?.checkin?.includes(date) ||
+    // attendance?.checkout?.includes(date)
   );
+  console.log("date", date, attendances);
   const obj: any = {
     ids: [],
     currentDate: date,
     times: -1,
+    status: "",
   };
   attendances?.map((attendance) => {
     obj.ids.push(attendance.id);
+    console.log("att", date, attendance.createdAt);
+    console.log(
+      !obj.status || obj.status == "",
+      attendance.status == "Present" || obj.status == "Absent",
+      attendance.status
+    );
+    if (!obj.status || obj.status == "") obj.status = attendance.status;
+    else if (attendance.status == "Present" || obj.status == "Absent")
+      obj.status = attendance.status;
+    else obj.status = attendance.status;
+
     if (!obj.checkin && attendance.checkin) obj.checkin = attendance.checkin;
     else if (obj.checkin && attendance.checkin) {
       if (
@@ -336,7 +375,11 @@ function formatDate(date: any) {
   return `${year}-${month}-${day}`;
 }
 
-export async function exportAttendance(searchDate: string, type: 'pdf' | 'csv', userIds?: string[]) {
+export async function exportAttendance(
+  searchDate: string,
+  type: "pdf" | "csv",
+  userIds?: string[]
+) {
   // const dailyDate = `${new Date().getFullYear()}-${(
   //   "0" +
   //   (new Date().getMonth() + 1)
