@@ -48,6 +48,7 @@ export async function submitUpdateAttendance(
               "checkin"
             );
           } else if (
+            attendance.checkout && 
             new Date(attendance.checkout).toISOString().slice(0, 16) !=
             new Date(value.toString()).toISOString()
           ) {
@@ -67,7 +68,7 @@ export async function submitUpdateAttendance(
           splitedText[1] == attendance.id
         ) {
           console.log(value, attendance, "checkout");
-          if (!attendance.checkout) {
+          if (attendance.checkout == undefined) {
             const checkoutConcept = await MakeTheInstanceConceptLocal(
               "checkout",
               new Date(value.toString()).toISOString(),
@@ -81,7 +82,7 @@ export async function submitUpdateAttendance(
               "checkout"
             );
           } else if (
-            new Date(attendance.checkout).toISOString().slice(0, 16) !=
+            new Date(attendance.checkout)?.toISOString()?.slice(0, 16) !=
             new Date(value.toString()).toISOString()
           ) {
             await updateTypeConceptLocal(
@@ -125,4 +126,5 @@ export async function submitUpdateAttendance(
     }
   }
   await LocalSyncData.SyncDataOnline();
+  setTimeout(() => location.reload(), 500)
 }

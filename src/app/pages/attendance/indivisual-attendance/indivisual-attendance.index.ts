@@ -3,7 +3,6 @@ import mainViewClass from "../../../default/mainView.class";
 import { updateContent } from "../../../routes/renderRoute.service";
 import {
   formatUserComposition,
-  getLocalStorageData,
 } from "../../../services/helper.service";
 import {
   generateMonthOptions,
@@ -13,9 +12,14 @@ import {
 } from "../attendance.helper";
 import { handleMonthlyDateChange } from "../user-attendance/attendance.service";
 import editAttendanceModalHTML from "../../../modules/attendance/edit/edit-attendance-modal.index";
-import { getCalculatedAttendance, showEditAttendanceModal } from "./indivisual-attendance.service";
+import {
+  getCalculatedAttendance,
+  markAsAbsent,
+  showEditAttendanceModal,
+} from "./indivisual-attendance.service";
 import { exportEmployeesAteendanceModalHTML } from "../../../modules/attendance/export-attendance/export-attendance.index";
 import { sidebarHTML, sidebarMenu } from "../../../services/sidebar.service";
+import { showDropdownMenuOption } from "../../../services/dropdown.service";
 
 export default class extends mainViewClass {
   userConcept!: number;
@@ -30,27 +34,28 @@ export default class extends mainViewClass {
   }
 
   async getHtml(): Promise<string> {
+    (window as any).showDropdownMenuOption = showDropdownMenuOption;
     (window as any).handleMonthlyDateChange = handleMonthlyDateChange;
     (window as any).showEditAttendanceModal = showEditAttendanceModal;
+    (window as any).markAsAbsent = markAsAbsent;
 
     const monthlyDate = `${new Date().getFullYear()}-${(
       "0" +
       (new Date().getMonth() + 1)
     ).slice(-2)}`;
 
-    const profileStorageData: any = await getLocalStorageData();
-    const userConceptId = profileStorageData?.userConcept;
-
     const [monthlyAttendanceList, user] = await Promise.all([
-      searchUserAttendance(userConceptId, monthlyDate),
+      searchUserAttendance(this.userConcept, monthlyDate),
       formatUserComposition(await GetCompositionWithId(this.userConcept)),
     ]);
-    const calculatedAttendance = await getCalculatedAttendance(monthlyAttendanceList)
+    const calculatedAttendance = await getCalculatedAttendance(
+      monthlyAttendanceList
+    );
     const attendanceRowsHTML = await getUserMonthlyAttendanceRows(
       monthlyAttendanceList,
       monthlyDate,
       true,
-      userConceptId
+      this.userConcept
     );
 
     return `
@@ -69,15 +74,25 @@ export default class extends mainViewClass {
                         class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 disabled:bg-blue-400 dark:bg-blue-500 disabled:cursor-not-allowed">Export</button>
                     <div class="">
                         <label for="filter-attendance-year" class="block text-sm font-medium leading-6">For the year of</label>
-                        <select id="filter-attendance-year" name="filter-attendance-year" onchange="handleMonthlyDateChange(true)"
-                            class="block w-full rounded-md border-0 px-3 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-md sm:text-sm sm:leading-6 text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">
+                        <select 
+                          id="filter-attendance-year" 
+                          name="filter-attendance-year" 
+                          onchange="handleMonthlyDateChange(${
+                            this.userConcept
+                          })"
+                          class="block w-full rounded-md border-0 px-3 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-md sm:text-sm sm:leading-6 text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">
                             ${generateYearOptions()}
                         </select>
                     </div>
                     <div class="">
                         <label for="filter-attendance-month" class="block text-sm font-medium leading-6">For the month of</label>
-                        <select id="filter-attendance-month" name="filter-attendance-month" onchange="handleMonthlyDateChange(true)"
-                            class="block w-full rounded-md border-0 px-3 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-md sm:text-sm sm:leading-6 text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">
+                        <select 
+                          id="filter-attendance-month" 
+                          name="filter-attendance-month" 
+                          onchange="handleMonthlyDateChange(${
+                            this.userConcept
+                          })"
+                          class="block w-full rounded-md border-0 px-3 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-md sm:text-sm sm:leading-6 text-zinc-900 bg-zinc-50 dark:text-white dark:bg-gray-900">
                             ${generateMonthOptions()}
                         </select>
                     </div>
@@ -100,15 +115,25 @@ export default class extends mainViewClass {
                         <p class="mb-1.5"><b>Email: </b>${user.lastName}</p>
                     </div>
                     <div class="col-span-1 text-md text-gray-600 dark:text-gray-400">
-                        <p class="mb-1.5"><b>Total working hour: </b><span id="totalWorkingTime">${calculatedAttendance.totalWorkingTime}</span></p>
-                        <p class="mb-1.5"><b>Avg. Weekly working hour: </b><span id="weeklyWorkingTime">${calculatedAttendance.weeklyWorkingTime}</span></p>
-                        <p class="mb-1.5"><b>Highest Working Hour: </b><span id="highestDailyTime">${calculatedAttendance.highestDailyTime}</span></p>
-                        <p class="mb-1.5"><b>Total absent days: </b><span id="absentDays">${calculatedAttendance.absentDays}</span></p>
-                        <p class="mb-1.5"><b>Total working days: </b><span id="presentDays">${calculatedAttendance.presentDays}</span></p>
+                        <p class="mb-1.5"><b>Total working hour: </b><span id="totalWorkingTime">${
+                          calculatedAttendance.totalWorkingTime
+                        }</span></p>
+                        <p class="mb-1.5"><b>Weekly working hour: </b><span id="weeklyWorkingTime">${
+                          calculatedAttendance.weeklyWorkingTime
+                        }</span></p>
+                        <p class="mb-1.5"><b>Highest Working Hour: </b><span id="highestDailyTime">${
+                          calculatedAttendance.highestDailyTime
+                        }</span></p>
+                        <p class="mb-1.5"><b>Total absent days: </b><span id="absentDays">${
+                          calculatedAttendance.absentDays
+                        }</span></p>
+                        <p class="mb-1.5"><b>Total working days: </b><span id="presentDays">${
+                          calculatedAttendance.presentDays
+                        }</span></p>
                     </div>
                 </div>
             
-                <div class="relative overflow-x-auto">
+                <div class="overflow-x-auto">
                     <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                         <thead class="text-xs text-gray-700 uppercase bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
