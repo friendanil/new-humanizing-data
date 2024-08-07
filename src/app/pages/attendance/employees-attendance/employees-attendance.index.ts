@@ -8,6 +8,11 @@ import {
 } from "./employees-attendance.service";
 
 export default class extends mainViewClass {
+  constructor(params: any) {
+    super(params);
+    this.setTitle("Attendance");
+  }
+
   async getHtml(): Promise<string> {
     (window as any).showDropdownMenuOption = showDropdownMenuOption;
 

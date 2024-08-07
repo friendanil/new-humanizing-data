@@ -136,7 +136,6 @@ export async function searchUserAttendance(
     user
   );
 
-  // TODO:: filter data to proper form
   return await formatUserAttendance(
     user?.data?.["the_user"]?.["the_user_s_attendance"]
   );
@@ -338,10 +337,10 @@ function formatDate(date: any) {
 }
 
 export async function exportAttendance(searchDate: string, type: 'pdf' | 'csv', userIds?: string[]) {
-  const dailyDate = `${new Date().getFullYear()}-${(
-    "0" +
-    (new Date().getMonth() + 1)
-  ).slice(-2)}-${("0" + (new Date().getMonth() + 1)).slice(-2)}`;
+  // const dailyDate = `${new Date().getFullYear()}-${(
+  //   "0" +
+  //   (new Date().getMonth() + 1)
+  // ).slice(-2)}-${("0" + (new Date().getMonth() + 1)).slice(-2)}`;
 
   const emploeyeeList = await getCompanyEmployee(searchDate);
   const headers = [

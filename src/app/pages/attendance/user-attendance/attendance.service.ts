@@ -5,8 +5,11 @@ import {
   getUserMonthlyAttendanceRows,
   searchUserAttendance,
 } from "../attendance.helper";
+import { updateAttendanceCalculations } from "../indivisual-attendance/indivisual-attendance.service";
 
-export async function handleMonthlyDateChange() {
+export async function handleMonthlyDateChange(
+  indivisualUser: boolean = false
+) {
   const profileStorageData: any = await getLocalStorageData();
   const userConceptId = profileStorageData?.userConcept;
 
@@ -29,6 +32,10 @@ export async function handleMonthlyDateChange() {
     monthlyDate
   );
   console.log("list", monthlyAttendanceList, monthlyTableBody);
+
+  // update 
+  console.log('update', indivisualUser)
+  if (indivisualUser) await updateAttendanceCalculations(monthlyAttendanceList)
 
   const attendanceListHTML = await getUserMonthlyAttendanceRows(
     monthlyAttendanceList,
