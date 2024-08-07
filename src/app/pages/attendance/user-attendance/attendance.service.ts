@@ -8,7 +8,7 @@ import {
 import { updateAttendanceCalculations } from "../indivisual-attendance/indivisual-attendance.service";
 
 export async function handleMonthlyDateChange(
-  indivisualUser: boolean = false
+  currentUserConceptId: number = 0
 ) {
   const profileStorageData: any = await getLocalStorageData();
   const userConceptId = profileStorageData?.userConcept;
@@ -28,18 +28,20 @@ export async function handleMonthlyDateChange(
     parseInt(monthSelect.value) + 1 < 9 ? "0" : ""
   }${parseInt(monthSelect.value) + 1}`;
   const monthlyAttendanceList = await searchUserAttendance(
-    userConceptId,
+    currentUserConceptId ? currentUserConceptId : userConceptId,
     monthlyDate
   );
   console.log("list", monthlyAttendanceList, monthlyTableBody);
 
-  // update 
-  console.log('update', indivisualUser)
-  if (indivisualUser) await updateAttendanceCalculations(monthlyAttendanceList)
+  // update
+  if (currentUserConceptId)
+    await updateAttendanceCalculations(monthlyAttendanceList);
 
   const attendanceListHTML = await getUserMonthlyAttendanceRows(
     monthlyAttendanceList,
-    monthlyDate
+    monthlyDate,
+    currentUserConceptId ? true : false,
+    currentUserConceptId
   );
 
   monthlyTableBody.innerHTML = attendanceListHTML;

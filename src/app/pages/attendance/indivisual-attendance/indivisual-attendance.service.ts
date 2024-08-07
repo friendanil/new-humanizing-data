@@ -1,4 +1,8 @@
+import { GetTheConceptLocal, LocalSyncData } from "mftsccs-browser";
 import { submitUpdateAttendance } from "../../../modules/attendance/edit/edit-attendance.service";
+import { createEntityInstance } from "../../../services/createEntityInstance.service";
+import { CreateConnectionBetweenEntityLocal } from "../../../services/entity.service";
+import { getLocalStorageData } from "../../../services/helper.service";
 import { openModal } from "../../listItem/listItem.service";
 import {
   Attendance,
@@ -187,6 +191,42 @@ export function updateAttendanceCalculations(attendanceList: Attendance[]) {
   for (const [key, value] of Object.entries(calculatedAttendance)) {
     let element = document.getElementById(key);
     if (element) element.innerText = value as any;
+  }
+}
+
+export async function markAsAbsent(
+  userConceptId: string = "",
+  currentDate: string = ""
+) {
+  if (isNaN(parseInt(userConceptId))) return;
+
+  const attendanceList = await searchUserAttendance(
+    parseInt(userConceptId),
+    currentDate
+  );
+  console.log("att list absent", attendanceList);
+  const profileStorageData: any = await getLocalStorageData();
+  const userId = profileStorageData?.userId;
+  const currentUserConceptId = profileStorageData?.userConcept;
+  console.log(userConceptId, currentUserConceptId);
+  if (attendanceList.length == 0) {
+    // create new Attendance Concept and mark it as absent
+    const attendanceEntityConcept = await createEntityInstance(
+      "attendance",
+      userId,
+      {
+        date: new Date(currentDate).toISOString(),
+        status: "Absent",
+      }
+    );
+    console.log(attendanceEntityConcept, "acon concept");
+    await CreateConnectionBetweenEntityLocal(
+      await GetTheConceptLocal(parseInt(userConceptId)),
+      attendanceEntityConcept,
+      "s_attendance"
+    );
+    await LocalSyncData.SyncDataOnline();
+    setTimeout(() => location.reload(), 500);
   }
 }
 

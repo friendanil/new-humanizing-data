@@ -1,6 +1,5 @@
 import { hasPermission } from "../pages/roles/role.helper";
 import { Permission, PermissionAction } from "../pages/roles/roles.service";
-import HumanizingDataImg from "./../../../public/images/humanizing-data.png";
 
 export async function sidebarHTML() {
   (window as any).openSidebar = openSidebar;
@@ -11,7 +10,7 @@ export async function sidebarHTML() {
   return `
     <div id="sidebar" class="fixed z-10 w-80 top-0 left-0 h-screen border-r-1 border-r-gray-200 drop-shadow-lg bg-gradient-to-b from-green-800 via-green-900 via-50% to-gray-900 overflow-y-auto transition ease-out duration-1000 transform opacity-100 hidden">
         <div class="flex flex-row items-center justify-center my-8">
-            <img class="w-64" src="${HumanizingDataImg}" alt="Humanizing Data Logo">
+            <img class="w-64" src="/images/humanizing-data.png" alt="Humanizing Data Logo">
         </div>
         <ul class="px-2 list-none">
             <li class="mb-1">
