@@ -41,7 +41,7 @@ export async function closeinterViewModal(modalId: string) {
     .classList.remove("overflow-y-hidden");
 }
 
-export async function openScheduleInterviewModal(modalId:any){
+export async function openScheduleInterviewModal(modalId: any) {
   const check = document.getElementById(modalId);
   if (check) check.style.display = "block";
   document.getElementsByTagName("body")[0].classList.add("overflow-y-hidden");
@@ -113,7 +113,13 @@ export async function getJobApplicants(jobProductId: number) {
   ];
   searchSecond.inpage = 100;
 
-  const queryParams = [searchfirst, searchSecond];
+  let searchThird = new SearchQuery();
+  searchThird.fullLinkers = [
+    "the_user_profile"
+  ];
+  searchSecond.inpage = 100;
+
+  const queryParams = [searchfirst, searchSecond, searchThird];
   const output = await SearchLinkMultipleAll(queryParams, token);
   console.log("output getJobApplicants ->", output);
 
@@ -139,15 +145,16 @@ export async function getJobApplicants(jobProductId: number) {
       };
     });
     console.log("applicantList", applicantList);
-    applicantHTML = applicantList?.map((applicant: any) => {
-      if (!applicant?.profileImage || applicant?.profileImage === "undefined")
-        applicant.profileImage = "https://placehold.co/600x600";
-      return `
+    applicantHTML = applicantList
+      ?.map((applicant: any) => {
+        if (!applicant?.profileImage || applicant?.profileImage === "undefined")
+          applicant.profileImage = "https://placehold.co/600x600";
+        return `
         <tr>
             <td class="border border-slate-300 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400">
               <img src="${applicant?.profileImage}" alt="profile image of ${
-        applicant?.name
-      }" class="rounded w-[48px] h-[48px] bg-gray-200">
+          applicant?.name
+        }" class="rounded w-[48px] h-[48px] bg-gray-200">
             </td>
             <td class="border border-slate-300 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400">
               ${applicant?.name || ""}
@@ -166,8 +173,8 @@ export async function getJobApplicants(jobProductId: number) {
             </td>
             <td class="border border-slate-300 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400">
               <a href="${thetaBoommAPI}/bm/${
-        applicant?.userConceptId
-      }" target="_blank" class="block px-4 py-2 leading-loose text-xs text-center text-white font-semibold bg-green-600 hover:bg-green-700 hover:text-gray-200 rounded-xl cursor-pointer">
+          applicant?.userConceptId
+        }" target="_blank" class="block px-4 py-2 leading-loose text-xs text-center text-white font-semibold bg-green-600 hover:bg-green-700 hover:text-gray-200 rounded-xl cursor-pointer">
                 Visit Profile
               </a>
               <td class="border border-slate-300 dark:border-slate-700 p-3 text-slate-500 dark:text-slate-400">
@@ -179,7 +186,8 @@ export async function getJobApplicants(jobProductId: number) {
             </td>
           </tr>
       `;
-    });
+      })
+      .join("");
 
     return `
     <div class="my-8">
@@ -419,7 +427,7 @@ export async function getJobDetails(productId: number) {
 
         // check job applicants here
         jobApplicants = await getJobApplicants(Number(productId));
-        console.log("jobApplicants ->", jobApplicants);
+        // console.log("jobApplicants ->", jobApplicants);
       } else {
         const isJobApplied: any = await getMyAppliedJobStatus(
           Number(productId)
