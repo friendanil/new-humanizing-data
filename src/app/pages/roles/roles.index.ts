@@ -2,7 +2,7 @@ import mainViewClass from "../../default/mainView.class";
 import initNavigation from "../../modules/home-nav/home-navigation.service";
 import assignUserRoleModalHTML from "../../modules/roles/assign-user/assign-user-modal";
 import createRoleModalHTML from "../../modules/roles/create/create-role-modal";
-import topNavigation from "../../modules/top-nav/top-navigation";
+import { sidebarHTML, sidebarMenu } from "../../services/sidebar.service";
 import { closeRoleModal, getRolesList, openAssignUserRoleModal, openCreateRoleModal, showEditRoleModal } from "./roles.service";
 
 export default class extends mainViewClass {
@@ -26,7 +26,8 @@ export default class extends mainViewClass {
     (window as any).openAssignUserRoleModal = openAssignUserRoleModal;
 
     return `
-      ${topNavigation}
+      ${await sidebarHTML()}
+      <div class="flex flex-row justify-end px-4 py-2 shadow w-full">${sidebarMenu()}</div>
 
         <div class="container mx-auto">
             <div class="flex flex-row justify-end mt-4">

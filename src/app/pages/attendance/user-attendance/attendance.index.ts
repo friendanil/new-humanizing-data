@@ -12,6 +12,11 @@ import {
 import { handleMonthlyDateChange } from "./attendance.service";
 
 export default class extends mainViewClass {
+  constructor(params: any) {
+    super(params);
+    this.setTitle("Attendance");
+  }
+
   async getHtml(): Promise<string> {
     (window as any).handleMonthlyDateChange = handleMonthlyDateChange;
 
