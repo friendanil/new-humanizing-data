@@ -91,6 +91,7 @@ export default class extends mainViewClass {
                               <th scope="col" class="px-6 py-3">Check Out</th>
                               <th scope="col" class="px-6 py-3">Hours</th>
                               <th scope="col" class="px-6 py-3">Status</th>
+                              <th scope="col" class="px-6 py-3">Remarks</th>
                           </tr>
                       </thead>
                       <tbody id="monthly-attendance">

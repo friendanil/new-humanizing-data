@@ -45,14 +45,15 @@ export default class extends mainViewClass {
                   <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                       <thead class="text-xs text-gray-700 uppercase bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
                           <tr>
-                              <th scope="col" class="px-6 py-3">Date</th>
-                              <th scope="col" class="px-6 py-3">Day</th>
+                              <th scope="col" class="px-6 py-3">DP</th>
+                              <th scope="col" class="px-6 py-3">Name</th>
+                              <th scope="col" class="px-6 py-3">Email</th>
                               <th scope="col" class="px-6 py-3">Check In</th>
                               <th scope="col" class="px-6 py-3">Breaks</th>
                               <th scope="col" class="px-6 py-3">Last Out</th>
                               <th scope="col" class="px-6 py-3">Working Time</th>
                               <th scope="col" class="px-6 py-3">Status</th>
-                              <th scope="col" class="px-6 py-3">Action</th>
+                              <th scope="col" class="px-6 py-3">Remarks</th>
                               <th scope="col" class="px-6 py-3">Action</th>
                           </tr>
                       </thead>

@@ -172,6 +172,9 @@ export async function formatUserAttendance(attendanceList: any[]) {
         status:
           attendance?.data?.[`the_attendance`]?.[`the_attendance_status`]?.[0]
             ?.data?.["the_status"],
+        remarks:
+          attendance?.data?.[`the_attendance`]?.[`the_attendance_remarks`]?.[0]
+            ?.data?.["the_remarks"],
         createdAt: attendance?.created_at,
       };
     }) || []
@@ -263,6 +266,11 @@ export async function getUserMonthlyAttendanceRows(
             <!-- ${obj.checkin ? "Present" : obj?.status || ""} -->
             ${obj.status}
         </td>
+        <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-opacity-25 ${
+          obj.checkin ? "bg-green-400" : obj.status == "Absent" && "bg-red-400"
+        }">
+            ${obj.remarks}
+        </td>
         `;
     if (showActions && userConceptId) {
       attendanceRows += `
@@ -316,6 +324,7 @@ export function calculateAttendance(
     currentDate: date,
     times: -1,
     status: "",
+    remarks: "",
   };
   attendances?.map((attendance) => {
     obj.ids.push(attendance.id);
@@ -325,6 +334,9 @@ export function calculateAttendance(
       attendance.status == "Present" || obj.status == "Absent",
       attendance.status
     );
+
+    if (attendance.remarks && !obj.remarks) obj.remarks = attendance.remarks;
+
     if (!obj.status || obj.status == "") obj.status = attendance.status;
     else if (attendance.status == "Present" || obj.status == "Absent")
       obj.status = attendance.status;
