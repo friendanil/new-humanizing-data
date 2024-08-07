@@ -28,10 +28,10 @@ export default class extends mainViewClass {
           </div>
         </div>
         ${
-          (await hasRole("ROLE_EMPLOYEE")) &&
+          (await hasRole("ROLE_EMPLOYEE")) ?
           `<div class="w-full px-6 py-4 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
             ${await dailyAttendanceHTML()}
-        </div>`
+        </div>` : ''
         }
       </div>
     `;
