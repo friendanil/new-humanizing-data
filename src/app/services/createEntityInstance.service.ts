@@ -1,8 +1,6 @@
 import {
   Concept,
   LConcept,
-  LocalSyncData,
-  // LocalSyncData,
   MakeTheInstanceConcept,
   MakeTheInstanceConceptLocal,
   SyncData,
