@@ -1,19 +1,14 @@
 import { environment } from "../../environments/environment.dev";
 import { closeinterViewModal } from "../../pages/jobs/job/job.service";
 import { getLocalStorageData } from "../../services/helper.service";
-import {userListOfData } from "../../services/getUser.service";
+import {userListOfData } from "../../services/getUserProfile.service";
+import { createEntityInstance } from "../../services/createEntityInstance.service";
+import { CreateConnectionBetweenEntityLocal } from "../../services/entity.service";
+import {DeleteConceptById, GetTheConcept, LocalSyncData } from "mftsccs-browser";
+import { listOfOneInterviewSchedule } from "../../services/getInterviewSchedule.service";
+import { showToast } from "../toast-bar/toast-bar.index";
 const thetaBoommAPI = environment?.boomURL;
 const EmailFieldsArray: any = [];
-export const delEmail=async(button: any)=>{
-    const sendEmail:any=document.getElementById("send-email");
-    sendEmail.classList.add("hidden")
-    const container = button.parentElement;
-    const index = Array.from(container.parentElement.children).indexOf(container);
-    container.remove();
-  
-    // Remove from array
-    EmailFieldsArray.splice(index, 1);
-}
 
 export const addEmail=()=>{
     const divEle: any = document.getElementById("sendEmail");
@@ -38,7 +33,16 @@ export const addEmail=()=>{
     divEle.appendChild(container);
 
 }
-
+export const delEmail=async(button: any)=>{
+    const sendEmail:any=document.getElementById("send-email");
+    sendEmail.classList.add("hidden")
+    const container = button.parentElement;
+    const index = Array.from(container.parentElement.children).indexOf(container);
+    container.remove();
+  
+    // Remove from array
+    EmailFieldsArray.splice(index, 1);
+}
 export const disablePastDates=()=> {
     var today:any = new Date();
     var dd = String(today.getDate()).padStart(2, '0');
@@ -94,9 +98,44 @@ export const sendEmailForInterview=async()=>{
       }
   console.log(EmailFieldsArray,"email",subject,body)
 }
+export const interviewschedueGetFormData=async(userConceptId:any)=>{
+    const userConceptIdInput = <HTMLInputElement>document.getElementById("userConceptId")
+    userConceptIdInput.value=userConceptId
+    function todayDate() {
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+        const dd = String(today.getDate()).padStart(2, '0');
+        const formattedToday = `${yyyy}-${mm}-${dd}`;
+        return formattedToday;
+    }
+   const getInterviewSchedule=await listOfOneInterviewSchedule(userConceptId)
+   const status = <HTMLInputElement>document.getElementById("status");userConceptId
+   status.value=getInterviewSchedule?.interviewScheduleFormatData?.the_interViewSchedule_status?.[0]?.data?.the_status || 'unScreened'
+   const interviewDate = <HTMLInputElement>document.getElementById("interviewDate");
+   interviewDate.value=getInterviewSchedule?.interviewScheduleFormatData?.the_interViewSchedule_interviewDate?.[0]?.data?.the_interviewDate || todayDate()
+   const interviewTime = <HTMLInputElement>document.getElementById("interviewTime");
+   interviewTime.value=getInterviewSchedule?.interviewScheduleFormatData?.the_interViewSchedule_interviewTime?.[0]?.data?.the_interviewTime || '9am'
+   const personality = <HTMLInputElement>document.getElementById("personality");
+   personality.value=getInterviewSchedule?.interviewScheduleFormatData?.the_interViewSchedule_personality?.[0]?.data?.the_personality || 'Bad'
+   const skillKnowledge = <HTMLInputElement>document.getElementById("skillKnowledge");
+   skillKnowledge.value=getInterviewSchedule?.interviewScheduleFormatData?.the_interViewSchedule_skillKnowledge?.[0]?.data?.the_skillKnowledge || 'Bad'
+   const characterFlow = <HTMLInputElement>document.getElementById("characterFlow");
+   characterFlow.value=getInterviewSchedule?.interviewScheduleFormatData?.the_interViewSchedule_characterFlow?.[0]?.data?.the_characterFlow || 'Bad'
+   const template = <HTMLInputElement>document.getElementById("template");
+   template.value=getInterviewSchedule?.interviewScheduleFormatData?.the_interViewSchedule_template?.[0]?.data?.the_template || ''
+   const heading = <HTMLInputElement>document.getElementById("heading");
+   heading.value=getInterviewSchedule?.interviewScheduleFormatData?.the_interViewSchedule_heading?.[0]?.data?.the_heading || ''
+   const body = <HTMLInputElement>document.getElementById("body");
+   body.value=getInterviewSchedule?.interviewScheduleFormatData?.the_interViewSchedule_body?.[0]?.data?.the_body || ''
+}
 export const onChange= async()=>{
-    const userList:any= await userListOfData()
-    const theProfile=userList?.data?.the_user?.the_user_profile?.[0]?.data?.the_profile
+    const getUserConceptId=<HTMLInputElement>document.getElementById("userConceptId")
+    const userConceptId:any=getUserConceptId.value || ''
+    const userList:any= await userListOfData(userConceptId)
+    console.log("userProfileIndex",userList.the_Profile?.the_profile_first_name?.[0]?.data?.the_first_name,"entity",userList?.entity)
+    const theProfile=userList.the_Profile?.the_profile_first_name?.[0]?.data?.the_first_name || userList?.entity?.first_name;
+
     const interviewDate:any=document.getElementById('interviewDate');
     const time:any=document.getElementById('interviewTime');
     const template:any=document.getElementById('template');
@@ -104,7 +143,7 @@ export const onChange= async()=>{
     const heading:any=document.getElementById('heading');
     heading.value=`[Job Title] Opportunity at Mentors Friend`; 
     if(template.value=='template1'){
-    content.innerHTML=`Hi ${theProfile?.the_profile_first_name?.[0].data.the_first_name},
+    content.value=`Hi ${theProfile},
 
 Thank you for applying to the [Job Title] position at Mentors Friend. After reviewing your application, we’re excited to invite you to interview for the role! 
 
@@ -123,7 +162,7 @@ Best,
 [Your Email Signature]`;
     }
     else if(template.value=='template2'){
-        content.innerHTML=`
+        content.value=`
      <div class="container" style=" max-width: 600px;
             margin: 20px auto;
             background-color: #fff;
@@ -161,26 +200,77 @@ Best,
 </div>`
     }
 }
+export const submitSetInterviewForm=async(e:any)=>{
+    e.preventDefault()
+    const sendEmailContainers = document.querySelectorAll(".email-container");
+    EmailFieldsArray.length = 0; // Clear the array
+
+  sendEmailContainers.forEach(async (container, index) => {
+    const inputs: any = container.querySelectorAll(".email-field");
+    EmailFieldsArray.push({
+      emailAddress: inputs[0]?.value,
+    });
+  });
+    const formData: any = new FormData(e.target);
+    const formValues: any = Object.fromEntries(formData);
+    const userConceptElement:any=document.getElementById('userConceptId');
+    const userConceptId=userConceptElement.value
+    let deletedFormValue: any;
+    console.log(formValues,"formValues",EmailFieldsArray,"userConceptId",userConceptId)
+    // await DeleteConceptById(101225073);
+    const getInterviewSchedule=await listOfOneInterviewSchedule(userConceptId)
+    console.log(getInterviewSchedule?.interviewScheduleid,"here")
+    // return;
+    if(getInterviewSchedule?.interviewScheduleid){
+        await DeleteConceptById(getInterviewSchedule?.interviewScheduleid)
+       }
+    deletedFormValue=delete formValues.userConceptId
+    const interviewScheduleNameConcept = await createEntityInstance(
+        "interViewSchedule",
+        userConceptId,
+        formValues
+      );
+
+    await Promise.all(
+        EmailFieldsArray?.map(async (items: any) => {
+          const bulkEmailNameConcept = await createEntityInstance("bulkEmail", userConceptId,items);
+    
+          await CreateConnectionBetweenEntityLocal(
+            interviewScheduleNameConcept,
+            bulkEmailNameConcept,
+            "s_bulkEmail"
+          );
+        })
+      );
+    const userConcept:any=await GetTheConcept(userConceptId)
+    // return;
+    await CreateConnectionBetweenEntityLocal(
+        userConcept,
+        interviewScheduleNameConcept,
+        "interViewSchedule"
+      );
+    await LocalSyncData.SyncDataOnline(); 
+    setTimeout(async () => {
+        await showToast(
+          "success",
+          "Interview Schedule updated successfully!",
+          "",
+          "top-right",
+          5000
+        );
+        location.reload();
+      }, 100);
+}
+
 export default async function createSetInterviewModalHTML() {
     (window as any).closeModal = closeinterViewModal;
     (window as any).addEmail = addEmail;
     (window as any).delEmail = delEmail;
     (window as any).sendEmailForInterview=sendEmailForInterview;
     (window as any).disablePastDates=disablePastDates;
-    (window as any).onChange=onChange
-    // (window as any).submitSetInterviewForm=submitSetInterviewForm
+    (window as any).onChange=onChange;
+    (window as any).submitSetInterviewForm=submitSetInterviewForm
 
-    setTimeout(todayDate, 1000);
-    function todayDate() {
-    const today = new Date();
-    const yyyy = today.getFullYear();
-    const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
-    const dd = String(today.getDate()).padStart(2, '0');
-
-    const formattedToday = `${yyyy}-${mm}-${dd}`;
-    const setDate:any=document.getElementById('interviewDate')
-    setDate.value = formattedToday;
-    }
   return `
     <div id="create-setInterview-modal"
     class="fixed hidden z-50 inset-0 bg-gray-900 bg-opacity-60 dark:bg-gray-200 dark:bg-opacity-40 overflow-y-auto h-full w-full px-4">
@@ -210,7 +300,8 @@ export default async function createSetInterviewModalHTML() {
                     <select id="status" name="status" autocomplete="status-name"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="">
-                        <option value="Screened">Unscreened</option>
+                        <option value="">Select Your Status</option>
+                        <option value="unScreened">Unscreened</option>
                         <option value="screened">Screened</option>
                         <option value="shortlisted">Shortlisted</option>
                         <option value="interviwed">Interviwed</option>
@@ -329,6 +420,11 @@ export default async function createSetInterviewModalHTML() {
             <div class="grid gap-6 m-6 md:grid-cols-6">
               <button type="button" onclick="addEmail();" id="add-button" class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">+ Add Email</button>
               <button type="button" onclick="sendEmailForInterview()" id="send-email" class="hidden text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Send Mail</button>
+            </div>
+              <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700">
+            <div class="grid gap-6 m-6 md:grid-cols-6">
+             <input type="hidden" id="userConceptId" name="userConceptId"/>
+             <button type="submit" class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Submit</button>
             </div>
         </form>
         </div>

@@ -26,11 +26,31 @@ import listModalHTML from "../../../modules/list-modal/list-modal";
 // import { showToast } from "../../../modules/toast-bar/toast-bar.index";
 import { environment } from "../../../environments/environment.dev";
 import { closeModal } from "../../../services/modal.service";
+import { ListOfJob } from "../../../services/getJob.services";
+import { interviewschedueGetFormData } from "../../../modules/setInterview-modal/setInterview-modal";
+import { getProfileFormData } from "../../../modules/setInterview-modal/setIndividualProfileView-modal";
+
 
 const thetaBoommAPI = environment?.boomURL;
 // let attachmentConcept: LConcept;
 // for modal
-export async function closeinterViewModal(modalId: string) {
+
+
+export async function openIndividualProfileModal(modalId:string,userConceptId:number){
+  const check = document.getElementById(modalId);
+  if (check) check.style.display = "block";
+  document.getElementsByTagName("body")[0].classList.add("overflow-y-hidden");
+  
+  await getProfileFormData(userConceptId)
+  // Close all modals when press ESC
+  document.onkeydown = function (event: any) {
+    if (event.code === "Escape" || event.key === "Escape") {
+      // if (check) check.style.display = "none";
+      closeIndividualProfileModal(modalId);
+    }
+  };
+}
+export async function closeIndividualProfileModal(modalId: string) {
   const modal: any = document.getElementById(modalId);
   // const modalFormEl = modal.querySelector("form");
   // modalFormEl.reset();
@@ -40,8 +60,10 @@ export async function closeinterViewModal(modalId: string) {
     .getElementsByTagName("body")[0]
     .classList.remove("overflow-y-hidden");
 }
-
-export async function openScheduleInterviewModal(modalId: any) {
+export async function openScheduleInterviewModal(modalId:string,userConceptId:number){
+  await interviewschedueGetFormData(userConceptId)
+  const userConcept:any=document.getElementById('userConceptId');
+  userConcept.value=userConceptId;
   const check = document.getElementById(modalId);
   if (check) check.style.display = "block";
   document.getElementsByTagName("body")[0].classList.add("overflow-y-hidden");
@@ -53,6 +75,16 @@ export async function openScheduleInterviewModal(modalId: any) {
       closeinterViewModal(modalId);
     }
   };
+}
+export async function closeinterViewModal(modalId: string) {
+  const modal: any = document.getElementById(modalId);
+  // const modalFormEl = modal.querySelector("form");
+  // modalFormEl.reset();
+
+  if (modal) modal.style.display = "none";
+  document
+    .getElementsByTagName("body")[0]
+    .classList.remove("overflow-y-hidden");
 }
 let rfqModalHTMLCode = `
   <h1>Hey</h1>
@@ -93,34 +125,9 @@ export async function _getMyAppliedJob() {
 }
 
 export async function getJobApplicants(jobProductId: number) {
-  const profileStorageData: any = await getLocalStorageData();
-  const token = profileStorageData?.token;
   // const userEntityId = profileStorageData?.entityId;
-
-  let searchfirst = new SearchQuery();
-  searchfirst.composition = jobProductId;
-  searchfirst.fullLinkers = ["the_entity_s_appliedJob"];
-  searchfirst.reverse = true;
-  searchfirst.inpage = 100;
-
-  let searchSecond = new SearchQuery();
-  searchSecond.fullLinkers = [
-    "the_entity",
-    "the_entity_firstname",
-    "the_entity_lastname",
-    "the_entity_email",
-    "the_entity_user",
-  ];
-  searchSecond.inpage = 100;
-
-  let searchThird = new SearchQuery();
-  searchThird.fullLinkers = [
-    "the_user_profile"
-  ];
-  searchSecond.inpage = 100;
-
-  const queryParams = [searchfirst, searchSecond, searchThird];
-  const output = await SearchLinkMultipleAll(queryParams, token);
+  let jobProId=jobProductId;
+  const output:any=await ListOfJob(jobProId)
   console.log("output getJobApplicants ->", output);
 
   let applicantData = output?.data?.the_item?.the_entity_s_appliedJob_reverse;
@@ -134,14 +141,14 @@ export async function getJobApplicants(jobProductId: number) {
       return {
         entityId: applicant?.id,
         userConceptId: applicant?.data?.the_entity?.the_entity_user?.[0]?.id,
-        profileImage: applicantUserData?.entity?.person?.profile_img,
-        name: `${applicantUserData?.entity?.person?.first_name || ""} ${
-          applicantUserData?.entity?.person?.last_name || ""
-        }`,
+        profileImage: applicantUserData?.the_user_profile?.[0]?.data?.the_profile?.the_profile_profilePic?.[0]?.data?.the_profilePic || applicantUserData?.entity?.person?.profile_img,
+        fname: applicantUserData?.the_user_profile?.[0]?.data?.the_profile?.the_profile_first_name?.[0]?.data?.the_first_name || applicantUserData?.entity?.person?.first_name,
+        lname: applicantUserData?.the_user_profile?.[0]?.data?.the_profile?.the_profile_last_name?.[0]?.data?.the_last_name || applicantUserData?.entity?.person?.last_name,
         bio: applicantUserData?.entity?.person?.bio,
-        email: applicantUserData?.entity?.person?.email,
+        status:applicantUserData?.the_user_interViewSchedule?.[0]?.data?.the_interViewSchedule?.the_interViewSchedule_status?.[0]?.data?.the_status,
+        email: applicantUserData?.the_user_profile?.[0]?.data?.the_profile?.the_profile_email?.[0]?.data?.the_email || applicantUserData?.entity?.person?.email,
         location: applicantUserData?.entity?.person?.location,
-        phone: applicantUserData?.entity?.person?.phone,
+        phone:applicantUserData?.the_user_profile?.[0]?.data?.the_profile?.the_profile_phone?.[0]?.data?.the_phone||applicantUserData?.entity?.person?.phone,
       };
     });
     console.log("applicantList", applicantList);
@@ -157,10 +164,10 @@ export async function getJobApplicants(jobProductId: number) {
         }" class="rounded w-[48px] h-[48px] bg-gray-200">
             </td>
             <td class="border border-slate-300 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400">
-              ${applicant?.name || ""}
+              ${applicant?.fname+" "+applicant?.lname || ""}
             </td>
             <td class="border border-slate-300 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400">
-              ${applicant?.bio || ""}
+              ${applicant?.status || "unScreened"}
             </td>
             <td class="border border-slate-300 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400">
               ${applicant?.email || ""}
@@ -179,8 +186,15 @@ export async function getJobApplicants(jobProductId: number) {
               </a>
               <td class="border border-slate-300 dark:border-slate-700 p-3 text-slate-500 dark:text-slate-400">
               <button class="text-center bg-green-500 text-white rounded-md px-4 py-2 hover:bg-green-700 transition"
-              onclick="openScheduleInterviewModal('create-setInterview-modal')">
-              View Schedule
+              onclick="openIndividualProfileModal('create-viewIndividualProfile-modal',${applicant?.userConceptId})">
+              View Profile
+              </button>
+              
+            </td>
+              <td class="border border-slate-300 dark:border-slate-700 p-3 text-slate-500 dark:text-slate-400">
+              <button class="text-center bg-green-500 text-white rounded-md px-4 py-2 hover:bg-green-700 transition"
+              onclick="openScheduleInterviewModal('create-setInterview-modal',${applicant?.userConceptId})">
+              Interview Schedule
               </button>
             </td>
             </td>
@@ -197,11 +211,12 @@ export async function getJobApplicants(jobProductId: number) {
           <tr>
             <th class="w-1/7 border border-slate-300 dark:border-slate-600 font-semibold p-4 text-slate-900 dark:text-slate-200 text-left">Photo</th>
             <th class="w-1/7 border border-slate-300 dark:border-slate-600 font-semibold p-4 text-slate-900 dark:text-slate-200 text-left">Name</th>
-            <th class="w-1/7 border border-slate-300 dark:border-slate-600 font-semibold p-4 text-slate-900 dark:text-slate-200 text-left">Bio</th>
+            <th class="w-1/7 border border-slate-300 dark:border-slate-600 font-semibold p-4 text-slate-900 dark:text-slate-200 text-left">Status</th>
             <th class="w-1/7 border border-slate-300 dark:border-slate-600 font-semibold p-4 text-slate-900 dark:text-slate-200 text-left">Email</th>
             <th class="w-1/7 border border-slate-300 dark:border-slate-600 font-semibold p-4 text-slate-900 dark:text-slate-200 text-left">Location</th>
             <th class="w-1/7 border border-slate-300 dark:border-slate-600 font-semibold p-4 text-slate-900 dark:text-slate-200 text-left">Phone</th>
             <th class="w-1/7 border border-slate-300 dark:border-slate-600 font-semibold p-4 text-slate-900 dark:text-slate-200 text-left">CV</th>
+            <th class="w-1/7 border border-slate-300 dark:border-slate-600 font-semibold p-4 text-slate-900 dark:text-slate-200 text-left">View Profile</th>
             <th class="w-1/7 border border-slate-300 dark:border-slate-600 font-semibold p-4 text-slate-900 dark:text-slate-200 text-left">Actions</th>
           </tr>
         </thead>

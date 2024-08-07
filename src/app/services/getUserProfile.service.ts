@@ -1,11 +1,11 @@
 import { SearchLinkMultipleAll, SearchQuery } from "mftsccs-browser";
 import { IUser } from "../interfaces/IUser.interface";
 
-export const userListOfData=async()=>{
+export const userListOfData=async(userConId:number)=>{
     let dataFromLocalStorage: string = localStorage?.getItem("profile") || "";
       const profileData: IUser = JSON.parse(dataFromLocalStorage);
       // let userId:any = Number(profileData?.userId);
-      let userConceptId: any = Number(profileData?.userConcept);
+      let userConceptId: any = Number(userConId);
   
       let searchfirst = new SearchQuery();
       searchfirst.composition = userConceptId;
@@ -34,18 +34,6 @@ export const userListOfData=async()=>{
         "the_profile_state",
         "the_profile_zip",
         "the_profile_country",
-        "the_profile_eduLevel",
-        "the_profile_course",
-        "the_profile_eduDateFrom",
-        "the_profile_eduDateTo",
-        "the_profile_institutionName",
-        "the_profile_institutionAddress",
-        "the_profile_company",
-        "the_profile_position",
-        "the_profile_expAddress",
-        "the_profile_expCountry",
-        "the_profile_expDateFrom",
-        "the_profile_expDateTo",
         "the_profile_currentCompany",
         "the_profile_currentSalary",
         "the_profile_desireSalary",
@@ -78,5 +66,10 @@ export const userListOfData=async()=>{
       searchsecond.inpage = 100;
       const queryParams = [searchfirst, searchsecond, searchthird];
       const profileList = await SearchLinkMultipleAll(queryParams, profileData?.token);
-    return profileList;
+      const ProfileIndex=profileList?.data?.the_user?.the_user_profile?.length-1
+      return {
+        the_Profile:profileList?.data?.the_user?.the_user_profile?.[ProfileIndex]?.data?.the_profile||'',
+        entity:profileList?.data?.the_user?.entity || '',
+        profileId:profileList?.data.the_user?.the_user_profile
+      }
 }
