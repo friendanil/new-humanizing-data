@@ -205,7 +205,7 @@ export const submitSetInterviewForm=async(e:any)=>{
     const sendEmailContainers = document.querySelectorAll(".email-container");
     EmailFieldsArray.length = 0; // Clear the array
 
-  sendEmailContainers.forEach(async (container, index) => {
+  sendEmailContainers.forEach(async (container) => {
     const inputs: any = container.querySelectorAll(".email-field");
     EmailFieldsArray.push({
       emailAddress: inputs[0]?.value,
@@ -215,8 +215,7 @@ export const submitSetInterviewForm=async(e:any)=>{
     const formValues: any = Object.fromEntries(formData);
     const userConceptElement:any=document.getElementById('userConceptId');
     const userConceptId=userConceptElement.value
-    let deletedFormValue: any;
-    console.log(formValues,"formValues",EmailFieldsArray,"userConceptId",userConceptId)
+    // console.log(formValues,"formValues",EmailFieldsArray,"userConceptId",userConceptId)
     // await DeleteConceptById(101225073);
     const getInterviewSchedule=await listOfOneInterviewSchedule(userConceptId)
     console.log(getInterviewSchedule?.interviewScheduleid,"here")
@@ -224,7 +223,7 @@ export const submitSetInterviewForm=async(e:any)=>{
     if(getInterviewSchedule?.interviewScheduleid){
         await DeleteConceptById(getInterviewSchedule?.interviewScheduleid)
        }
-    deletedFormValue=delete formValues.userConceptId
+    delete formValues.userConceptId
     const interviewScheduleNameConcept = await createEntityInstance(
         "interViewSchedule",
         userConceptId,

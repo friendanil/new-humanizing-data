@@ -1180,7 +1180,7 @@ export async function submitAddProfileForm(e: any) {
   const eduContainers = document.querySelectorAll(".input-container");
   EducationFieldsArray.length = 0; // Clear the array
   
-  eduContainers.forEach((container, index) => {
+  eduContainers.forEach((container) => {
     const inputs: any = container.querySelectorAll(".input-field");
     EducationFieldsArray.push({
       eduLevel: inputs[0].value,
@@ -1195,7 +1195,7 @@ export async function submitAddProfileForm(e: any) {
   const expContainers = document.querySelectorAll(".input-container-1");
   ExperienceFieldsArray.length = 0; // Clear the array
   
-  expContainers.forEach(async (container, index) => {
+  expContainers.forEach(async (container) => {
     const inputs: any = container.querySelectorAll(".input-field-1");
     ExperienceFieldsArray.push({
       company: inputs[0].value,
@@ -1210,7 +1210,7 @@ export async function submitAddProfileForm(e: any) {
   const docContainers = document.querySelectorAll(".input-container-2");
   DocumentFieldsArray.length = 0; // Clear the array
   
-  docContainers.forEach((container2, index) => {
+  docContainers.forEach((container2) => {
     const inputs: any = container2.querySelectorAll(".input-field-2");
     DocumentFieldsArray.push({
       docName: inputs[0].value,
@@ -1222,7 +1222,7 @@ export async function submitAddProfileForm(e: any) {
   const skillsContainers = document.querySelectorAll(".input-container-3");
   SkillsFieldsArray.length = 0; // Clear the array
 
-  skillsContainers.forEach((container, index) => {
+  skillsContainers.forEach((container) => {
     const inputs: any = container.querySelectorAll(".input-field-3");
     SkillsFieldsArray.push({
       language: inputs[0].value,
@@ -1280,7 +1280,7 @@ export async function submitAddProfileForm(e: any) {
 
 export async function createProfile(formValues: any) {
   // let profileIdLen:number=profileList.profileId.length-1
-  profileList.profileId.forEach(async function(x:any, index:number) {
+  profileList.profileId.forEach(async function(x:any) {
       await DeleteConceptById(x.id);
 });
 
