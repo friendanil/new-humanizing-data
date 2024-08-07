@@ -17,8 +17,6 @@ export default function editAttendanceModalHTML() {
               <div class="p-6 pt-0">
                   <form method="post" name="editAttendanceForm" id="editAttendanceForm">
 
-                    // TODO:: show user details
-
                     <div id="edit-attendance-form-data">
                         <p class="text-center my-20">Couldn't find any data for the given date</p>
                     </div>

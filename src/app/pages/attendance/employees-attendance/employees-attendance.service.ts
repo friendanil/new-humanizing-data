@@ -13,8 +13,9 @@ import {
   formatUserAttendance,
   getDuration,
 } from "../attendance.helper";
+import { openModal } from "../../../services/modal.service";
 
-export async function getCompanyEmployee() {
+export async function getCompanyEmployee(filterDate?: string) {
   const profileStorageData: any = await getLocalStorageData();
   const token = profileStorageData?.token;
   const companyConcept = await MakeTheInstanceConcept(
@@ -23,11 +24,14 @@ export async function getCompanyEmployee() {
     false,
     999
   );
-
-  const dailyDate = `${new Date().getFullYear()}-${(
+  let searchDate = `${new Date().getFullYear()}-${(
     "0" +
     (new Date().getMonth() + 1)
-  ).slice(-2)}-0${new Date().getDate()}`;
+  ).slice(-2)}-${("0" + new Date().getDate()).slice(-2)}`;
+
+  if (filterDate) {
+    searchDate = filterDate;
+  }
 
   const search1 = new SearchQuery();
   search1.composition = companyConcept.id;
@@ -41,7 +45,7 @@ export async function getCompanyEmployee() {
   const checkInFilter = new FilterSearch();
   checkInFilter.type = "checkin";
   checkInFilter.logicoperator = "like";
-  checkInFilter.search = `%${dailyDate}%`;
+  checkInFilter.search = `%${searchDate}%`;
   checkInFilter.composition = false;
 
   const search3 = new SearchQuery();
@@ -58,6 +62,7 @@ export async function getCompanyEmployee() {
     "the_attendance_status",
   ];
   search4.doFilter = true;
+  search4.inpage = 100;
 
   const searchData = await SearchLinkMultipleAll(
     [search1, search2, search3, search4],
@@ -86,6 +91,7 @@ export async function getCompanyEmployee() {
       });
     }
   }
+  console.log("a", searchData, searchDate);
   // filter same users
   users = [...new Map(users.map((item) => [item.user.id, item])).values()];
   return users;
@@ -212,4 +218,25 @@ export function getEmployeesAttendanceList(employees: any[]) {
           `;
   }
   return employeesAttendanceRows;
+}
+
+export function handleExportEmployeesAteendanceModal(
+  indivisualUser: boolean = false,
+  userConceptId: number = 0
+) {
+  openModal("export-employees-ateendance");
+
+  if (indivisualUser && userConceptId) {
+    // populate userConceptId to be exported for indivisual User
+    document.getElementById("export-userConceptId")?.remove();
+
+    const exportForm = document.getElementById("exportEmployeesAttendanceForm");
+
+    if (exportForm) {
+      exportForm.insertAdjacentHTML(
+        "afterbegin",
+        `<input type="text" value="${userConceptId}" name="export-userConceptId" id="export-userConceptId" class="hidden" />`
+      );
+    }
+  }
 }

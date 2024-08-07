@@ -35,12 +35,12 @@ export default `
                 <ul class="ps-0">
                   <li class="list-none">
                     <router-link href="/listing" class="top-nav-item cursor-pointer text-sm text-gray-600 hover:text-gray-500">
-                      Added Items
+                      My Items
                     </router-link>
                   </li>
                   <li class="list-none">
                     <router-link href="/rfq" class="top-nav-item cursor-pointer text-sm text-gray-600 hover:text-gray-500">
-                      RFQs
+                      My RFQs
                     </router-link>
                   </li>
                   <li class="list-none">
@@ -94,10 +94,52 @@ export default `
         <ul>
           <li><router-link href="/dashboard" class="top-nav-item cursor-pointer text-sm text-gray-600 hover:text-gray-500">Dashboard</router-link></li>
           <li><router-link href="/attendance" class="top-nav-item cursor-pointer text-sm text-gray-600 hover:text-gray-500">Attendance</router-link></li>
-          <li><router-link href="/items" class="top-nav-item cursor-pointer text-sm text-gray-600 hover:text-gray-500">Listing Items</router-link></li>
+          <li><router-link href="/items" class="top-nav-item cursor-pointer text-sm text-gray-600 hover:text-gray-500">Items</router-link></li>
           <li><router-link href="/jobs" class="top-nav-item cursor-pointer text-sm text-gray-600 hover:text-gray-500">Jobs</router-link></li>
-          <li><router-link href="/listing" class="top-nav-item cursor-pointer text-sm text-gray-600 hover:text-gray-500">My Listing</router-link></li>
-          <li><router-link href="/rfq" class="top-nav-item cursor-pointer text-sm text-gray-600 hover:text-gray-500">RFQ</router-link></li>
+          <!-- <li><router-link href="/listing" class="top-nav-item cursor-pointer text-sm text-gray-600 hover:text-gray-500">My Listing</router-link></li>
+          <li><router-link href="/rfq" class="top-nav-item cursor-pointer text-sm text-gray-600 hover:text-gray-500">RFQ</router-link></li> -->
+          <li>
+            <div class="relative group">
+              <router-link class="top-nav-item cursor-pointer text-sm text-gray-600 hover:text-gray-500">
+                My List 
+                <svg viewBox="0 0 360 360" xml:space="preserve" class="w-[12px] h-[12px] inline ms-1">
+                  <g id="SVGRepo_iconCarrier">
+                    <path
+                      id="XMLID_225_"
+                      d="M325.607,79.393c-5.857-5.857-15.355-5.858-21.213,0.001l-139.39,139.393L25.607,79.393 c-5.857-5.857-15.355-5.858-21.213,0.001c-5.858,5.858-5.858,15.355,0,21.213l150.004,150c2.813,2.813,6.628,4.393,10.606,4.393 s7.794-1.581,10.606-4.394l149.996-150C331.465,94.749,331.465,85.251,325.607,79.393z"
+                    ></path>
+                  </g>
+                </svg>
+              </router-link>
+
+              <div class="absolute z-10 hidden group-hover:block">
+                  <div class="dropdown-menu w-32 bg-gray-200 px-4 py-2 shadow-lg rounded">
+                    <ul class="ps-0">
+                      <li class="list-none">
+                        <router-link href="/listing" class="top-nav-item cursor-pointer text-sm text-gray-600 hover:text-gray-500">
+                          My Items
+                        </router-link>
+                      </li>
+                      <li class="list-none">
+                        <router-link href="/rfq" class="top-nav-item cursor-pointer text-sm text-gray-600 hover:text-gray-500">
+                          My RFQs
+                        </router-link>
+                      </li>
+                      <li class="list-none">
+                        <router-link href="/appliedJobs" class="top-nav-item cursor-pointer text-sm text-gray-600 hover:text-gray-500">
+                          Applied Jobs
+                        </router-link>
+                      </li>
+                      <li class="list-none">
+                        <router-link href="/postedJobs" class="top-nav-item cursor-pointer text-sm text-gray-600 hover:text-gray-500">
+                          Posted Jobs
+                        </router-link>
+                      </li>
+                    <ul>
+                </div>
+              </div>
+            </div>
+          </li>
           <li><router-link href="/profile" class="top-nav-item cursor-pointer text-sm text-gray-600 hover:text-gray-500">Profile</router-link></li>
           <li><button type="button" class="cursor-pointer text-sm text-red-400 hover:text-red-700" onclick="logout()">Log out</button></li>
         </ul>

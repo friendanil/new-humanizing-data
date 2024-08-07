@@ -1,6 +1,10 @@
 import { submitUpdateAttendance } from "../../../modules/attendance/edit/edit-attendance.service";
 import { openModal } from "../../listItem/listItem.service";
-import { searchUserAttendance } from "../attendance.helper";
+import {
+  Attendance,
+  getDuration,
+  searchUserAttendance,
+} from "../attendance.helper";
 
 export async function showEditAttendanceModal(
   userConceptId: string = "",
@@ -93,8 +97,108 @@ export async function showEditAttendanceModal(
   if (formDataContainer) formDataContainer.innerHTML = form;
 }
 
+export function getCalculatedAttendance(monthlyAttendanceList: Attendance[]) {
+  let datesWithWorkingHour: any = {};
+  let abc = {
+    presentDays: 0,
+    absentDays: 0,
+    totalWorkingTime: 0,
+    weeklyWorkingTime: 0,
+    highestDailyTime: 0,
+  };
+
+  monthlyAttendanceList.map((attendance) => {
+    const date = attendance?.checkin?.slice(0, 10);
+
+    // present and absent count
+    if (attendance?.status == "Absent" && !datesWithWorkingHour[date]) {
+      abc.absentDays += 1;
+    } else if (attendance?.status == "Present" && !datesWithWorkingHour[date]) {
+      abc.presentDays += 1;
+    }
+
+    if (attendance.checkin && !datesWithWorkingHour[date]) {
+      datesWithWorkingHour[date] = 0;
+    }
+
+    if (attendance.checkin && attendance.checkout) {
+      // daily working hours
+      datesWithWorkingHour[date] +=
+        new Date(attendance.checkout).getTime() -
+        new Date(attendance.checkin).getTime();
+
+      // monthly working hours
+      abc.totalWorkingTime +=
+        new Date(attendance.checkout).getTime() -
+        new Date(attendance.checkin).getTime();
+    }
+
+    const currentDate = new Date();
+    const currentWeekStart = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      currentDate.getDate() - currentDate.getDay()
+    );
+    const currentWeekEnd = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      currentWeekStart.getDate() + 6
+    );
+
+    // weekly working hour
+    if (
+      attendance.checkin &&
+      attendance.checkout &&
+      new Date(attendance.checkin) >= currentWeekStart &&
+      new Date(attendance.checkin) <= currentWeekEnd
+    ) {
+      abc.weeklyWorkingTime +=
+        new Date(attendance.checkout).getTime() -
+          new Date(attendance.checkin).getTime() || 0;
+    }
+  });
+
+  // highest daily working hour
+  for (const key in datesWithWorkingHour) {
+    if (Object.prototype.hasOwnProperty.call(datesWithWorkingHour, key)) {
+      const workingHour = datesWithWorkingHour[key];
+      if (workingHour > abc.highestDailyTime)
+        abc.highestDailyTime = workingHour;
+    }
+  }
+
+  return {
+    ...abc,
+    totalWorkingTime: getDuration(abc.totalWorkingTime),
+    weeklyWorkingTime: getDuration(abc.weeklyWorkingTime),
+    highestDailyTime: getDuration(abc.highestDailyTime),
+  };
+}
+
 function formatedLocalDate(date: any) {
   const timestamp = new Date(date);
   timestamp.setMinutes(timestamp.getMinutes() - timestamp.getTimezoneOffset());
   return timestamp.toISOString().slice(0, 16);
 }
+
+export function updateAttendanceCalculations(attendanceList: Attendance[]) {
+  const calculatedAttendance: any = getCalculatedAttendance(attendanceList);
+
+  for (const [key, value] of Object.entries(calculatedAttendance)) {
+    let element = document.getElementById(key);
+    if (element) element.innerText = value as any;
+  }
+}
+
+// function getWeeklyDates(current) {
+//   var week= new Array();
+//   // Starting Monday not Sunday
+//   current.setDate((current.getDate() - current.getDay() ));
+//   for (var i = 0; i < 7; i++) {
+//       week.push(
+//           new Date(current)
+//       );
+//       current.setDate(current.getDate() +1);
+//   }
+//   return week;
+// }

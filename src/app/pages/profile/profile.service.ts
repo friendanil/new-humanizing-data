@@ -2,7 +2,7 @@ import {
   Concept,
   CreateConnectionBetweenTwoConcepts,
   CreateTheConnection,
-  GetCompositionWithId,
+  // GetCompositionWithId,
   GetLink,
   GetTheConcept,
   GetTheConceptLocal,
@@ -433,7 +433,7 @@ export async function uploadPdfFile(files: any) {
   formdata.append("file", files);
 
   const profileStorageData: any = await getLocalStorageData();
-  const userId = profileStorageData?.userId;
+  // const userId = profileStorageData?.userId;
   const token = profileStorageData?.token;
 
   const myHeaders = new Headers();
@@ -676,7 +676,7 @@ export async function saveProfileDetails(e: Event) {
 
   const tesProfileConcept = await GetTheConcept(testProfile?.id);
 
-  const testProfileComp2 = await GetCompositionWithId(testProfile?.id);
+  // const testProfileComp2 = await GetCompositionWithId(testProfile?.id);
 
   const userConcept: Concept = await GetTheConcept(userConceptId);
   await CreateConnectionBetweenTwoConcepts(
@@ -887,7 +887,7 @@ export async function submitAddProfileForm(e: any) {
   const eduContainers = document.querySelectorAll(".input-container");
   EducationFieldsArray.length = 0; // Clear the array
 
-  eduContainers.forEach((container, index) => {
+  eduContainers.forEach((container) => {
     const inputs: any = container.querySelectorAll(".input-field");
     EducationFieldsArray.push({
       eduLevel: inputs[0].value,
@@ -902,7 +902,7 @@ export async function submitAddProfileForm(e: any) {
   const expContainers = document.querySelectorAll(".input-container-1");
   ExperienceFieldsArray.length = 0; // Clear the array
 
-  expContainers.forEach(async (container, index) => {
+  expContainers.forEach(async (container) => {
     const inputs: any = container.querySelectorAll(".input-field-1");
     ExperienceFieldsArray.push({
       company: inputs[0].value,
@@ -917,7 +917,7 @@ export async function submitAddProfileForm(e: any) {
   const docContainers = document.querySelectorAll(".input-container-2");
   DocumentFieldsArray.length = 0; // Clear the array
 
-  docContainers.forEach((container2, index) => {
+  docContainers.forEach((container2) => {
     const inputs: any = container2.querySelectorAll(".input-field-2");
     DocumentFieldsArray.push({
       docName: inputs[0].value,
@@ -929,7 +929,7 @@ export async function submitAddProfileForm(e: any) {
   const skillsContainers = document.querySelectorAll(".input-container-3");
   SkillsFieldsArray.length = 0; // Clear the array
 
-  skillsContainers.forEach((container, index) => {
+  skillsContainers.forEach((container) => {
     const inputs: any = container.querySelectorAll(".input-field-3");
     SkillsFieldsArray.push({
       language: inputs[0].value,
@@ -1276,11 +1276,11 @@ export async function getProfileData() {
 }
 
 export async function createProfile(formValues: any) {
-  let profileId: any;
-  let conceptDeleted:any;
-  profileId = profileList?.data?.the_user?.the_user_profile?.[0]?.id || "";
+  // let profileId: any;
+  // let conceptDeleted:any;
+  const profileId = profileList?.data?.the_user?.the_user_profile?.[0]?.id || "";
   if (profileId) {
-   conceptDeleted= await DeleteConceptById(profileId);
+   await DeleteConceptById(profileId);
   }
   const eduName = JSON.parse(formValues?.education as string);
   const expName = JSON.parse(formValues?.experience as string);
@@ -1292,26 +1292,26 @@ export async function createProfile(formValues: any) {
   let eduNameConcept: any;
   let expNameConcept: any;
   let docConcept: any;
-  let deletedFormValue: any;
+  // let deletedFormValue: any;
   // console.log(profilePicUrl, "profilePicUrl");
   // Object.assign(formValues, { profilePicUrl: profilePicUrl });
 
-  deletedFormValue = delete formValues.education;
-  deletedFormValue = delete formValues.experience;
-  deletedFormValue = delete formValues.documents;
-  deletedFormValue = delete formValues.skills;
-  deletedFormValue = delete formValues.eduLevel;
-  deletedFormValue = delete formValues.course;
-  deletedFormValue = delete formValues.eduDateFrom;
-  deletedFormValue = delete formValues.eduDateTo;
-  deletedFormValue = delete formValues.institutionName;
-  deletedFormValue = delete formValues.institutionAddress;
-  deletedFormValue = delete formValues.company;
-  deletedFormValue = delete formValues.position;
-  deletedFormValue = delete formValues.expAddress;
-  deletedFormValue = delete formValues.expCountry;
-  deletedFormValue = delete formValues.expDateFrom;
-  deletedFormValue = delete formValues.expDateTo;
+  delete formValues.education;
+  delete formValues.experience;
+  delete formValues.documents;
+  delete formValues.skills;
+  delete formValues.eduLevel;
+  delete formValues.course;
+  delete formValues.eduDateFrom;
+  delete formValues.eduDateTo;
+  delete formValues.institutionName;
+  delete formValues.institutionAddress;
+  delete formValues.company;
+  delete formValues.position;
+  delete formValues.expAddress;
+  delete formValues.expCountry;
+  delete formValues.expDateFrom;
+  delete formValues.expDateTo;
 
   profileNameConcept = await createEntityInstance(
     "profile",
