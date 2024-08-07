@@ -21,7 +21,7 @@ import { environment } from "../../environments/environment.dev";
 import { showToast } from "../../modules/toast-bar/toast-bar.index";
 import { CreateConnectionBetweenEntityLocal } from "../../services/entity.service";
 import "./profile.style.css";
-import { userListOfData } from "../../services/getUser.service";
+import { userListOfData } from "../../services/getUserProfile.service";
 
 const thetaBoommAPI = environment?.boomURL;
 let attachmentValues: any;
@@ -882,152 +882,52 @@ export async function submitUpdateProfile(linkProfileData: any) {
   // loadProfileDetails();
 }
 
-export async function submitAddProfileForm(e: any) {
-  e.preventDefault();
-  const eduContainers = document.querySelectorAll(".input-container");
-  EducationFieldsArray.length = 0; // Clear the array
-
-  eduContainers.forEach((container) => {
-    const inputs: any = container.querySelectorAll(".input-field");
-    EducationFieldsArray.push({
-      eduLevel: inputs[0].value,
-      course: inputs[1].value,
-      dobFrom: inputs[2].value,
-      dobTo: inputs[3].value,
-      institutionName: inputs[4].value,
-      institutionAddress: inputs[5].value,
-    });
-  });
-
-  const expContainers = document.querySelectorAll(".input-container-1");
-  ExperienceFieldsArray.length = 0; // Clear the array
-
-  expContainers.forEach(async (container) => {
-    const inputs: any = container.querySelectorAll(".input-field-1");
-    ExperienceFieldsArray.push({
-      company: inputs[0].value,
-      position: inputs[1].value,
-      address: inputs[2].value,
-      country: inputs[3].value,
-      expdobFrom: inputs[4].value,
-      expdobTo: inputs[5].value,
-    });
-  });
-
-  const docContainers = document.querySelectorAll(".input-container-2");
-  DocumentFieldsArray.length = 0; // Clear the array
-
-  docContainers.forEach((container2) => {
-    const inputs: any = container2.querySelectorAll(".input-field-2");
-    DocumentFieldsArray.push({
-      docName: inputs[0].value,
-      // docUrl: inputs[1].value,
-      docUrl: inputs[2].value,
-    });
-  });
-
-  const skillsContainers = document.querySelectorAll(".input-container-3");
-  SkillsFieldsArray.length = 0; // Clear the array
-
-  skillsContainers.forEach((container) => {
-    const inputs: any = container.querySelectorAll(".input-field-3");
-    SkillsFieldsArray.push({
-      language: inputs[0].value,
-      yearOfExperience: inputs[1].value,
-      // docUrl: inputs[2].value,
-    });
-  });
-
-  const formData: any = new FormData(e.target);
-  formData.append("education", JSON.stringify(EducationFieldsArray));
-  formData.append("experience", JSON.stringify(ExperienceFieldsArray));
-  formData.append("skills", JSON.stringify(SkillsFieldsArray));
-  formData.append("documents", JSON.stringify(DocumentFieldsArray));
-  delete formData?.profilePic;
-  formData.image = attachmentValues?.url;
-  // output as an object
-  const formValues: any = Object.fromEntries(formData);
-
-
-  const inputFirstName = <HTMLInputElement>document.getElementById("first_name");
-  const inputLastName = <HTMLInputElement>document.getElementById("last_name");
-  const inputEmail = <HTMLInputElement>document.getElementById("email");
-  const inputPhone = <HTMLInputElement>document.getElementById("phone");
-
-  function setErrorFor(input: any, message: any) {
-    const formControl = input.parentElement;
-    const small = formControl.querySelector("small");
-    formControl.className = "form-control error";
-    small.innerText = message;
-  }
-  if (formValues.first_name === "") {
-    inputFirstName.focus();
-    setErrorFor(inputFirstName, "First Name cannot be empty");
-  }
-  if (formValues.last_name === "") {
-    inputLastName.focus();
-    setErrorFor(inputLastName, "Last Name cannot be empty");
-  }
-  if (formValues.email === "") {
-    inputEmail.focus();
-    setErrorFor(inputEmail, "Email cannot be empty");
-  }
-  if (formValues.phone === "") {
-    setErrorFor(inputPhone, "Phone no cannot be empty");
-  }
-  if (
-    formValues.first_name &&
-    formValues.last_name &&
-    formValues.email &&
-    formValues.phone
-  ) {
-    await createProfile(formValues);
-  }
-}
-
 export async function getProfileData() {
-    profileList= await userListOfData();
+  let dataFromLocalStorage: string = localStorage?.getItem("profile") || "";
+  const profileData: IUser = JSON.parse(dataFromLocalStorage);
+  // let userId:any = Number(profileData?.userId);
+  let userConceptId: any = Number(profileData?.userConcept)
+    profileList= await userListOfData(userConceptId);
     console.log("output ->", profileList);
     if(profileList){
-    const data =
-      profileList?.data?.the_user?.the_user_profile?.[0]?.data?.the_profile ||
-      "";
-    const inputFirstName = <HTMLInputElement>(
-      document.getElementById("first_name")
-    );
-
-    inputFirstName.value =
-      data?.the_profile_first_name?.[0]?.data?.the_first_name ||
-      profileList?.data?.the_user.entity.person.first_name;
+    const data = profileList?.the_Profile || "";
 
     const inputProfilePic = <HTMLInputElement>(
       document.getElementById("profilePic")
     );
     inputProfilePic.src =
       data?.the_profile_profilePic?.[0]?.data?.the_profilePic ||
-      profileList.data.the_user.entity.person.profile_img;
+      profileList?.entity?.person?.profile_img ||'';
 
     const inputImgInput = <HTMLInputElement>document.getElementById("imgInput");
     inputImgInput.value =
       data?.the_profile_profilePic?.[0]?.data?.the_profilePic ||
-      profileList.data.the_user.entity.person.profile_img;
+      profileList?.entity?.person.profile_img || '';
+
+    const inputFirstName = <HTMLInputElement>(
+        document.getElementById("first_name")
+      );
+  
+    inputFirstName.value =
+      data?.the_profile_first_name?.[0]?.data?.the_first_name ||
+      profileList?.entity?.person?.first_name || '';
 
     const inputLastName = <HTMLInputElement>(
       document.getElementById("last_name")
     );
     inputLastName.value =
       data?.the_profile_last_name?.[0]?.data?.the_last_name ||
-      profileList.data.the_user.entity.person.last_name;
+      profileList?.entity?.person?.last_name;
 
     const inputEmail = <HTMLInputElement>document.getElementById("email");
     inputEmail.value =
       data?.the_profile_email?.[0]?.data?.the_email ||
-      profileList.data.the_user.entity.person.email;
+      profileList?.entity?.person.email;
 
     const inputPhone = <HTMLInputElement>document.getElementById("phone");
     inputPhone.value =
       data?.the_profile_phone?.[0]?.data?.the_phone ||
-      profileList.data.the_user.entity.person.phone;
+      profileList?.entity?.person?.phone;
 
     const inputDob = <HTMLInputElement>document.getElementById("dob");
     inputDob.value = data?.the_profile_dob?.[0]?.data?.the_dob || "";
@@ -1275,25 +1175,125 @@ export async function getProfileData() {
   }
 }
 
-export async function createProfile(formValues: any) {
-  // let profileId: any;
-  // let conceptDeleted:any;
-  const profileId = profileList?.data?.the_user?.the_user_profile?.[0]?.id || "";
-  if (profileId) {
-   await DeleteConceptById(profileId);
+export async function submitAddProfileForm(e: any) {
+  e.preventDefault();
+  const eduContainers = document.querySelectorAll(".input-container");
+  EducationFieldsArray.length = 0; // Clear the array
+  
+  eduContainers.forEach((container, index) => {
+    const inputs: any = container.querySelectorAll(".input-field");
+    EducationFieldsArray.push({
+      eduLevel: inputs[0].value,
+      course: inputs[1].value,
+      dobFrom: inputs[2].value,
+      dobTo: inputs[3].value,
+      institutionName: inputs[4].value,
+      institutionAddress: inputs[5].value,
+    });
+  });
+
+  const expContainers = document.querySelectorAll(".input-container-1");
+  ExperienceFieldsArray.length = 0; // Clear the array
+  
+  expContainers.forEach(async (container, index) => {
+    const inputs: any = container.querySelectorAll(".input-field-1");
+    ExperienceFieldsArray.push({
+      company: inputs[0].value,
+      position: inputs[1].value,
+      address: inputs[2].value,
+      country: inputs[3].value,
+      expdobFrom: inputs[4].value,
+      expdobTo: inputs[5].value,
+    });
+  });
+
+  const docContainers = document.querySelectorAll(".input-container-2");
+  DocumentFieldsArray.length = 0; // Clear the array
+  
+  docContainers.forEach((container2, index) => {
+    const inputs: any = container2.querySelectorAll(".input-field-2");
+    DocumentFieldsArray.push({
+      docName: inputs[0].value,
+      // docUrl: inputs[1].value,
+      docUrl: inputs[2].value,
+    });
+  });
+
+  const skillsContainers = document.querySelectorAll(".input-container-3");
+  SkillsFieldsArray.length = 0; // Clear the array
+
+  skillsContainers.forEach((container, index) => {
+    const inputs: any = container.querySelectorAll(".input-field-3");
+    SkillsFieldsArray.push({
+      language: inputs[0].value,
+      yearOfExperience: inputs[1].value,
+      // docUrl: inputs[2].value,
+    });
+  });
+  const formData: any = new FormData(e.target);
+  formData.append("education", JSON.stringify(EducationFieldsArray));
+  formData.append("experience", JSON.stringify(ExperienceFieldsArray));
+  formData.append("skills", JSON.stringify(SkillsFieldsArray));
+  formData.append("documents", JSON.stringify(DocumentFieldsArray));
+  delete formData?.profilePic;
+  formData.image = attachmentValues?.url;
+  // output as an object
+  const formValues: any = Object.fromEntries(formData);
+  
+  
+  const inputFirstName = <HTMLInputElement>document.getElementById("first_name");
+  const inputLastName = <HTMLInputElement>document.getElementById("last_name");
+  const inputEmail = <HTMLInputElement>document.getElementById("email");
+  const inputPhone = <HTMLInputElement>document.getElementById("phone");
+  
+  function setErrorFor(input: any, message: any) {
+    const formControl = input.parentElement;
+    const small = formControl.querySelector("small");
+    formControl.className = "form-control error";
+    small.innerText = message;
   }
+  if (formValues.first_name === "") {
+    inputFirstName.focus();
+    setErrorFor(inputFirstName, "First Name cannot be empty");
+  }
+  if (formValues.last_name === "") {
+    inputLastName.focus();
+    setErrorFor(inputLastName, "Last Name cannot be empty");
+  }
+  if (formValues.email === "") {
+    inputEmail.focus();
+    setErrorFor(inputEmail, "Email cannot be empty");
+  }
+  if (formValues.phone === "") {
+    setErrorFor(inputPhone, "Phone no cannot be empty");
+  }
+  if (
+    formValues.first_name &&
+    formValues.last_name &&
+    formValues.phone
+  ) {
+    await createProfile(formValues);
+  }
+}
+
+
+
+export async function createProfile(formValues: any) {
+  // let profileIdLen:number=profileList.profileId.length-1
+  profileList.profileId.forEach(async function(x:any, index:number) {
+      await DeleteConceptById(x.id);
+});
+
+  const profileStorageData: any = await getLocalStorageData();
+  const userId = profileStorageData?.userId;
   const eduName = JSON.parse(formValues?.education as string);
   const expName = JSON.parse(formValues?.experience as string);
   const documents = JSON.parse(formValues?.documents as string);
   const skills = JSON.parse(formValues?.skills as string);
-  const profileStorageData: any = await getLocalStorageData();
-  const userId = profileStorageData?.userId;
   let profileNameConcept: any;
   let eduNameConcept: any;
   let expNameConcept: any;
   let docConcept: any;
-  // let deletedFormValue: any;
-  // console.log(profilePicUrl, "profilePicUrl");
   // Object.assign(formValues, { profilePicUrl: profilePicUrl });
 
   delete formValues.education;
@@ -1382,6 +1382,5 @@ await LocalSyncData.SyncDataOnline();
   }, 100);
 
 }
-// console.log("itemEntityConcept ID ->", profileNameConcept?.id);
 // await getProfileData()
 // return profileNameConcept;
