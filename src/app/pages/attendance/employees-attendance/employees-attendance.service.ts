@@ -104,7 +104,7 @@ export function getEmployeesAttendanceList(employees: any[]) {
   if (employees.length == 0) {
     return `
         <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-            <td scope="row" colspan="9" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap text-center dark:text-white">No User Found</td>
+            <td scope="row" colspan="10" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap text-center dark:text-white">No User Found</td>
         </tr>`;
   }
 
@@ -194,6 +194,13 @@ export function getEmployeesAttendanceList(employees: any[]) {
               }">
               <!-- ${obj.checkin ? "Present" : obj?.status || ""} -->
               ${obj.status}
+              </td>
+              <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-opacity-25 ${
+                obj.checkin
+                  ? "bg-green-400"
+                  : obj.status == "Absent" && "bg-red-400"
+              }">
+                ${obj.remarks}
               </td>
               <td scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white bg-opacity-25 ${
                 obj.checkin

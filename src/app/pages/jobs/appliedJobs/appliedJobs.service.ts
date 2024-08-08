@@ -48,7 +48,7 @@ export async function getAllAppliedJobs() {
 
   let appliedJobsHTML = `
     <div class="text-center py-8">
-      <p class="text-zinc-900 dark:text-white">You do not have any RFQs yet.</p>
+      <p class="text-zinc-900 dark:text-white">You do not have any Applied jobs yet.</p>
     </div>
   `;
 
@@ -98,23 +98,26 @@ export async function getAllAppliedJobs() {
       `;
       })
       .join("");
+    
+      return `
+      <table class="border-collapse w-full border border-slate-400 dark:border-slate-500 bg-white dark:bg-slate-800 text-sm shadow-sm">
+          <thead class="bg-slate-50 dark:bg-slate-700">
+            <tr>
+              <th class="w-1/7 border border-slate-300 dark:border-slate-600 font-semibold p-4 text-slate-900 dark:text-slate-200 text-left">Title</th>
+              <th class="w-1/7 border border-slate-300 dark:border-slate-600 font-semibold p-4 text-slate-900 dark:text-slate-200 text-left">Description</th>
+              <th class="w-1/7 border border-slate-300 dark:border-slate-600 font-semibold p-4 text-slate-900 dark:text-slate-200 text-left">Budget</th>
+              <th class="w-1/7 border border-slate-300 dark:border-slate-600 font-semibold p-4 text-slate-900 dark:text-slate-200 text-left">Type</th>
+              <th class="w-1/7 border border-slate-300 dark:border-slate-600 font-semibold p-4 text-slate-900 dark:text-slate-200 text-left">Created Date</th>
+              <th class="w-1/7 border border-slate-300 dark:border-slate-600 font-semibold p-4 text-slate-900 dark:text-slate-200 text-left">Details</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${appliedJobsHTML}
+          </tbody>
+        </table>
+    `;
   }
 
-  return `
-    <table class="border-collapse w-full border border-slate-400 dark:border-slate-500 bg-white dark:bg-slate-800 text-sm shadow-sm">
-        <thead class="bg-slate-50 dark:bg-slate-700">
-          <tr>
-            <th class="w-1/7 border border-slate-300 dark:border-slate-600 font-semibold p-4 text-slate-900 dark:text-slate-200 text-left">Title</th>
-            <th class="w-1/7 border border-slate-300 dark:border-slate-600 font-semibold p-4 text-slate-900 dark:text-slate-200 text-left">Description</th>
-            <th class="w-1/7 border border-slate-300 dark:border-slate-600 font-semibold p-4 text-slate-900 dark:text-slate-200 text-left">Budget</th>
-            <th class="w-1/7 border border-slate-300 dark:border-slate-600 font-semibold p-4 text-slate-900 dark:text-slate-200 text-left">Type</th>
-            <th class="w-1/7 border border-slate-300 dark:border-slate-600 font-semibold p-4 text-slate-900 dark:text-slate-200 text-left">Created Date</th>
-            <th class="w-1/7 border border-slate-300 dark:border-slate-600 font-semibold p-4 text-slate-900 dark:text-slate-200 text-left">Details</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${appliedJobsHTML}
-        </tbody>
-      </table>
-  `;
+  return appliedJobsHTML
+  
 }

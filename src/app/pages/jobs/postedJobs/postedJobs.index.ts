@@ -11,7 +11,6 @@ export default class extends mainViewClass {
 
   async getHtml() {
     const postedJobsHTML = await getPostedJobs();
-    // console.log("postedJobsHTML", postedJobsHTML);
 
     setTimeout(() => {
       initTopNavigation();

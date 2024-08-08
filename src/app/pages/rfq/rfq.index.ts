@@ -16,10 +16,7 @@ export default class extends mainViewClass {
     (window as any).openRFQModal = openRFQModal;
 
     const rfqList = await getRFQ();
-    // console.log('rfqList ->', rfqList)
-
     const rfqModalHTMLCode = await rfqModalHTML();
-    // console.log('rfqModalHTMLCode', rfqModalHTMLCode)
 
     setTimeout(() => {
       initTopNavigation();

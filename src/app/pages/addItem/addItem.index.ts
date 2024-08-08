@@ -46,7 +46,6 @@ export default class extends mainViewClass {
       //     agent?.data?.agent_request_info?.isApproved === "True"
       // );
       const agentType = myAgentType?.data?.agent_request_info?.agentType
-      console.log("agentType", agentType);
 
       if (agentType === "listingAgent") {
         // listing agent selects seller
@@ -75,7 +74,6 @@ export default class extends mainViewClass {
     //       agent?.data?.agent_request_info?.agentType === "listingAgent" &&
     //       agent?.data?.agent_request_info?.isApproved === "True"
     //   );
-    //   console.log("listingAgent", listingAgent);
 
     //   if (listingAgent?.length) {
     //     sellersHTML = await getAgentSellers();
