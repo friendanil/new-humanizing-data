@@ -30,18 +30,19 @@ import { ListOfJob } from "../../../services/getJob.services";
 import { interviewschedueGetFormData } from "../../../modules/setInterview-modal/setInterview-modal";
 import { getProfileFormData } from "../../../modules/setInterview-modal/setIndividualProfileView-modal";
 
-
 const thetaBoommAPI = environment?.boomURL;
 // let attachmentConcept: LConcept;
 // for modal
 
-
-export async function openIndividualProfileModal(modalId:string,userConceptId:number){
+export async function openIndividualProfileModal(
+  modalId: string,
+  userConceptId: number
+) {
   const check = document.getElementById(modalId);
   if (check) check.style.display = "block";
   document.getElementsByTagName("body")[0].classList.add("overflow-y-hidden");
-  
-  await getProfileFormData(userConceptId)
+
+  await getProfileFormData(userConceptId);
   // Close all modals when press ESC
   document.onkeydown = function (event: any) {
     if (event.code === "Escape" || event.key === "Escape") {
@@ -60,10 +61,13 @@ export async function closeIndividualProfileModal(modalId: string) {
     .getElementsByTagName("body")[0]
     .classList.remove("overflow-y-hidden");
 }
-export async function openScheduleInterviewModal(modalId:string,userConceptId:number){
-  await interviewschedueGetFormData(userConceptId)
-  const userConcept:any=document.getElementById('userConceptId');
-  userConcept.value=userConceptId;
+export async function openScheduleInterviewModal(
+  modalId: string,
+  userConceptId: number
+) {
+  await interviewschedueGetFormData(userConceptId);
+  const userConcept: any = document.getElementById("userConceptId");
+  userConcept.value = userConceptId;
   const check = document.getElementById(modalId);
   if (check) check.style.display = "block";
   document.getElementsByTagName("body")[0].classList.add("overflow-y-hidden");
@@ -119,16 +123,12 @@ export async function _getMyAppliedJob() {
 
   const queryParams = [searchfirst];
   const output = await SearchLinkMultipleAll(queryParams, token);
-  console.log("output getMyAppliedJob ->", output);
-
   return output;
 }
 
 export async function getJobApplicants(jobProductId: number) {
-  // const userEntityId = profileStorageData?.entityId;
-  let jobProId=jobProductId;
-  const output:any=await ListOfJob(jobProId)
-  console.log("output getJobApplicants ->", output);
+  let jobProId = jobProductId;
+  const output: any = await ListOfJob(jobProId);
 
   let applicantData = output?.data?.the_item?.the_entity_s_appliedJob_reverse;
   let applicantHTML: any;
@@ -136,22 +136,38 @@ export async function getJobApplicants(jobProductId: number) {
     const applicantList = applicantData?.map((applicant: any) => {
       const applicantUserData =
         applicant?.data?.the_entity?.the_entity_user?.[0]?.data?.the_user;
-      console.log("applicantUserData", applicantUserData);
 
       return {
         entityId: applicant?.id,
         userConceptId: applicant?.data?.the_entity?.the_entity_user?.[0]?.id,
-        profileImage: applicantUserData?.the_user_profile?.[0]?.data?.the_profile?.the_profile_profilePic?.[0]?.data?.the_profilePic || applicantUserData?.entity?.person?.profile_img,
-        fname: applicantUserData?.the_user_profile?.[0]?.data?.the_profile?.the_profile_first_name?.[0]?.data?.the_first_name || applicantUserData?.entity?.person?.first_name,
-        lname: applicantUserData?.the_user_profile?.[0]?.data?.the_profile?.the_profile_last_name?.[0]?.data?.the_last_name || applicantUserData?.entity?.person?.last_name,
+        profileImage:
+          applicantUserData?.the_user_profile?.[0]?.data?.the_profile
+            ?.the_profile_profilePic?.[0]?.data?.the_profilePic ||
+          applicantUserData?.entity?.person?.profile_img,
+        fname:
+          applicantUserData?.the_user_profile?.[0]?.data?.the_profile
+            ?.the_profile_first_name?.[0]?.data?.the_first_name ||
+          applicantUserData?.entity?.person?.first_name,
+        lname:
+          applicantUserData?.the_user_profile?.[0]?.data?.the_profile
+            ?.the_profile_last_name?.[0]?.data?.the_last_name ||
+          applicantUserData?.entity?.person?.last_name,
         bio: applicantUserData?.entity?.person?.bio,
-        status:applicantUserData?.the_user_interViewSchedule?.[0]?.data?.the_interViewSchedule?.the_interViewSchedule_status?.[0]?.data?.the_status,
-        email: applicantUserData?.the_user_profile?.[0]?.data?.the_profile?.the_profile_email?.[0]?.data?.the_email || applicantUserData?.entity?.person?.email,
+        status:
+          applicantUserData?.the_user_interViewSchedule?.[0]?.data
+            ?.the_interViewSchedule?.the_interViewSchedule_status?.[0]?.data
+            ?.the_status,
+        email:
+          applicantUserData?.the_user_profile?.[0]?.data?.the_profile
+            ?.the_profile_email?.[0]?.data?.the_email ||
+          applicantUserData?.entity?.person?.email,
         location: applicantUserData?.entity?.person?.location,
-        phone:applicantUserData?.the_user_profile?.[0]?.data?.the_profile?.the_profile_phone?.[0]?.data?.the_phone||applicantUserData?.entity?.person?.phone,
+        phone:
+          applicantUserData?.the_user_profile?.[0]?.data?.the_profile
+            ?.the_profile_phone?.[0]?.data?.the_phone ||
+          applicantUserData?.entity?.person?.phone,
       };
     });
-    console.log("applicantList", applicantList);
     applicantHTML = applicantList
       ?.map((applicant: any) => {
         if (!applicant?.profileImage || applicant?.profileImage === "undefined")
@@ -164,7 +180,7 @@ export async function getJobApplicants(jobProductId: number) {
         }" class="rounded w-[48px] h-[48px] bg-gray-200">
             </td>
             <td class="border border-slate-300 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400">
-              ${applicant?.fname+" "+applicant?.lname || ""}
+              ${applicant?.fname + " " + applicant?.lname || ""}
             </td>
             <td class="border border-slate-300 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400">
               ${applicant?.status || "unScreened"}
@@ -186,14 +202,18 @@ export async function getJobApplicants(jobProductId: number) {
               </a>
               <td class="border border-slate-300 dark:border-slate-700 p-3 text-slate-500 dark:text-slate-400">
               <button class="text-center bg-green-500 text-white rounded-md px-4 py-2 hover:bg-green-700 transition"
-              onclick="openIndividualProfileModal('create-viewIndividualProfile-modal',${applicant?.userConceptId})">
+              onclick="openIndividualProfileModal('create-viewIndividualProfile-modal',${
+                applicant?.userConceptId
+              })">
               View Profile
               </button>
               
             </td>
               <td class="border border-slate-300 dark:border-slate-700 p-3 text-slate-500 dark:text-slate-400">
               <button class="text-center bg-green-500 text-white rounded-md px-4 py-2 hover:bg-green-700 transition"
-              onclick="openScheduleInterviewModal('create-setInterview-modal',${applicant?.userConceptId})">
+              onclick="openScheduleInterviewModal('create-setInterview-modal',${
+                applicant?.userConceptId
+              })">
               Interview Schedule
               </button>
             </td>
@@ -254,7 +274,6 @@ export async function getMyAppliedJobStatus(jobProductId: number) {
     return null;
   }
 
-  console.log("response", response);
   const appliedJobsData = await response.json();
   console.log("appliedJobsData getMyAppliedJobStatus ->", appliedJobsData);
 
@@ -366,7 +385,6 @@ export async function getJobDetails(productId: number) {
       },
     };
 
-    console.log("product", product);
     listingItem = product;
     let imagesHTML: string = "";
     if (!product?.data?.imageList?.length) {
@@ -403,7 +421,6 @@ export async function getJobDetails(productId: number) {
     // }
 
     const productDetailsData = await GetTheConceptLocal(productId);
-    console.log("productDetailsData", productDetailsData);
     isItemListedByMe = userId === productDetailsData?.userId;
 
     let productDetails: string = "";
@@ -418,8 +435,6 @@ export async function getJobDetails(productId: number) {
     } else {
       const skuData: any = await getSkuDetails();
       let listedInfoEl = "";
-
-      console.log("product?.data?.listing", product?.data?.listing);
 
       let accessibleButtons = "";
       if (isItemListedByMe) {
@@ -442,12 +457,10 @@ export async function getJobDetails(productId: number) {
 
         // check job applicants here
         jobApplicants = await getJobApplicants(Number(productId));
-        // console.log("jobApplicants ->", jobApplicants);
       } else {
         const isJobApplied: any = await getMyAppliedJobStatus(
           Number(productId)
         );
-        console.log("isJobApplied", isJobApplied);
         if (isJobApplied) {
           accessibleButtons = `
             <button disabled class="bg-green-500 text-white rounded-md px-4 py-2 bg-green-700 transition">
@@ -595,7 +608,6 @@ export async function getSkuDetails() {
       // search.inpage = 100;
 
       // let values = await SearchLinkInternal(search, token);
-      // console.log("values the rfq ->", values);
 
       // let search = new SearchStructure();
       // search.composition = "the_buyeragent";
@@ -618,7 +630,6 @@ export async function getSkuDetails() {
 
       const queryParams = [searchfirst, searchsecond];
       const output = await SearchLinkMultipleAll(queryParams, token);
-      console.log("output SKU ->", output);
 
       // sku summary
       const skuData = output?.data?.the_item?.the_item_s_sku;
@@ -665,8 +676,6 @@ export async function getSkuDetails() {
 }
 
 export async function submitUpdateSKUForm(e: any) {
-  alert("Namaslte");
-  console.log("submitUpdateSKUForm job");
   e.preventDefault();
   const formData: any = new FormData(e.target);
   const formValues: any = Object.fromEntries(formData); // output as an object
@@ -674,7 +683,6 @@ export async function submitUpdateSKUForm(e: any) {
 }
 
 export async function createItemSKU(formValues: any) {
-  console.log("formValues SKU ->", formValues);
   let urlPath = location.pathname;
   let itemId = Number(urlPath.substring(5));
 
@@ -762,11 +770,9 @@ export async function createListingPlatform() {
 //   const formValues: any = Object.fromEntries(formData);
 
 //   const rfqResponse = await createItemRFQ(formValues);
-//   console.log("rfqResponse", rfqResponse);
 // }
 
 // export async function createItemRFQ(formValues: any) {
-//   console.log("createItem formValues ->", formValues);
 
 //   // let urlPath = location.pathname;
 //   // let itemId = Number(urlPath.substring(10));
@@ -838,7 +844,6 @@ export async function createListingPlatform() {
 
 //   await LocalSyncData.SyncDataOnline();
 
-//   console.log("rfq completed");
 //   closeModal("rfq-modal");
 //   setTimeout(async () => {
 //     await showToast(
