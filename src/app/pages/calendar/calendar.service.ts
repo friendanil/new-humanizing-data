@@ -43,8 +43,8 @@ export async function getAllInterviewSchedule() {
     const output = await response.json();
     function convertToISOTime(timeStr:any) {
       // Parse the time string and extract hours and period (AM/PM)
-      const [time, period] = timeStr.split(' ');
-      let [hours, minutes] = time.split(':').map(Number);
+      const [time, period] = timeStr?.split(' ');
+      let [hours, minutes] = time?.split(':').map(Number);
   
       // Convert to 24-hour format
       if (period === 'PM' && hours !== 12) {
