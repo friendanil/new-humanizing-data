@@ -1286,10 +1286,9 @@ export async function submitAddProfileForm(e: any) {
 
 export async function createProfile(formValues: any) {
   // let profileIdLen:number=profileList.profileId.length-1
-  await loader(true)
-  profileList.profileId.forEach(async function(x:any) {
+  profileList?.profileId?.forEach(async function(x:any) {
       await DeleteConceptById(x.id);
-});
+})||'';
 
   const profileStorageData: any = await getLocalStorageData();
   const userId = profileStorageData?.userId;
@@ -1319,7 +1318,7 @@ export async function createProfile(formValues: any) {
   delete formValues.expCountry;
   delete formValues.expDateFrom;
   delete formValues.expDateTo;
-
+  await loader(true)
   profileNameConcept = await createEntityInstance(
     "profile",
     userId,
