@@ -22,6 +22,7 @@ import { showToast } from "../../modules/toast-bar/toast-bar.index";
 import { CreateConnectionBetweenEntityLocal } from "../../services/entity.service";
 import "./profile.style.css";
 import { userListOfData } from "../../services/getUserProfile.service";
+import {loader} from '../../modules/loader/loader.index';
 
 const thetaBoommAPI = environment?.boomURL;
 let attachmentValues: any;
@@ -211,7 +212,6 @@ export async function addDoc(param: any) {
 
   // Add HTML for input fields and delete button
   container.innerHTML = `
-        <div id="loader" class="center"></div>
           <div id="input-container-2" class="grid gap-6 mb-6 mt-6 md:grid-cols-3">
             <div>
               <label for="docName" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Document Name</label>
@@ -362,11 +362,8 @@ export async function previewImage(event: any) {
 
 // function is to upload files
 export async function uploadImageFile(files: any) {
-  const loader: any = document?.querySelector("#loader");
-  if (loader) {
-    loader.style.display = "block";
-    // body.style.visibility="hidden"
-  }
+  await loader(true)
+  // return 
   let formdata = new FormData();
   formdata.append("image", files);
 
@@ -405,10 +402,7 @@ export async function uploadImageFile(files: any) {
   //   attachmentValues
   // );
   if (output.data) {
-    if (loader) {
-      // body.style.visibility = "visible";
-      loader.style.display = "none";
-    }
+    await loader(false)
     setTimeout(async () => {
       await showToast(
         "success",
@@ -423,12 +417,7 @@ export async function uploadImageFile(files: any) {
 
 // function is to upload files
 export async function uploadPdfFile(files: any) {
-  // const body:any=document?.querySelector("body")
-  const loader: any = document?.querySelector("#loader");
-  if (loader) {
-    loader.style.display = "block";
-    // body.style.visibility="hidden"
-  }
+  await loader(true)
   let formdata = new FormData();
   formdata.append("file", files);
 
@@ -452,7 +441,7 @@ export async function uploadPdfFile(files: any) {
     return null;
   }
   const output = await response.json();
-  console.log(output, "output");
+  // console.log(output, "output");
   const inputPdf = <HTMLInputElement>document?.getElementById("pdfFile");
   inputPdf.value = output?.data;
   // attachmentValues = {
@@ -468,10 +457,7 @@ export async function uploadPdfFile(files: any) {
   //   attachmentValues
   // );
   if (output) {
-    if (loader) {
-      // body.style.visibility = "visible";
-      loader.style.display = "none";
-    }
+    await loader(false)
     setTimeout(async () => {
       await showToast(
         "success",
@@ -888,7 +874,7 @@ export async function getProfileData() {
   // let userId:any = Number(profileData?.userId);
   let userConceptId: any = Number(profileData?.userConcept)
     profileList= await userListOfData(userConceptId);
-    console.log("output ->", profileList);
+    // console.log("output ->", profileList);
     if(profileList){
     const data = profileList?.the_Profile || "";
 
@@ -1280,6 +1266,7 @@ export async function submitAddProfileForm(e: any) {
 
 export async function createProfile(formValues: any) {
   // let profileIdLen:number=profileList.profileId.length-1
+  await loader(true)
   profileList.profileId.forEach(async function(x:any) {
       await DeleteConceptById(x.id);
 });
@@ -1369,7 +1356,7 @@ export async function createProfile(formValues: any) {
     "profile"
   );
 await LocalSyncData.SyncDataOnline();
-
+await loader(false)
   setTimeout(async () => {
     await showToast(
       "success",
