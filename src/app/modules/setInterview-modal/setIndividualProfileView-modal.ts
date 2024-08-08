@@ -6,7 +6,7 @@ export async function getProfileFormData(userConceptId:number){
 const userProfileData=await userListOfData(userConceptId)
 const the_profile:any=userProfileData.the_Profile;
 const divEle: any = document.getElementById("profileBody");
-const html= `<div class="container mx-auto my-10 p-6 bg-white rounded-lg shadow-md">
+const html= `<div class="container mx-auto my-10 p-6 bg-white shadow-md">
 <div class="flex items-center">
     <img id="profileImg" class="w-32 h-32 rounded-full mr-6" src="${the_profile?.the_profile_profilePic?.[0]?.data?.the_profilePic||'https://via.placeholder.com/150'}" alt="Employee Photo">
     <div>
@@ -108,7 +108,7 @@ export default async function createViewIndividualProfileModalHTML() {
             </button>
         </div>
         <!--  -->
-         div id="profileBody"></div>
+         <div id="profileBody"></div>
     
         <!--  -->
     </div>

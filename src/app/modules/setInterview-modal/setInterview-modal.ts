@@ -7,10 +7,11 @@ import { CreateConnectionBetweenEntityLocal } from "../../services/entity.servic
 import {DeleteConceptById, GetTheConcept, LocalSyncData } from "mftsccs-browser";
 import { listOfOneInterviewSchedule } from "../../services/getInterviewSchedule.service";
 import { showToast } from "../toast-bar/toast-bar.index";
+import { loader } from "../loader/loader.index";
 const thetaBoommAPI = environment?.boomURL;
 const EmailFieldsArray: any = [];
 
-export const addEmail=()=>{
+export const addEmail=(index:number)=>{
     const divEle: any = document.getElementById("sendEmail");
     const container = document.createElement("div");
     container.classList.add("email-container");
@@ -22,7 +23,7 @@ export const addEmail=()=>{
             <div class="form-control">
             <label for="email"
             class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
-            <input type="email" id="email" name="email"
+            <input type="email" id="email${index}" name="email"
             class="email-field bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             placeholder="" />
             <small></small>
@@ -34,8 +35,8 @@ export const addEmail=()=>{
 
 }
 export const delEmail=async(button: any)=>{
-    const sendEmail:any=document.getElementById("send-email");
-    sendEmail.classList.add("hidden")
+    // const sendEmail:any=document.getElementById("send-email");
+    // sendEmail.classList.add("hidden")
     const container = button.parentElement;
     const index = Array.from(container.parentElement.children).indexOf(container);
     container.remove();
@@ -54,6 +55,7 @@ export const disablePastDates=()=> {
     getInterviewDate.setAttribute("min", today);
 }
 export const sendEmailForInterview=async()=>{
+    await loader(true)
     const head:any=document.getElementById('heading');
     const content:any=document.getElementById('body');
     const subject:any = head.value;
@@ -94,9 +96,17 @@ export const sendEmailForInterview=async()=>{
         console.warn(`${response.status} ${errorData}`);
         return null;
       }else{
-        
+        await loader(false)
+        setTimeout(async () => {
+            await showToast(
+              "success",
+              "Email send successfully!",
+              "",
+              "top-right",
+              5000
+            );
+          }, 100);
       }
-  console.log(EmailFieldsArray,"email",subject,body)
 }
 export const interviewschedueGetFormData=async(userConceptId:any)=>{
     const userConceptIdInput = <HTMLInputElement>document.getElementById("userConceptId")
@@ -128,13 +138,22 @@ export const interviewschedueGetFormData=async(userConceptId:any)=>{
    heading.value=getInterviewSchedule?.interviewScheduleFormatData?.the_interViewSchedule_heading?.[0]?.data?.the_heading || ''
    const body = <HTMLInputElement>document.getElementById("body");
    body.value=getInterviewSchedule?.interviewScheduleFormatData?.the_interViewSchedule_body?.[0]?.data?.the_body || ''
+
+   
+   getInterviewSchedule?.interviewScheduleFormatData?.the_interViewSchedule_s_bulkEmail?.map(async (output: any, index: any) => {
+    await addEmail(index);
+    const inputEmail = <HTMLInputElement>(
+      document.getElementById(`email${index}`)
+    );
+    inputEmail.value =
+    output?.data?.the_bulkEmail?.the_bulkEmail_emailAddress?.[0]?.data?.the_emailAddress;
+   })
 }
 export const onChange= async()=>{
     const getUserConceptId=<HTMLInputElement>document.getElementById("userConceptId")
     const userConceptId:any=getUserConceptId.value || ''
     const userList:any= await userListOfData(userConceptId)
-    console.log("userProfileIndex",userList.the_Profile?.the_profile_first_name?.[0]?.data?.the_first_name,"entity",userList?.entity)
-    const theProfile=userList.the_Profile?.the_profile_first_name?.[0]?.data?.the_first_name || userList?.entity?.first_name;
+    const UserFirstName=userList.the_Profile?.the_profile_first_name?.[0]?.data?.the_first_name || userList?.entity?.first_name;
 
     const interviewDate:any=document.getElementById('interviewDate');
     const time:any=document.getElementById('interviewTime');
@@ -143,7 +162,7 @@ export const onChange= async()=>{
     const heading:any=document.getElementById('heading');
     heading.value=`[Job Title] Opportunity at Mentors Friend`; 
     if(template.value=='template1'){
-    content.value=`Hi ${theProfile},
+    content.value=`Hi ${UserFirstName},
 
 Thank you for applying to the [Job Title] position at Mentors Friend. After reviewing your application, we’re excited to invite you to interview for the role! 
 
@@ -175,7 +194,7 @@ Best,
     </div>
     <div class="content">
         <h2 style="color: #333;">Interview Invitation</h2>
-        <p style="margin: 10px 0;">Dear ${theProfile?.the_profile_first_name?.[0].data.the_first_name},</p>
+        <p style="margin: 10px 0;">Dear ${UserFirstName},</p>
         <p style="margin: 10px 0;">We are pleased to invite you to an interview for the position of [Position Name] at Mentors Friend. Below are the details of your interview:</p>
         <div class="details" style="margin: 20px 0;
             padding: 10px;
@@ -218,7 +237,6 @@ export const submitSetInterviewForm=async(e:any)=>{
     // console.log(formValues,"formValues",EmailFieldsArray,"userConceptId",userConceptId)
     // await DeleteConceptById(101225073);
     const getInterviewSchedule=await listOfOneInterviewSchedule(userConceptId)
-    console.log(getInterviewSchedule?.interviewScheduleid,"here")
     // return;
     if(getInterviewSchedule?.interviewScheduleid){
         await DeleteConceptById(getInterviewSchedule?.interviewScheduleid)
