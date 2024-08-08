@@ -136,21 +136,21 @@ export async function getJobApplicants(jobProductId: number) {
     const applicantList = applicantData?.map((applicant: any) => {
       const applicantUserData =
         applicant?.data?.the_entity?.the_entity_user?.[0]?.data?.the_user;
-
+      const userProfileIndex = applicantUserData?.the_user_profile.length - 1;
       return {
         entityId: applicant?.id,
         userConceptId: applicant?.data?.the_entity?.the_entity_user?.[0]?.id,
         profileImage:
-          applicantUserData?.the_user_profile?.[0]?.data?.the_profile
-            ?.the_profile_profilePic?.[0]?.data?.the_profilePic ||
+          applicantUserData?.the_user_profile?.[userProfileIndex]?.data
+            ?.the_profile?.the_profile_profilePic?.[0]?.data?.the_profilePic ||
           applicantUserData?.entity?.person?.profile_img,
         fname:
-          applicantUserData?.the_user_profile?.[0]?.data?.the_profile
-            ?.the_profile_first_name?.[0]?.data?.the_first_name ||
+          applicantUserData?.the_user_profile?.[userProfileIndex]?.data
+            ?.the_profile?.the_profile_first_name?.[0]?.data?.the_first_name ||
           applicantUserData?.entity?.person?.first_name,
         lname:
-          applicantUserData?.the_user_profile?.[0]?.data?.the_profile
-            ?.the_profile_last_name?.[0]?.data?.the_last_name ||
+          applicantUserData?.the_user_profile?.[userProfileIndex]?.data
+            ?.the_profile?.the_profile_last_name?.[0]?.data?.the_last_name ||
           applicantUserData?.entity?.person?.last_name,
         bio: applicantUserData?.entity?.person?.bio,
         status:
@@ -158,13 +158,13 @@ export async function getJobApplicants(jobProductId: number) {
             ?.the_interViewSchedule?.the_interViewSchedule_status?.[0]?.data
             ?.the_status,
         email:
-          applicantUserData?.the_user_profile?.[0]?.data?.the_profile
-            ?.the_profile_email?.[0]?.data?.the_email ||
+          applicantUserData?.the_user_profile?.[userProfileIndex]?.data
+            ?.the_profile?.the_profile_email?.[0]?.data?.the_email ||
           applicantUserData?.entity?.person?.email,
         location: applicantUserData?.entity?.person?.location,
         phone:
-          applicantUserData?.the_user_profile?.[0]?.data?.the_profile
-            ?.the_profile_phone?.[0]?.data?.the_phone ||
+          applicantUserData?.the_user_profile?.[userProfileIndex]?.data
+            ?.the_profile?.the_profile_phone?.[0]?.data?.the_phone ||
           applicantUserData?.entity?.person?.phone,
       };
     });

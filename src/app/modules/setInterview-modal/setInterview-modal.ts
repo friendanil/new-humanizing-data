@@ -289,6 +289,7 @@ export default async function createSetInterviewModalHTML() {
     (window as any).submitSetInterviewForm=submitSetInterviewForm
 
   return `
+    <div id="loader" class="center"></div>
     <div id="create-setInterview-modal"
     class="fixed hidden z-50 inset-0 bg-gray-900 bg-opacity-60 dark:bg-gray-200 dark:bg-opacity-40 overflow-y-auto h-full w-full px-4">
     <div

@@ -382,6 +382,16 @@ export async function uploadImageFile(files: any) {
   });
   if (!response.ok) {
     const errorData = await response.text();
+    await loader(false)
+    setTimeout(async () => {
+      await showToast(
+        "error",
+        "Failed to upload Profile Image!",
+        "",
+        "top-right",
+        5000
+      );
+    }, 100);
     console.warn(`${response.status} ${errorData}`);
     return null;
   }
@@ -437,6 +447,16 @@ export async function uploadPdfFile(files: any) {
 
   if (!response.ok) {
     const errorData = await response.text();
+    await loader(false)
+    setTimeout(async () => {
+      await showToast(
+        "error",
+        "PDF Size Limit!",
+        "",
+        "top-right",
+        5000
+      );
+    }, 100);
     console.error(`${response.status} ${errorData}`);
     return null;
   }
