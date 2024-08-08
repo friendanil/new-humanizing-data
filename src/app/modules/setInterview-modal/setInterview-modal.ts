@@ -342,16 +342,16 @@ export default async function createSetInterviewModalHTML() {
                     <select id="interviewTime" name="interviewTime" autocomplete="interviewTime-name"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="">
-                        <option value="9am">9AM</option>
-                        <option value="10am">10AM</option>
-                        <option value="11am">11AM</option>
-                        <option value="12pm">12PM</option>
-                        <option value="1pm">1PM</option>
-                        <option value="2pm">2PM</option>
-                        <option value="3pm">3PM</option>
-                        <option value="4pm">4PM</option>
-                        <option value="5pm">5PM</option>
-                        <option value="6pm">6PM</option>
+                        <option value="9 AM">9AM</option>
+                        <option value="10 AM">10AM</option>
+                        <option value="11 AM">11AM</option>
+                        <option value="12 PM">12PM</option>
+                        <option value="1 PM">1PM</option>
+                        <option value="2 PM">2PM</option>
+                        <option value="3 PM">3PM</option>
+                        <option value="4 PM">4PM</option>
+                        <option value="5 PM">5PM</option>
+                        <option value="6 PM">6PM</option>
                     </select>
                 </div>
 

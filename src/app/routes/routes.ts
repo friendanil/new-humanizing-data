@@ -18,6 +18,7 @@ import jobListIndex from "../pages/jobs/jobList/jobList.index.ts";
 import jobIndex from "../pages/jobs/job/job.index.ts";
 import appliedJobsIndex from "../pages/jobs/appliedJobs/appliedJobs.index.ts";
 import postedJobsIndex from "../pages/jobs/postedJobs/postedJobs.index.ts";
+import calendarIndex from "../pages/calendar/calendar.index.ts";
 
 type RouteParams = {
   path: any;
@@ -138,6 +139,11 @@ const routes: RouteParams[] = [
   {
     path: "/postedJobs",
     content: postedJobsIndex,
+    isAuthenticated: true,
+  },
+  {
+    path: "/calendar",
+    content: calendarIndex,
     isAuthenticated: true,
   },
 ];
