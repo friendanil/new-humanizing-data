@@ -42,6 +42,7 @@ export default class extends mainViewClass {
     return `
       ${topNavigation}
       ${profileModal}
+      <div id="loader" class="center"></div>
       <div class="w-4/5 mx-auto my-8">
       <h1 class="dark:text-white">Your Profile</h1>
       <button class="float-right bg-green-500 text-white rounded-md px-4 py-2 hover:bg-green-700 transition"
