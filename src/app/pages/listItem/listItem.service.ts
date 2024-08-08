@@ -118,15 +118,8 @@ export async function getProductDetails(productId: number) {
       },
     };
 
-    // const productList = await ViewInternalData([productId]);
-    // const product = productList[0];
     console.log("product", product);
-
     listingItem = product;
-
-    // if (!product?.data?.image || product?.data?.image === "undefined")
-    //   product.data.image = "https://placehold.co/600x600";
-
     let imagesHTML: string = "";
 
     if (!product?.data?.imageList?.length) {
@@ -375,19 +368,6 @@ export async function getSkuDetails() {
       const profileStorageData: any = await getLocalStorageData();
       const token = profileStorageData?.token;
 
-      // let search = new SearchStructure();
-      // search.composition = "the_rfq";
-      // search.inpage = 100;
-
-      // let values = await SearchLinkInternal(search, token);
-      // console.log("values the rfq ->", values);
-
-      // let search = new SearchStructure();
-      // search.composition = "the_buyeragent";
-      // search.inpage = 100;
-
-      // let values = await SearchLinkInternal(search, token);
-
       let searchfirst = new SearchQuery();
       searchfirst.composition = itemId;
       searchfirst.fullLinkers = ["the_item_s_sku"];
@@ -457,7 +437,6 @@ export async function submitUpdateSKUForm(e: any) {
 }
 
 export async function createItemSKU(formValues: any) {
-  console.log("formValues SKU ->", formValues);
   let urlPath = location.pathname;
   let itemId = Number(urlPath.substring(10));
 
@@ -509,11 +488,10 @@ export async function openModal(modalId: string) {
 //   );
 
 //   await SyncData.SyncDataOnline();
-//   console.log("listingInstanceConcept ->", listingInstanceConcept);
 // }
 
 export async function createListingPlatformLocal() {
-  const listingInstanceConcept: LConcept = await MakeTheInstanceConceptLocal(
+  await MakeTheInstanceConceptLocal(
     `the_listing`,
     "Boomconsole",
     true,
@@ -523,7 +501,6 @@ export async function createListingPlatformLocal() {
   );
 
   await LocalSyncData.SyncDataOnline();
-  console.log("listingInstanceConcept ->", listingInstanceConcept);
 }
 
 export async function closeModal(modalId: string) {
@@ -635,7 +612,6 @@ export async function createItemRFQ(formValues: any) {
 
   await LocalSyncData.SyncDataOnline();
 
-  console.log("rfq completed");
   closeModal("rfq-modal");
   setTimeout(async () => {
     await showToast(
@@ -662,46 +638,10 @@ export async function getBuyerAgentData(
   let values = await SearchLinkInternal(search, token);
   console.log("values the_buyeragent ->", values);
 
-  // return
-
-  // let buyerAgentEntityConcept: LConcept;
-
-  // const myHeaders = new Headers();
-  // myHeaders.append("Content-Type", "application/json");
-  // myHeaders.append("Authorization", `Bearer ${token}`);
-
-  // const buyerAgentConceptResponse = await fetch(
-  //   `${thetaBoommAPI}/api/search-compositions-internal?search=&type=&composition=the_buyeragent&inpage=10&page=1`,
-  //   {
-  //     method: "GET",
-  //     headers: myHeaders,
-  //     redirect: "follow",
-  //   }
-  // );
-
-  // const output = await buyerAgentConceptResponse.json();
-
-  // const buyerAgentEntityId = Number(Object.keys(output)?.[0]);
-
-  // return
-
-  // if (buyerAgentEntityId) {
-  // if (values.length) {
-  //   const buyerAgentEntityId = values?.[0]?.id
-  //   buyerAgentEntityConcept = await GetTheConceptLocal(buyerAgentEntityId);
-  // } else {
   const entityDetails = await getEntityByUserconceptId(
     Number(buyerAgentConceptId),
     token
   );
-
-  // const entityDetails: any = await fetch(
-  //   `${thetaBoommAPI}/api/get-entity-from-user?userConceptId=${userConceptId}`
-  // )
-  //   .then((res) => res.json())
-  //   .then((json) => {
-  //     return json;
-  //   });
 
   const entityId = entityDetails?.entity;
 
@@ -714,7 +654,6 @@ export async function getBuyerAgentData(
     999,
     entityId
   );
-  // }
 
   return buyerAgentEntityConcept;
 }

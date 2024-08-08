@@ -20,10 +20,10 @@ export default class extends mainViewClass {
     (window as any).closeModal = closeModal;
     (window as any).submitUpdateSKUForm = submitUpdateSKUForm;
 
-    let productId: any = window?.location?.href?.split("/")?.reverse()?.[0];
-    console.log("hey productId ->", productId, typeof productId);
-    // if (!(Number(productId) > 0)) productId = 1;
-    const productDetails = await getProductDetails(Number(productId));
+    // let productId: any = window?.location?.href?.split("/")?.reverse()?.[0];
+    // const productDetails = await getProductDetails(Number(productId));
+
+    const productDetails = await getProductDetails(this.params?.id);
 
     setTimeout(() => {
       initTopNavigation();

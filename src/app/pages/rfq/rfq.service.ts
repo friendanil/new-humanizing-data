@@ -12,9 +12,7 @@ export async function getRFQ() {
   // let search = new SearchStructure();
   // search.composition = "the_rfq";
   // search.inpage = 100;
-
   // let values = await SearchLinkInternal(search, token);
-  // console.log("values the rfq ->", values);
 
   const queryRFQ = [
     {
@@ -95,10 +93,8 @@ export async function getRFQ() {
     }
   );
   const output = await response.json();
-  console.log("RFQ output ->", output);
 
   const rfqList = output?.map((item: any) => {
-    // console.log('ITEM', item)
     const rfqData = item?.data?.the_rfq;
     const rfqItem = rfqData?.the_rfq_s_item?.[0]?.data?.the_item;
     const rfqAttachment =
@@ -140,7 +136,6 @@ export async function getRFQ() {
     };
     return rfqDetails;
   });
-  console.log("rfqList ->", rfqList);
 
   let rfqHTML = `
     <div class="text-center py-8">
@@ -225,7 +220,5 @@ export async function getRFQ() {
 }
 
 export async function openRFQModal() {
-  console.log("openRFQModal clicked!");
-  const xyz = await openModal("rfq-modal");
-  console.log("xyz", xyz);
+  await openModal("rfq-modal");
 }
