@@ -122,16 +122,28 @@ export const interviewschedueGetFormData=async(userConceptId:any)=>{
    const getInterviewSchedule=await listOfOneInterviewSchedule(userConceptId)
    const status = <HTMLInputElement>document.getElementById("status");userConceptId
    status.value=getInterviewSchedule?.interviewScheduleFormatData?.the_interViewSchedule_status?.[0]?.data?.the_status || 'unScreened'
+   const interviewDateDiv=<HTMLInputElement>document.getElementById("interviewdate")
+   const interviewTimeDiv=<HTMLInputElement>document.getElementById("interviewtime")
+     if(status.value==='screened'){
+         console.log(status.value,"codition applyies")
+        interviewDateDiv.classList.remove("hidden");
+        interviewTimeDiv.classList.remove("hidden");
+    }
+    // else{
+    //     interviewDateDiv.classList.add("hidden");
+    //     interviewTimeDiv.classList.add("hidden");
+    // }
    const interviewDate = <HTMLInputElement>document.getElementById("interviewDate");
    interviewDate.value=getInterviewSchedule?.interviewScheduleFormatData?.the_interViewSchedule_interviewDate?.[0]?.data?.the_interviewDate || todayDate()
+   
    const interviewTime = <HTMLInputElement>document.getElementById("interviewTime");
    interviewTime.value=getInterviewSchedule?.interviewScheduleFormatData?.the_interViewSchedule_interviewTime?.[0]?.data?.the_interviewTime || '9am'
    const personality = <HTMLInputElement>document.getElementById("personality");
-   personality.value=getInterviewSchedule?.interviewScheduleFormatData?.the_interViewSchedule_personality?.[0]?.data?.the_personality || 'Bad'
+   personality.value=getInterviewSchedule?.interviewScheduleFormatData?.the_interViewSchedule_personality?.[0]?.data?.the_personality || ''
    const skillKnowledge = <HTMLInputElement>document.getElementById("skillKnowledge");
-   skillKnowledge.value=getInterviewSchedule?.interviewScheduleFormatData?.the_interViewSchedule_skillKnowledge?.[0]?.data?.the_skillKnowledge || 'Bad'
+   skillKnowledge.value=getInterviewSchedule?.interviewScheduleFormatData?.the_interViewSchedule_skillKnowledge?.[0]?.data?.the_skillKnowledge || ''
    const characterFlow = <HTMLInputElement>document.getElementById("characterFlow");
-   characterFlow.value=getInterviewSchedule?.interviewScheduleFormatData?.the_interViewSchedule_characterFlow?.[0]?.data?.the_characterFlow || 'Bad'
+   characterFlow.value=getInterviewSchedule?.interviewScheduleFormatData?.the_interViewSchedule_characterFlow?.[0]?.data?.the_characterFlow || ''
    const template = <HTMLInputElement>document.getElementById("template");
    template.value=getInterviewSchedule?.interviewScheduleFormatData?.the_interViewSchedule_template?.[0]?.data?.the_template || ''
    const heading = <HTMLInputElement>document.getElementById("heading");
@@ -151,8 +163,18 @@ export const interviewschedueGetFormData=async(userConceptId:any)=>{
 }
 export const onChange= async()=>{
     const getUserConceptId=<HTMLInputElement>document.getElementById("userConceptId")
+    const status=<HTMLInputElement>document.getElementById("status")
+    const interviewDateDiv=<HTMLInputElement>document.getElementById("interviewdate")
+    const interviewTimeDiv=<HTMLInputElement>document.getElementById("interviewtime")
+    if(status.value==='screened'){
+        interviewDateDiv.classList.remove("hidden");
+        interviewTimeDiv.classList.remove("hidden");
+    }else{
+        interviewDateDiv.classList.add("hidden");
+        interviewTimeDiv.classList.add("hidden");
+    }
     const userConceptId:any=getUserConceptId.value || ''
-    const userList:any= await userListOfData(userConceptId)
+    const userList:any= await userListOfData(userConceptId);
     const UserFirstName=userList.the_Profile?.the_profile_first_name?.[0]?.data?.the_first_name || userList?.entity?.first_name;
 
     const interviewDate:any=document.getElementById('interviewDate');
@@ -316,6 +338,7 @@ export default async function createSetInterviewModalHTML() {
                     <label for="status"
                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Staus</label>
                     <select id="status" name="status" autocomplete="status-name"
+                        onchange="onChange()"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="">
                         <option value="">Select Your Status</option>
@@ -328,7 +351,7 @@ export default async function createSetInterviewModalHTML() {
                         <option value="rejected">Rejected</option>
                     </select>
                 </div>
-                <div class="form-control">
+                <div id="interviewdate" class="form-control hidden">
                     <label for="interviewDate"
                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">InterView Date</label>
                     <input type="date" id="interviewDate" name="interviewDate" onfocus="disablePastDates()"
@@ -336,7 +359,7 @@ export default async function createSetInterviewModalHTML() {
                         placeholder="" />
                     <small></small>
                 </div>
-                <div class="form-control">
+                <div id="interviewtime" class="form-control hidden">
                     <label for="interviewTime"
                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Time</label>
                     <select id="interviewTime" name="interviewTime" autocomplete="interviewTime-name"
@@ -361,6 +384,7 @@ export default async function createSetInterviewModalHTML() {
                     <select id="personality" name="personality" autocomplete="personality-name"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="">
+                        <option value="">Select Personality</option>
                         <option value="Bad">Bad</option>
                         <option value="Not Bad">Not Bad</option>
                         <option value="Good">Good</option>
@@ -374,6 +398,7 @@ export default async function createSetInterviewModalHTML() {
                     <select id="skillKnowledge" name="skillKnowledge" autocomplete="skillKnowledge-name"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="">
+                        <option value="">Select Skill Knowledge</option>
                         <option value="Bad">Bad</option>
                         <option value="Not Bad">Not Bad</option>
                         <option value="Good">Good</option>
@@ -387,6 +412,7 @@ export default async function createSetInterviewModalHTML() {
                     <select id="characterFlow" name="characterFlow" autocomplete="characterFlow-name"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="">
+                        <option value="">Select Character Flow</option>
                         <option value="Bad">Bad</option>
                         <option value="Not Bad">Not Bad</option>
                         <option value="Good">Good</option>
