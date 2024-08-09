@@ -1,11 +1,15 @@
 import { environment } from "../../environments/environment.dev";
 import { loader } from "../../modules/loader/loader.index";
 import { showToast } from "../../modules/toast-bar/toast-bar.index";
+import { getLocalStorageData } from "../../services/helper.service";
 
 const thetaBoommAPI = environment?.boomURL;
 export async function getAllInterviewSchedule() {
-
+    const profileStorageData: any = await getLocalStorageData();
+    // const userId = profileStorageData?.userId;
+    const token = profileStorageData?.token;
     const myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${token}`);
     myHeaders.append("Content-Type", "application/json");
     const bodyData:any=[
       {
@@ -19,7 +23,9 @@ export async function getAllInterviewSchedule() {
       }]
   
     const bodyStringify=JSON.stringify(bodyData)
-    const response = await fetch(`${thetaBoommAPI}/api/search-all-without-auth-with-linker?type=status&search=unScreened&isComposition=false&inpage=10&page=1`, {
+   
+    const response= await fetch(`${thetaBoommAPI}/api/search-all-with-linker`,{
+    // const response = await fetch(`${thetaBoommAPI}/api/search-all-without-auth-with-linker?type=status&search=unScreened&isComposition=false&inpage=10&page=1`, {
       method: "POST",
       headers: myHeaders,
       body: bodyStringify,
@@ -41,6 +47,8 @@ export async function getAllInterviewSchedule() {
       return null;
     }
     const output = await response.json();
+    console.log(output,"output here")
+    // return;
     function convertToISOTime(timeStr:any) {
       // Parse the time string and extract hours and period (AM/PM)
       const [time, period] = timeStr?.split(' ');

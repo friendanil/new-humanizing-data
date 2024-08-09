@@ -897,6 +897,7 @@ export async function getProfileData() {
     // console.log("output ->", profileList);
     if(profileList){
     const data = profileList?.the_Profile || "";
+    console.log(profileList,"data")
 
     const inputProfilePic = <HTMLInputElement>(
       document.getElementById("profilePic")
@@ -1150,12 +1151,11 @@ export async function getProfileData() {
           ?.the_yearOfExperience || "";
     });
     const inputFullName = <HTMLInputElement>document.getElementById("fullName");
-    inputFullName.innerHTML = !data?profileList?.data?.the_user.entity.person.first_name +" "+profileList?.data?.the_user?.entity?.person.last_name
+    inputFullName.innerHTML = !data?profileList?.data?.the_user?.entity?.person?.first_name +" "+profileList?.data?.the_user?.entity?.person.last_name
     :data.the_profile_first_name?.[0]?.data?.the_first_name +" "+data.the_profile_last_name?.[0]?.data?.the_last_name;
 
     const inputContact = <HTMLInputElement>document.getElementById("contact");
-    inputContact.innerHTML =data?data.the_profile_email?.[0]?.data?.the_email +"||"+data?.the_profile_phone?.[0]?.data?.the_phone: profileList.data.the_user.entity.person.email +
-      "||" +profileList.data.the_user.entity.person.phone;
+    inputContact.innerHTML =data?.the_profile_email?.[0]?.data?.the_email || profileList?.entity?.person?.email +"||"+data?.the_profile_phone?.[0]?.data?.the_phone||profileList?.data?.the_user?.entity?.person?.phone;
 
     const inputAbout = <HTMLInputElement>document.getElementById("about");
     if(data?.the_profile_aboutYou){
@@ -1201,7 +1201,7 @@ export async function submitAddProfileForm(e: any) {
   const expContainers = document.querySelectorAll(".input-container-1");
   ExperienceFieldsArray.length = 0; // Clear the array
   
-  expContainers.forEach(async (container) => {
+  expContainers?.forEach(async (container) => {
     const inputs: any = container.querySelectorAll(".input-field-1");
     ExperienceFieldsArray.push({
       company: inputs[0].value,
@@ -1216,7 +1216,7 @@ export async function submitAddProfileForm(e: any) {
   const docContainers = document.querySelectorAll(".input-container-2");
   DocumentFieldsArray.length = 0; // Clear the array
   
-  docContainers.forEach((container2) => {
+  docContainers?.forEach((container2) => {
     const inputs: any = container2.querySelectorAll(".input-field-2");
     DocumentFieldsArray.push({
       docName: inputs[0].value,
@@ -1228,7 +1228,7 @@ export async function submitAddProfileForm(e: any) {
   const skillsContainers = document.querySelectorAll(".input-container-3");
   SkillsFieldsArray.length = 0; // Clear the array
 
-  skillsContainers.forEach((container) => {
+  skillsContainers?.forEach((container) => {
     const inputs: any = container.querySelectorAll(".input-field-3");
     SkillsFieldsArray.push({
       language: inputs[0].value,
@@ -1287,6 +1287,7 @@ export async function submitAddProfileForm(e: any) {
 export async function createProfile(formValues: any) {
   // let profileIdLen:number=profileList.profileId.length-1
   profileList?.profileId?.forEach(async function(x:any) {
+    console.log(x,"xyz")
       await DeleteConceptById(x.id);
 })||'';
 
@@ -1384,7 +1385,7 @@ await loader(false)
       "top-right",
       5000
     );
-    location.reload();
+    // location.reload();
   }, 100);
 
 }
